@@ -1,0 +1,878 @@
+<title>Algo Final 254383</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: Brilliant-style. Chapter cover (solid cobalt hero + card list) -> one-idea card player; quiz = one question per screen with a feedback sheet. One accent, used heavily. */
+:root {
+  --bg: #FAFAF9; --surface: #F0F0EE; --surface-2: #E6E6E3; --ink: #17171B; --muted: #686872; --line: rgba(23,23,27,.10);
+  --accent: #2F5BEA; --accent-press: #2549C4; --on-accent: #FFFFFF; --panel: #EBF0FE; --panel-ink: #1D3A9E; --accent-soft: rgba(47,91,234,.14);
+  --good: #17804E; --good-soft: #DDF3E6; --bad: #C2331D; --bad-soft: #FCE6E1;
+  --font: "IBM Plex Sans Thai", "Noto Sans Thai", "Leelawadee UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --ease: cubic-bezier(.23,1,.32,1); --ease-io: cubic-bezier(.77,0,.175,1); --drawer: cubic-bezier(.32,.72,0,1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #101013; --surface: #1A1A1F; --surface-2: #25252B; --ink: #EDEDF0; --muted: #9D9DA8; --line: rgba(255,255,255,.09);
+  --accent: #5E7BFF; --accent-press: #4C69EE; --on-accent: #FFFFFF; --panel: #171C33; --panel-ink: #A9B9FF; --accent-soft: rgba(94,123,255,.18);
+  --good: #56C98B; --good-soft: rgba(86,201,139,.14); --bad: #F2846F; --bad-soft: rgba(242,132,111,.14); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #101013; --surface: #1A1A1F; --surface-2: #25252B; --ink: #EDEDF0; --muted: #9D9DA8; --line: rgba(255,255,255,.09);
+  --accent: #5E7BFF; --accent-press: #4C69EE; --on-accent: #FFFFFF; --panel: #171C33; --panel-ink: #A9B9FF; --accent-soft: rgba(94,123,255,.18);
+  --good: #56C98B; --good-soft: rgba(86,201,139,.14); --bad: #F2846F; --bad-soft: rgba(242,132,111,.14); color-scheme: dark; }
+
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink); font: 400 17px/1.7 var(--font); margin: 0; }
+* { box-sizing: border-box; }
+button, a, label.tile { touch-action: manipulation; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; -webkit-user-select: none; user-select: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 10px; }
+a { color: var(--accent); }
+.mono { font-family: var(--mono); font-size: .92em; }
+b { font-weight: 600; }
+[hidden] { display: none !important; }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: saturate(170%) blur(16px); -webkit-backdrop-filter: saturate(170%) blur(16px); }
+.bar-in { max-width: 820px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+.brand span { color: var(--muted); font: 500 13px var(--mono); margin-left: 6px; }
+.seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); border-radius: 999px; padding: 4px; min-width: 250px; }
+.seg button { position: relative; z-index: 1; height: 40px; border-radius: 999px; font-weight: 600; font-size: 15px; color: var(--muted); transition: color 220ms ease; }
+.seg button[aria-pressed="true"] { color: var(--on-accent); }
+.seg .knob { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: var(--accent); transition: transform 300ms var(--ease-io); }
+.seg[data-on="1"] .knob { transform: translateX(100%); }
+.iconbtn { width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center; color: var(--muted); flex: none; }
+.tabs { max-width: 820px; margin: 0 auto; padding: 0 16px 10px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; height: 38px; padding: 0 15px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--muted); background: var(--surface); white-space: nowrap; }
+.tab i { font: normal 500 12px var(--mono); margin-right: 6px; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+
+main { max-width: 820px; margin: 0 auto; padding: 18px 16px 140px; }
+
+/* press feedback */
+.btn, .tile, .tab, .chip, .iconbtn, .seg button, .cardrow, .num { transition: transform 140ms var(--ease), background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease; }
+.btn:active, .tile:active, .tab:active, .chip:active, .iconbtn:active, .seg button:active, .cardrow:active, .num:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .iconbtn:hover { background: var(--surface); color: var(--ink); }
+  .tile:hover { border-color: var(--muted); }
+  .cardrow:hover { background: var(--surface); }
+  .btn.primary:hover { background: var(--accent-press); }
+}
+
+.btn { height: 52px; padding: 0 24px; border-radius: 16px; font-weight: 600; font-size: 16px; background: var(--surface-2); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--accent); color: var(--on-accent); box-shadow: 0 2px 0 var(--accent-press); }
+.btn.light { background: var(--on-accent); color: #1D3A9E; }
+.btn.wide { width: 100%; }
+.btn[disabled] { opacity: .4; pointer-events: none; box-shadow: none; }
+.btn.small { height: 40px; padding: 0 16px; font-size: 14px; border-radius: 12px; }
+.btn.ghost { background: transparent; color: var(--muted); }
+
+/* chapter cover */
+.hero { background: var(--accent); color: var(--on-accent); border-radius: 28px; padding: 28px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: center; overflow: hidden; }
+.hero h1 { font-size: clamp(34px, 6vw, 48px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px; text-wrap: balance; }
+.hero p { margin: 0 0 22px; opacity: .85; font-size: 16px; max-width: 34ch; }
+.hero .meta { font: 500 13px var(--mono); opacity: .8; margin-bottom: 8px; }
+.hero svg { width: 100%; height: auto; display: block; }
+.hero .draw { stroke-dasharray: 1100; stroke-dashoffset: 1100; animation: draw 1.6s var(--ease) .15s forwards; }
+.hero .draw.d2 { animation-delay: .45s; } .hero .draw.d3 { animation-delay: .75s; }
+.hero .fadein { opacity: 0; animation: fade 600ms ease 1.1s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fade { to { opacity: 1; } }
+.prog-line { display: flex; align-items: center; gap: 10px; font: 500 13px var(--mono); opacity: .9; margin-bottom: 16px; }
+.prog-line .track { flex: 1; height: 6px; background: rgba(255,255,255,.25); border-radius: 99px; overflow: hidden; max-width: 180px; }
+.prog-line .fill { height: 100%; background: var(--on-accent); border-radius: 99px; transform-origin: left; }
+.cards { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 4px; }
+.cardrow { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; align-items: center; width: 100%; text-align: left; padding: 12px 12px; border-radius: 16px; }
+.cardrow .dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 600 13px var(--mono); background: var(--surface); color: var(--muted); }
+.cardrow.done .dot { background: var(--accent); color: var(--on-accent); }
+.cardrow.next .dot { box-shadow: 0 0 0 2px var(--accent); color: var(--accent); background: var(--bg); }
+.cardrow .t { font-weight: 600; font-size: 16px; line-height: 1.35; }
+.cardrow .s { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.cardrow .go { color: var(--muted); font-size: 18px; }
+.soon { margin-top: 26px; }
+.soon h2 { font-size: 20px; margin: 0 0 8px; }
+.soon ol { padding-left: 22px; color: var(--muted); margin: 0 0 18px; }
+
+/* card player */
+.player-top { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.segs { flex: 1; display: grid; gap: 4px; }
+.segs i { height: 6px; border-radius: 99px; background: var(--surface-2); position: relative; overflow: hidden; }
+.segs i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 380ms var(--ease); }
+.segs i.on::after { transform: scaleX(1); }
+.pcount { font: 500 13px var(--mono); color: var(--muted); }
+.card { animation: cardIn 340ms var(--ease) both; }
+.card.back { animation-name: cardBack; }
+@keyframes cardIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes cardBack { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+.card h2 { font-size: 15px; font-weight: 600; color: var(--accent); margin: 0 0 6px; letter-spacing: 0; }
+.card .key { font-size: clamp(23px, 4.2vw, 30px); line-height: 1.38; font-weight: 650; letter-spacing: -.015em; margin: 0 0 14px; text-wrap: pretty; max-width: 30ch; }
+.card .key .mono { font-size: .86em; font-weight: 600; }
+.card .body { color: var(--muted); font-size: 16.5px; max-width: 62ch; margin: 0 0 22px; }
+.card .body b { color: var(--ink); }
+.panel { background: var(--panel); border-radius: 24px; padding: 22px; margin: 0 0 22px; }
+/* captions: big readable strip on a plain ground, key phrases marked */
+.cap { margin-top: 14px; background: var(--bg); border-radius: 16px; padding: 14px 16px; font-size: 16.5px; line-height: 1.65; color: var(--ink); min-height: 54px; }
+.cap.step { display: flex; gap: 12px; align-items: flex-start; }
+.cap .ct { min-width: 0; }
+.cap b { font-weight: 700; background: var(--accent-soft); border-radius: 6px; padding: 1px 5px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.cap b.yes { background: var(--good-soft); } .cap b.no { background: var(--bad-soft); }
+.cap .ico { flex: none; width: 30px; height: 30px; border-radius: 10px; background: var(--accent); color: var(--on-accent); font: 600 13px var(--mono); display: grid; place-items: center; }
+.cap .ico.fin { background: var(--good); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 15px; font-weight: 500; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { flex: none; width: 16px; height: 16px; border-radius: 5px; background: var(--c); }
+.legend i.ring { background: transparent; border: 3px solid var(--c); }
+.legend i.ringd { background: transparent; border: 2px dashed var(--c); border-radius: 50%; }
+.legend i.line { width: 24px; height: 5px; border-radius: 3px; }
+.legend i.dash { width: 24px; height: 0; border-top: 3px dashed var(--c); background: none; border-radius: 0; }
+.legend i.dot { border-radius: 50%; }
+.stepbar { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+.stepbar .sb-back { width: 52px; padding: 0; }
+.stepbar .count { margin-left: auto; font: 500 13px var(--mono); color: var(--panel-ink); }
+.panel > .chips:first-child { margin-bottom: 14px; }
+.sub { font-size: 14px; font-weight: 600; color: var(--panel-ink); margin-bottom: 2px; }
+.scrollx { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+.cells { display: flex; flex-wrap: wrap; gap: 6px; }
+.cells.nowrap { flex-wrap: nowrap; }
+.cl { position: relative; flex: none; min-width: 40px; height: 42px; padding: 0 8px; border-radius: 10px; background: var(--bg); display: inline-grid; place-items: center; font: 600 15px var(--mono); margin-top: 20px; transition: background-color 200ms ease, color 200ms ease; }
+.cl small { position: absolute; top: -19px; left: -4px; right: -4px; text-align: center; font: 500 11px var(--mono); color: var(--panel-ink); white-space: nowrap; }
+.cl.hi { background: var(--accent); color: var(--on-accent); }
+.cl.ok { background: var(--good-soft); color: var(--good); }
+.cl.bad { background: var(--bad-soft); color: var(--bad); }
+.cl.ring, .cl.src { box-shadow: inset 0 0 0 3px var(--ink); }
+.cl.empty { color: transparent; opacity: .55; }
+.cl.gap { background: transparent; }
+.cl.pat { background: var(--surface-2); }
+.scrollx.sm .cl { min-width: 30px; width: 30px; height: 36px; padding: 0; font-size: 14px; }
+.scrollx.sm .cells + .cells .cl { margin-top: 6px; }
+.rows { display: grid; gap: 2px; }
+.rw { display: grid; grid-template-columns: 40px 1fr; align-items: end; gap: 6px; }
+.rl { font: 600 14px var(--mono); color: var(--panel-ink); padding-bottom: 11px; }
+.duo2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.flip.three { grid-template-columns: repeat(3, 1fr); }
+.flipc.grpA { box-shadow: inset 0 0 0 2.5px var(--accent); } .flipc.grpA small { color: var(--accent); }
+.flipc.grpB { box-shadow: inset 0 0 0 2.5px var(--ink); } .flipc.grpB small { color: var(--ink); }
+.mx { border-collapse: separate; border-spacing: 4px; width: auto; margin: 0 auto; }
+.mx th { font: 600 13px var(--mono); color: var(--panel-ink); padding: 0 6px; text-align: center; border: 0; }
+.mx th small { display: block; font-size: 10px; font-weight: 500; }
+.mx td { min-width: 42px; height: 40px; text-align: center; background: var(--bg); border-radius: 9px; font: 600 15px var(--mono); border: 0; padding: 0 6px; transition: background-color 200ms ease; }
+.mx td.k { background: var(--accent-soft); }
+.mx td.ch { background: var(--accent); color: var(--on-accent); }
+.mx th.kh { color: var(--accent); }
+.grid { border-collapse: separate; border-spacing: 4px; margin: 0 auto; width: auto; }
+.grid td { width: 50px; height: 50px; background: var(--bg); border-radius: 10px; text-align: center; position: relative; font: 600 15px var(--mono); border: 0; padding: 0; }
+.grid td.row { background: var(--accent-soft); }
+.grid td.path { background: var(--accent); color: var(--on-accent); }
+.grid i.coin { position: absolute; top: 5px; right: 5px; width: 11px; height: 11px; border-radius: 50%; background: #E8A33D; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: center; }
+.split > div { min-width: 0; }
+.hgrid { display: grid; grid-template-columns: repeat(13, minmax(46px, 1fr)); gap: 4px; min-width: 640px; }
+.hcol { display: grid; gap: 4px; align-content: start; }
+.hix { text-align: center; font: 600 12px var(--mono); color: var(--panel-ink); padding: 5px 0; border-radius: 8px; background: var(--bg); }
+.hix.on { background: var(--accent); color: var(--on-accent); }
+.hw { font: 600 11px var(--mono); text-align: center; padding: 7px 2px; border-radius: 8px; background: var(--bg); overflow-wrap: anywhere; }
+.hw.hi { background: var(--accent); color: var(--on-accent); }
+.hw.bad { background: var(--bad-soft); color: var(--bad); }
+.elist { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.elist span { font: 500 13px var(--mono); padding: 6px 11px; border-radius: 99px; background: var(--bg); }
+.elist span.ok { background: var(--accent); color: var(--on-accent); }
+.elist span.rej { background: var(--bad-soft); color: var(--bad); text-decoration: line-through; }
+.elist span.now { box-shadow: inset 0 0 0 2.5px var(--ink); }
+.hq { display: flex; flex-wrap: wrap; gap: 8px; }
+.hq span { display: grid; place-items: center; min-width: 70px; padding: 10px 12px; border-radius: 14px; background: var(--bg); font: 500 13px var(--mono); }
+.hq b { font-size: 16px; background: none; }
+.hq span.now { background: var(--accent); color: var(--on-accent); }
+.coins { display: flex; gap: 10px; margin: 14px 0 4px; }
+.cn { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font: 700 20px var(--mono); background: #E8A33D; color: #3A2600; animation: lineIn 300ms var(--ease) both; }
+.cn.o { background: var(--accent); color: var(--on-accent); }
+.cap50 { margin-top: 18px; }
+.bar50 { display: flex; height: 46px; border-radius: 12px; background: var(--bg); overflow: hidden; }
+.bar50 .seg { background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font: 600 14px var(--mono); border-right: 2px solid var(--panel); }
+.axis50 { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--panel-ink); margin-top: 4px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--font); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { height: 40px; padding: 0 16px; border-radius: 999px; background: var(--bg); font-size: 14px; font-weight: 600; color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* viz bits */
+.grow { display: grid; gap: 8px; }
+.grow .r { display: grid; grid-template-columns: 92px 1fr 118px; gap: 10px; align-items: center; font: 500 14px var(--mono); }
+.grow .bar2 { height: 14px; border-radius: 99px; background: var(--accent); transform-origin: left; transition: transform 300ms var(--ease); }
+.grow .r.x .bar2 { background: var(--bad); }
+.grow .r .v { text-align: right; color: var(--muted); font-size: 13px; }
+.grow .r.x { color: var(--bad); }
+input[type="range"] { width: 100%; accent-color: var(--accent); height: 32px; }
+.slider { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; font: 600 15px var(--mono); }
+.slider span, .slider b { white-space: nowrap; flex: none; }
+.slider b { min-width: 2ch; }
+.flip { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.flipc { min-height: 86px; border-radius: 16px; background: var(--bg); padding: 12px 14px; text-align: left; font-size: 15px; line-height: 1.45; display: grid; align-content: space-between; gap: 8px; }
+.flipc small { font: 600 12px var(--mono); color: var(--muted); }
+.flipc.dec small { color: var(--good); } .flipc.opt small { color: var(--bad); }
+.toggles { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.tg { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px 0 14px; border-radius: 14px; background: var(--bg); font: 500 16px var(--mono); }
+.tg b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; font-weight: 600; transition: background-color 180ms ease, color 180ms ease; }
+.tg[data-v="1"] b { background: var(--good-soft); color: var(--good); }
+.tg[data-v="0"] b { background: var(--bad-soft); color: var(--bad); }
+.clauses { display: grid; gap: 6px; font: 15px var(--mono); }
+.clauses div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 14px; border-radius: 12px; background: var(--bg); }
+.yes { color: var(--good); } .no { color: var(--bad); }
+.combos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 14px; }
+.combo { height: 54px; border-radius: 12px; background: var(--bg); font: 500 14px var(--mono); display: grid; place-items: center; line-height: 1.2; transition: background-color 220ms ease, color 220ms ease; }
+.combo small { font-size: 11px; color: var(--muted); }
+.combo.ok { background: var(--good-soft); color: var(--good); } .combo.ok small { color: var(--good); }
+.combo.ko small { color: var(--bad); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+.flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font: 500 14px var(--mono); }
+.flow span { background: var(--bg); border-radius: 12px; padding: 10px 14px; }
+.flow span.hot { background: var(--accent); color: var(--on-accent); }
+.flow em { font-style: normal; color: var(--panel-ink); }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.duo > div { background: var(--bg); border-radius: 16px; padding: 14px 16px; min-width: 0; font-size: 15px; }
+.duo h4 { margin: 0 0 6px; font-size: 14px; }
+.duo ul { margin: 0; padding-left: 18px; }
+.duo .mono { font-size: 13.5px; }
+.tl { display: grid; gap: 10px; }
+.tl div { display: grid; grid-template-columns: 64px 1fr; gap: 12px; background: var(--bg); border-radius: 14px; padding: 12px 14px; font-size: 15px; }
+.tl b { font-family: var(--mono); color: var(--accent); }
+.cnf { font: 500 19px var(--mono); text-align: center; padding: 14px 0 10px; line-height: 2; }
+.cnf span { border-radius: 8px; padding: 2px 3px; transition: background-color 200ms ease, color 200ms ease; }
+.cnf span.hl { background: var(--accent); color: var(--on-accent); }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--panel-ink); font-size: 13px; }
+.vx { cursor: pointer; }
+.vx circle { transition: fill 200ms ease, stroke 200ms ease; }
+
+/* worked written answer */
+.work { margin: 0 0 22px; border: 1px solid var(--line); border-radius: 24px; overflow: hidden; }
+.work .q { padding: 18px 20px; font-size: 16px; background: var(--surface); }
+.work .q small { display: block; color: var(--muted); font-size: 13px; }
+.work .paper { padding: 4px 20px 16px; }
+.work ol { list-style: none; margin: 0; padding: 0; counter-reset: l; }
+.work li { counter-increment: l; display: grid; grid-template-columns: 26px 1fr; gap: 0 10px; padding: 12px 0; border-bottom: 1px dashed var(--line); animation: lineIn 320ms var(--ease) both; }
+.work li::before { content: counter(l); font: 12px var(--mono); color: var(--muted); padding-top: 4px; }
+.work li .t { font-size: 16px; overflow-wrap: anywhere; }
+.work li .t.code { font: 14px/1.6 var(--mono); }
+.work li .n { grid-column: 2; font-size: 14px; color: var(--muted); margin-top: 2px; }
+.work .ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding-top: 14px; }
+.work .count { font: 13px var(--mono); color: var(--muted); margin-left: auto; }
+@keyframes lineIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* dock */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(170%) blur(16px); -webkit-backdrop-filter: saturate(170%) blur(16px); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock-in { max-width: 820px; margin: 0 auto; display: flex; gap: 10px; }
+.dock-in .btn { flex: 1; }
+.dock-in .btn.back { flex: 0 0 auto; width: 64px; padding: 0; }
+
+/* quiz home */
+.qhero { background: var(--accent); color: var(--on-accent); border-radius: 28px; padding: 28px; display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: end; }
+.qhero h1 { font-size: clamp(30px, 5.6vw, 42px); line-height: 1.1; letter-spacing: -.025em; margin: 0 0 8px; }
+.qhero p { margin: 0 0 20px; opacity: .85; font-size: 16px; max-width: 40ch; }
+.ring { width: 112px; height: 112px; position: relative; display: grid; place-items: center; }
+.ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.ring b { font: 700 28px/1 var(--font); }
+.ring small { display: block; font: 500 12px var(--mono); opacity: .85; text-align: center; margin-top: 4px; }
+.builder { margin-top: 16px; background: var(--surface); border-radius: 28px; padding: 26px; }
+.builder h2 { font-size: 24px; letter-spacing: -.015em; margin: 0 0 6px; line-height: 1.25; }
+.builder > p { color: var(--muted); font-size: 15px; margin: 0 0 18px; max-width: 56ch; }
+.builder .lbl { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.builder .grp { margin-bottom: 16px; }
+.builder .chip { background: var(--bg); }
+.builder .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.kinds { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.kinds span { font: 500 12px var(--mono); padding: 5px 10px; border-radius: 99px; background: var(--bg); color: var(--muted); }
+
+/* quiz runner */
+.qtop { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.qbar { flex: 1; height: 10px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
+.qbar i { height: 100%; flex: 1; transition: background-color 260ms ease; }
+.qbar i.g { background: var(--good); } .qbar i.b { background: var(--bad); }
+.qpts { font: 600 14px var(--mono); color: var(--muted); min-width: 64px; text-align: right; }
+.qcard { animation: cardIn 320ms var(--ease) both; }
+.qno { font: 600 13px var(--mono); color: var(--accent); margin-bottom: 8px; }
+.qno span { color: var(--muted); font-weight: 500; }
+.qtext { font-size: clamp(19px, 3.4vw, 22px); line-height: 1.55; font-weight: 500; margin-bottom: 22px; overflow-wrap: anywhere; }
+.qtext b { font-weight: 650; }
+.qtext .data { display: block; margin-top: 12px; background: var(--panel); color: var(--ink); border-radius: 16px; padding: 14px 16px; font: 500 15px/1.75 var(--mono); overflow-x: auto; white-space: pre; }
+.tiles { display: grid; gap: 10px; }
+.tile { position: relative; display: grid; grid-template-columns: 34px 1fr 24px; gap: 14px; align-items: center; padding: 14px 16px; min-height: 62px; border-radius: 18px; border: 2px solid var(--line); background: var(--bg); font-size: 16px; line-height: 1.5; cursor: pointer; text-align: left; -webkit-user-select: none; user-select: none; box-shadow: 0 2px 0 var(--line); }
+.tile input { position: absolute; opacity: 0; pointer-events: none; }
+.tile .k { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font: 600 14px var(--mono); background: var(--surface); color: var(--muted); }
+.tile.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 2px 0 var(--accent); }
+.tile.sel .k { background: var(--accent); color: var(--on-accent); }
+.tile .mk { font-weight: 700; text-align: center; }
+.tile.right { border-color: var(--good); background: var(--good-soft); box-shadow: 0 2px 0 var(--good); }
+.tile.right .k { background: var(--good); color: #fff; } .tile.right .mk { color: var(--good); }
+.tile.wrong { border-color: var(--bad); background: var(--bad-soft); box-shadow: 0 2px 0 var(--bad); }
+.tile.wrong .k { background: var(--bad); color: #fff; } .tile.wrong .mk { color: var(--bad); }
+.locked .tile { cursor: default; }
+.locked .tile:not(.right):not(.wrong) { opacity: .55; }
+.ans .hint { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+.ans input { width: 100%; height: 60px; border-radius: 18px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); padding: 0 18px; font: 500 17px var(--mono); }
+.ans input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 4px var(--accent-soft); }
+.ans input.right { border-color: var(--good); background: var(--good-soft); }
+.ans input.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; transform: translateY(105%); transition: transform 380ms var(--drawer); }
+.sheet.open { transform: none; }
+.sheet-in { max-width: 820px; margin: 0 auto; border-radius: 28px 28px 0 0; padding: 22px 20px calc(16px + env(safe-area-inset-bottom, 0px)); max-height: 78vh; overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 -10px 40px rgba(0,0,0,.12); }
+.sheet.good .sheet-in { background: var(--good-soft); background: color-mix(in srgb, var(--good) 14%, var(--bg)); }
+.sheet.bad .sheet-in { background: color-mix(in srgb, var(--bad) 14%, var(--bg)); }
+.verdict { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.sheet.good .verdict { color: var(--good); } .sheet.bad .verdict { color: var(--bad); }
+.verdict .badge { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 20px; }
+.sheet.good .badge { background: var(--good); } .sheet.bad .badge { background: var(--bad); }
+.verdict small { font: 600 14px var(--mono); margin-left: auto; }
+.sheet .why { font-size: 16px; margin: 0 0 14px; }
+.sheet .right-ans { font: 500 14px/1.7 var(--mono); background: var(--bg); border-radius: 14px; padding: 12px 14px; margin: 0 0 14px; overflow-wrap: anywhere; }
+.sheet .right-ans small { display: block; font: 500 12px var(--font); color: var(--muted); }
+.sheet .work { background: var(--bg); }
+.sheet .acts { display: flex; gap: 10px; }
+.sheet .acts .btn { flex: 1; }
+.sheet.good .btn.primary { background: var(--good); box-shadow: 0 2px 0 color-mix(in srgb, var(--good) 70%, #000); }
+.sheet.bad .btn.primary { background: var(--bad); box-shadow: 0 2px 0 color-mix(in srgb, var(--bad) 70%, #000); }
+
+/* result */
+.result { text-align: center; padding-top: 8px; }
+.result .ring { width: 168px; height: 168px; margin: 0 auto 14px; color: var(--accent); }
+.result .ring b { font-size: 44px; }
+.result .ring small { color: var(--muted); }
+.result h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -.02em; }
+.result .split { color: var(--muted); margin-bottom: 22px; }
+.nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 8px; text-align: center; margin: 0 0 24px; }
+.num { height: 48px; border-radius: 14px; font: 600 15px var(--mono); }
+.num.g { background: var(--good-soft); color: var(--good); }
+.num.b { background: var(--bad-soft); color: var(--bad); }
+.result .lbl { text-align: left; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.result .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+@media (max-width: 620px) {
+  body { font-size: 16px; }
+  .seg { flex: 1 1 100%; order: 3; }
+  .hero { grid-template-columns: 1fr; padding: 24px 20px; border-radius: 24px; }
+  .hero svg { max-width: 320px; }
+  .qhero { grid-template-columns: 1fr; padding: 24px 20px; border-radius: 24px; }
+  .qhero .ring { order: -1; }
+  .panel { padding: 18px 14px; border-radius: 20px; }
+  .duo, .flip, .split, .duo2 { grid-template-columns: 1fr; }
+  .flip.three { grid-template-columns: 1fr 1fr; }
+  .cap { font-size: 16px; padding: 12px 14px; }
+  .grow .r { grid-template-columns: 78px 1fr 92px; font-size: 13px; }
+  .combos { grid-template-columns: repeat(2, 1fr); }
+  .builder { padding: 22px 18px; }
+  .work .q, .work .paper { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand">Algo Final<span>254383</span></div>
+    <div class="seg" id="seg" data-on="0" role="group" aria-label="โหมด">
+      <div class="knob"></div>
+      <button id="m-learn" aria-pressed="true">บทเรียน</button>
+      <button id="m-quiz" aria-pressed="false">ฝึกควิซ</button>
+    </div>
+    <button class="iconbtn" id="theme" aria-label="สลับธีมสว่างหรือมืด">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5a7.5 7.5 0 0 1 0 15z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="บท"></nav>
+</header>
+
+<main id="main"></main>
+<div class="dock" id="dock" hidden><div class="dock-in" id="dock-in"></div></div>
+<div class="sheet" id="sheet" aria-live="polite"><div class="sheet-in" id="sheet-in"></div></div>
+
+<script>/*BANK*/</script>
+<script>/*CORE*/</script>
+<script>/*ALGO789*/</script>
+<script>
+(() => {
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('algofinal:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('algofinal:' + k, JSON.stringify(v)); } catch (e) {} },
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const main = $('#main'), dockEl = $('#dock'), dockIn = $('#dock-in'), sheet = $('#sheet'), sheetIn = $('#sheet-in');
+const setDock = html => { dockIn.innerHTML = html || ''; dockEl.hidden = !html; };
+const closeSheet = () => sheet.classList.remove('open', 'good', 'bad');
+
+/* ---------- worked written answers ---------- */
+const WORK = {
+  sat: { q: 'กำหนด φ = x ∧ (x ∨ y ∨ z̄) ∧ (x̄ ∨ ȳ) และ certificate x = T, y = F, z = F จงแสดงว่า SAT อยู่ใน NP โดยการตรวจสอบ certificate นี้', lines: [
+    { t: 'SAT เป็น decision problem: มีการกำหนดค่าตัวแปรที่ทำให้ φ เป็นจริงหรือไม่', n: 'เปิดด้วยการบอกว่าปัญหาตอบ Yes/No' },
+    { t: 'x = T, y = F, z = F  ดังนั้น x̄ = F, ȳ = T, z̄ = T', n: 'หาค่า negation ไว้ก่อน', c: 1 },
+    { t: 'C₁: x = T  ✓', c: 1 },
+    { t: 'C₂: x ∨ y ∨ z̄ = T ∨ F ∨ T = T  ✓', n: 'OR เป็นจริงถ้ามีตัวใดตัวหนึ่งเป็น T', c: 1 },
+    { t: 'C₃: x̄ ∨ ȳ = F ∨ T = T  ✓', c: 1 },
+    { t: 'ทุก clause เป็น T จึงได้ φ = T ตอบ Yes (satisfiable)', n: 'CNF เชื่อม clause ด้วย AND จึงต้องจริงทุก clause' },
+    { t: 'การตรวจแทนค่าทีละ clause ใช้เวลา O(n) ซึ่งเป็น polynomial ดังนั้น SAT ∈ NP', n: 'ประโยคปิด: verify ได้ใน polynomial time' },
+    { t: 'ถ้าหาคำตอบเองต้องลองทุกชุด 2ⁿ = 2³ = 8 ชุด ซึ่งเป็น exponential', n: 'แสดงความต่างของ find กับ verify' },
+  ] },
+  reduce: { q: 'จงอธิบายความหมายของ Polynomial Reduction (D₁ ≤ₚ D₂) และบอกว่าใช้พิสูจน์ NP-Complete อย่างไร', lines: [
+    { t: 'D₁ ≤ₚ D₂ คือมีฟังก์ชัน f แปลง instance x ของ D₁ ไปเป็น instance f(x) ของ D₂' },
+    { t: 'x เป็น Yes-instance ของ D₁ ก็ต่อเมื่อ f(x) เป็น Yes-instance ของ D₂ (No ไปเป็น No)', n: 'สองเงื่อนไขแรกรวมกันได้เป็น "ก็ต่อเมื่อ"' },
+    { t: 'f ต้องทำงานใน polynomial time' },
+    { t: 'ความหมาย: ถ้าแก้ D₂ ได้ก็แก้ D₁ ได้ ดังนั้น D₂ ยากอย่างน้อยเท่า D₁' },
+    { t: 'พิสูจน์ปัญหาใหม่ Q ว่าเป็น NPC: แสดง Q ∈ NP แล้วแสดง Known NPC ≤ₚ Q', n: 'ปัญหาใหม่อยู่ด้านขวาเสมอ' },
+  ] },
+  classes: { q: 'จงอธิบายความหมายของ P, NP, NP-Complete และ NP-Hard พร้อมความสัมพันธ์ระหว่างกัน', lines: [
+    { t: 'P: decision problem ที่แก้ได้ด้วย deterministic algorithm ใน polynomial time O(nᵏ) เช่น Sorting, PATH (BFS O(V+E))' },
+    { t: 'NP: decision problem ที่ตรวจสอบคำตอบ (certificate) ได้ใน polynomial time เช่น SAT, CLIQUE', n: 'NP = Nondeterministic Polynomial' },
+    { t: 'NP-Hard: ปัญหา Q ที่ทุกปัญหาใน NP reduce มาได้ (L ≤ₚ Q) ไม่จำเป็นต้องอยู่ใน NP เช่น Halting, TSP แบบ optimization' },
+    { t: 'NP-Complete: Q ∈ NP และ Q เป็น NP-Hard เช่น SAT, 3-SAT, CLIQUE, HAMPATH' },
+    { t: 'P ⊆ NP และ NP-Complete = NP ∩ NP-Hard', c: 1 },
+    { t: 'ยังไม่มีใครพิสูจน์ได้ว่า P = NP หรือ P ≠ NP แต่ส่วนใหญ่เชื่อว่า P ≠ NP' },
+    { t: 'วาดภาพ: วง P อยู่ใน NP และ NP-Hard ซ้อนกับ NP ตรงส่วนที่เป็น NP-Complete', n: 'ใช้รูปเดียวกับแผนภาพด้านบน' },
+  ] },
+  clique: { q: 'กำหนด φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ x₃) จงสร้างกราฟตามวิธี reduce 3-SAT → CLIQUE และหา clique ขนาด k = 2 พร้อมบอก assignment', lines: [
+    { t: 'k = จำนวน clause = 2' },
+    { t: 'vertex: C₁ = {x₁, ¬x₂, x₃}, C₂ = {¬x₁, x₂, x₃} รวม 6 vertex', n: 'หนึ่ง vertex ต่อหนึ่ง literal ในแต่ละ clause' },
+    { t: 'ลาก edge เมื่ออยู่คนละ clause และไม่ใช่ negation ของกัน' },
+    { t: 'คู่ข้าม clause มี 3 × 3 = 9 คู่ ตัดคู่ x₁ กับ ¬x₁ และคู่ ¬x₂ กับ x₂ ออก เหลือ 7 edge', n: 'คู่ที่ขัดกันเป็นจริงพร้อมกันไม่ได้' },
+    { t: 'เลือก x₃ (C₁) กับ x₃ (C₂) มี edge เชื่อม จึงเป็น 2-clique' },
+    { t: 'ตั้ง x₃ = T ทำให้ทั้งสอง clause เป็นจริง φ จึง satisfiable', n: 'k-clique ↔ satisfying assignment' },
+    { t: 'สร้างกราฟได้ใน polynomial time จึงได้ 3-SAT ≤ₚ CLIQUE และ CLIQUE ∈ NP (ตรวจ O(k²)) ดังนั้น CLIQUE เป็น NP-Complete' },
+  ] },
+  indep: { q: 'จงแสดงขั้นตอนพิสูจน์ว่า INDEPENDENT SET เป็น NP-Complete', lines: [
+    { t: 'ขั้น 1: INDEPENDENT SET ∈ NP ให้ชุด k vertex มา ตรวจทุกคู่ว่าไม่มี edge ใช้เวลา O(k²)' },
+    { t: 'ขั้น 2: เลือกปัญหา NPC ที่รู้จักแล้ว คือ CLIQUE' },
+    { t: 'ขั้น 3: จาก ⟨G, k⟩ สร้าง complement Ḡ (คู่ที่มี edge ให้ลบ คู่ที่ไม่มีให้เติม) ใช้เวลา O(V²)', n: 'นี่คือฟังก์ชัน f ของ reduction' },
+    { t: 'G มี clique ขนาด k ก็ต่อเมื่อ Ḡ มี independent set ขนาด k', n: 'เชื่อมกันครบทุกคู่ใน G เท่ากับไม่เชื่อมกันเลยใน Ḡ' },
+    { t: 'ได้ CLIQUE ≤ₚ INDEPENDENT SET ดังนั้น INDEPENDENT SET เป็น NP-Complete' },
+  ] },
+  classify: { q: 'จงจำแนกปัญหาต่อไปนี้ว่าอยู่ใน class ใด พร้อมเหตุผล: Sorting, PATH, 2-SAT, SAT, 3-SAT, CLIQUE, HAMPATH, TSP (หาเส้นทางสั้นที่สุด), Halting Problem', lines: [
+    { t: 'Sorting: P เพราะแก้ได้ O(n log n)' },
+    { t: 'PATH: P เพราะใช้ BFS/DFS ได้ O(V + E)' },
+    { t: '2-SAT: P แก้ได้ O(n)' },
+    { t: 'SAT: NP-Complete ปัญหาแรกตาม Cook-Levin (1971)' },
+    { t: '3-SAT, CLIQUE, HAMPATH: NP-Complete ตรวจ certificate ได้เร็ว และมี reduction จาก NPC ที่รู้จัก' },
+    { t: 'TSP (optimization): NP-Hard ไม่ใช่ NPC เพราะไม่ใช่ decision problem จึงไม่อยู่ใน NP' },
+    { t: 'Halting Problem: NP-Hard ไม่อยู่ใน NP' },
+  ] },
+};
+
+function mountWork(host, data, opts = {}) {
+  const lines = data.lines;
+  host.classList.add('work');
+  host.innerHTML = (data.q ? `<div class="q"><small>ตัวอย่างข้อเขียน</small>${esc(data.q)}</div>` : '') +
+    `<div class="paper"><ol></ol><div class="ctl"><button class="btn small primary nx">เขียนบรรทัดแรก</button><button class="btn small ghost all">แสดงทั้งหมด</button><button class="btn small ghost rs" hidden>เริ่มใหม่</button><span class="count"></span></div></div>`;
+  const ol = $('ol', host), nx = $('.nx', host), all = $('.all', host), rs = $('.rs', host), cnt = $('.count', host);
+  let shown = 0;
+  const add = i => {
+    const l = lines[i], li = document.createElement('li');
+    li.innerHTML = `<div class="t${l.c || opts.code ? ' code' : ''}">${esc(l.t)}</div>` + (l.n ? `<div class="n">${esc(l.n)}</div>` : '');
+    ol.appendChild(li);
+  };
+  const sync = () => {
+    cnt.textContent = `${shown}/${lines.length}`;
+    nx.textContent = shown ? 'บรรทัดถัดไป' : 'เขียนบรรทัดแรก';
+    nx.disabled = all.disabled = shown >= lines.length;
+    rs.hidden = !shown;
+  };
+  nx.onclick = () => { if (shown < lines.length) add(shown++); sync(); };
+  all.onclick = () => { while (shown < lines.length) add(shown++); sync(); };
+  rs.onclick = () => { ol.innerHTML = ''; shown = 0; sync(); };
+  sync();
+}
+
+/* ---------- visuals for P/NP cards ---------- */
+const VIZ = {
+  growth(el) {
+    const fns = [['n', n => n, 0], ['n log n', n => n * Math.log2(n), 0], ['n²', n => n ** 2, 0], ['n³', n => n ** 3, 0], ['2ⁿ', n => 2 ** n, 1], ['n!', n => { let f = 1; for (let i = 2; i <= n; i++) f *= i; return f; }, 1]];
+    const fmt = v => v < 1e6 ? Math.round(v).toLocaleString('en-US') : (() => { const e = Math.floor(Math.log10(v)); return (v / 10 ** e).toFixed(1) + ' × 10' + String(e).split('').map(d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]).join(''); })();
+    el.innerHTML = `<div class="slider"><span>n =</span><b id="gn">20</b><input id="gr" type="range" min="2" max="30" value="20" aria-label="ขนาด input n"></div><div class="grow">${fns.map(([l, , x]) => `<div class="r${x ? ' x' : ''}"><span>${l}</span><div class="bar2"></div><span class="v"></span></div>`).join('')}</div>${legend([[L_ACC, 'Polynomial time'], [L_BAD, 'Exponential และ factorial']])}<div class="cap"><span class="ct" id="gcap"></span></div>`;
+    const draw = () => {
+      const n = +$('#gr', el).value; $('#gn', el).textContent = n;
+      const max = Math.log10(fns[5][1](30));
+      $$('.r', el).forEach((r, i) => { const v = fns[i][1](n); $('.bar2', r).style.transform = `scaleX(${Math.max(.02, Math.log10(Math.max(v, 1)) / max)})`; $('.v', r).textContent = fmt(v); });
+      $('#gcap', el).innerHTML = `n = ${n}: n³ ใช้ <b>${fmt(n ** 3)}</b> ขั้น แต่ 2ⁿ ใช้ <b>${fmt(2 ** n)}</b> ขั้น (แท่งวัดแบบ log scale)`;
+    };
+    $('#gr', el).oninput = draw; draw();
+  },
+  decide(el) {
+    const items = [['มีเส้นทางจาก A ไป B หรือไม่?', 1], ['เส้นทางที่สั้นที่สุดจาก A ไป B คืออะไร?', 0], ['กราฟ G มี clique ขนาด k หรือไม่?', 1], ['Clique ที่ใหญ่ที่สุดในกราฟคืออะไร?', 0], ['สูตร Boolean นี้ satisfiable หรือไม่?', 1], ['หา route สั้นที่สุดที่ผ่านทุกเมือง', 0]];
+    el.innerHTML = `<div class="flip">${items.map(([t], i) => `<button class="flipc" data-i="${i}"><span>${t}</span><small>แตะเพื่อดูประเภท</small></button>`).join('')}</div><div class="cap" id="dcap">แตะแต่ละคำถามว่าเป็น decision หรือ optimization</div>`;
+    $$('.flipc', el).forEach(b => b.onclick = () => { const d = items[b.dataset.i][1]; b.classList.add(d ? 'dec' : 'opt'); $('small', b).textContent = d ? 'Decision: ตอบ Yes / No' : 'Optimization: ถามหาค่าที่ดีที่สุด'; });
+  },
+  bfs(el) {
+    const P = { A: [60, 120], B: [190, 50], C: [190, 190], D: [330, 50], E: [330, 190], F: [460, 120] };
+    const E = [['A', 'B'], ['A', 'C'], ['B', 'D'], ['B', 'E'], ['C', 'E'], ['D', 'F'], ['E', 'F']];
+    const layers = [['A'], ['B', 'C'], ['D', 'E'], ['F']];
+    let step = 0;
+    el.innerHTML = `<svg viewBox="0 0 520 240" role="img" aria-label="กราฟสำหรับ BFS"></svg><div class="row"><button class="btn small primary" id="bstep">ขยาย BFS ทีละชั้น</button><button class="btn small ghost" id="breset">เริ่มใหม่</button></div><div class="cap" id="bcap"></div>`;
+    const draw = () => {
+      const seen = new Set(layers.slice(0, step + 1).flat()), front = new Set(layers[step]);
+      let s = '';
+      E.forEach(([a, b]) => { const on = seen.has(a) && seen.has(b); s += `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="${on ? 'var(--accent)' : 'var(--muted)'}" stroke-opacity="${on ? 1 : .35}" stroke-width="${on ? 3 : 1.6}"/>`; });
+      Object.entries(P).forEach(([k, [x, y]]) => { const on = seen.has(k), f = front.has(k); s += `<circle cx="${x}" cy="${y}" r="24" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${f ? 'var(--ink)' : on ? 'var(--accent)' : 'var(--muted)'}" stroke-width="${f ? 3 : 1.6}"/><text x="${x}" y="${y + 6}" text-anchor="middle" font-size="17" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'}">${k}</text>`; });
+      $('svg', el).innerHTML = s;
+      $('#bcap', el).innerHTML = step === layers.length - 1 ? '<b>เจอ F แล้ว ตอบ Yes</b> ทุก node และ edge ถูกดูอย่างมากครั้งเดียว จึงใช้เวลา O(V + E)' : `PATH จาก A ไป F มีไหม? ชั้นที่ ${step}: ${layers[step].join(', ')}`;
+      $('#bstep', el).disabled = step === layers.length - 1;
+    };
+    $('#bstep', el).onclick = () => { step++; draw(); };
+    $('#breset', el).onclick = () => { step = 0; draw(); };
+    draw();
+  },
+  sat(el) {
+    const v = { x: 1, y: 0, z: 0 }, T = b => (b ? 'T' : 'F');
+    const ev = (x, y, z) => [x, x || y || !z, !x || !y];
+    const combos = []; for (let m = 7; m >= 0; m--) combos.push([(m >> 2) & 1, (m >> 1) & 1, m & 1]);
+    el.innerHTML = `<div class="cnf" style="font-size:17px;padding-top:0">φ = x ∧ (x ∨ y ∨ z̄) ∧ (x̄ ∨ ȳ)</div><div class="toggles" id="stg"></div><div class="clauses" id="scl"></div><div class="cap" id="sv"></div><div class="combos" id="sall">${combos.map(([x, y, z], i) => `<button class="combo" data-i="${i}">${T(x)}${T(y)}${T(z)}<small>x y z</small></button>`).join('')}</div><div class="row"><button class="btn small primary" id="srun">ลองครบทั้ง 2³ = 8 ชุด</button></div>`;
+    const draw = () => {
+      $('#stg', el).innerHTML = ['x', 'y', 'z'].map(k => `<button class="tg" data-k="${k}" data-v="${v[k]}">${k} = <b>${T(v[k])}</b></button>`).join('');
+      $$('.tg', el).forEach(b => b.onclick = () => { v[b.dataset.k] ^= 1; draw(); });
+      const { x, y, z } = v, r = ev(x, y, z);
+      $('#scl', el).innerHTML = [['C₁: x', T(x), r[0]], ['C₂: x ∨ y ∨ z̄', `${T(x)} ∨ ${T(y)} ∨ ${T(!z)}`, r[1]], ['C₃: x̄ ∨ ȳ', `${T(!x)} ∨ ${T(!y)}`, r[2]]].map(([a, b, ok]) => `<div><span>${a} = ${b}</span><span class="${ok ? 'yes' : 'no'}">${ok ? 'T ✓' : 'F ✗'}</span></div>`).join('');
+      $('#sv', el).innerHTML = r.every(Boolean) ? '<b class="yes">ทุก clause เป็นจริง φ = T ตอบ Yes</b> ตรวจเสร็จในการไล่ครั้งเดียว' : '<b class="no">มี clause ที่เป็นเท็จ</b> ชุดค่านี้ใช้ไม่ได้ ลองชุดอื่น';
+    };
+    $$('.combo', el).forEach(b => b.onclick = () => { const [x, y, z] = combos[b.dataset.i]; Object.assign(v, { x, y, z }); draw(); });
+    $('#srun', el).onclick = () => combos.forEach(([x, y, z], i) => setTimeout(() => {
+      const b = $$('.combo', el)[i], ok = ev(x, y, z).every(Boolean);
+      b.classList.toggle('ok', ok); b.classList.toggle('ko', !ok); $('small', b).textContent = ok ? 'satisfiable' : 'ไม่ผ่าน';
+    }, i * 90));
+    draw();
+  },
+  tract(el) {
+    el.innerHTML = `<div class="duo"><div><h4 class="yes">Tractable (แก้ได้ใน polynomial time)</h4><ul class="mono"><li>O(n²) Bubble sort</li><li>O(n³) Matrix multiplication</li><li>O(n log n) Merge sort</li><li>O(V + E) BFS / DFS</li></ul></div><div><h4 class="no">Intractable</h4><ul class="mono"><li>O(2ⁿ) Brute-force SAT</li><li>O(n!) Brute-force TSP</li><li>O(nⁿ)</li></ul></div></div><div class="duo" style="margin-top:10px"><div><h4>ถ้า P = NP</h4>ตรวจได้เร็วก็แก้ได้เร็ว ระบบเข้ารหัสปัจจุบันไม่ปลอดภัย</div><div><h4>ถ้า P ≠ NP</h4>มีปัญหาที่ตรวจได้เร็วแต่แก้ไม่ได้เร็ว ต้องใช้ approximation หรือ heuristic</div></div>`;
+  },
+  reduce(el) {
+    const steps = ['instance x ของ D₁', 'f(x) ทำงานใน polynomial time', 'instance f(x) ของ D₂', 'คำตอบ Yes / No เดียวกัน'];
+    let k = 0;
+    el.innerHTML = `<div class="flow" id="rf"></div><div class="row"><button class="btn small primary" id="rn">ขั้นถัดไป</button></div><div class="cap" id="rc"></div>`;
+    const cap = ['เริ่มจาก input ของปัญหาที่อยากแก้ (D₁)', 'ฟังก์ชัน f แปลง input อย่างเดียว ไม่ได้แก้ปัญหา', 'ได้ input ของ D₂ ที่เรามีวิธีแก้อยู่แล้ว', 'Yes ของ D₁ ตรงกับ Yes ของ D₂ และ No ตรงกับ No ดังนั้นแก้ D₂ ได้ก็แก้ D₁ ได้'];
+    const draw = () => {
+      $('#rf', el).innerHTML = steps.map((s, i) => `<span class="${i === k ? 'hot' : ''}">${s}</span>${i < steps.length - 1 ? '<em>→</em>' : ''}`).join('');
+      $('#rc', el).textContent = cap[k];
+      $('#rn', el).textContent = k === steps.length - 1 ? 'เริ่มใหม่' : 'ขั้นถัดไป';
+    };
+    $('#rn', el).onclick = () => { k = (k + 1) % steps.length; draw(); };
+    draw();
+  },
+  euler(el) {
+    let mode = 'ne', sel = 'NPC';
+    const D = {
+      P: '<b>P</b> แก้ได้เร็วด้วย deterministic algorithm เช่น Sorting, Searching, Shortest Path, MST, PATH',
+      NP: '<b>NP</b> ตรวจคำตอบได้เร็ว รวมทุกปัญหาใน P ไว้ด้วย เช่น SAT, CLIQUE, HAMPATH',
+      NPC: '<b>NP-Complete</b> อยู่ใน NP และทุกปัญหาใน NP reduce มาได้ เช่น SAT, 3-SAT, CLIQUE, INDEPENDENT SET, VERTEX COVER, HAMPATH, GRAPH COLORING, SUBSET-SUM',
+      NPH: '<b>NP-Hard</b> ยากอย่างน้อยเท่าทุกปัญหาใน NP ไม่จำเป็นต้องอยู่ใน NP เช่น Halting Problem, TSP แบบ optimization และปัญหา NPC ทุกข้อ',
+      EQ: '<b>P = NP</b> ทุกปัญหาที่ตรวจได้เร็วก็แก้ได้เร็ว สไลด์เขียนรวมเป็น P = NP = NP-Complete ซ้อนกับ NP-Hard',
+    };
+    el.innerHTML = `<div class="chips" id="em"><button class="chip" aria-pressed="true" data-m="ne">P ≠ NP</button><button class="chip" aria-pressed="false" data-m="eq">P = NP</button></div><svg viewBox="0 0 560 300" role="img" aria-label="Euler diagram"></svg><div class="chips" id="ep"></div><div class="cap" id="ed"></div>`;
+    const draw = () => {
+      const f = k => (sel === k ? 'var(--accent)' : 'var(--bg)'), o = k => (sel === k ? .9 : .9), tc = k => (sel === k ? 'var(--on-accent)' : 'var(--ink)');
+      let s = '<defs><clipPath id="cpNP"><ellipse cx="215" cy="150" rx="165" ry="115"/></clipPath></defs>';
+      s += `<ellipse cx="385" cy="150" rx="160" ry="130" fill="${f('NPH')}" fill-opacity="${o('NPH')}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>`;
+      if (mode === 'ne') {
+        s += `<ellipse cx="215" cy="150" rx="165" ry="115" fill="${f('NP')}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>
+        <ellipse cx="385" cy="150" rx="160" ry="130" clip-path="url(#cpNP)" fill="${sel === 'NPC' ? 'var(--accent)' : 'var(--accent-soft)'}"/>
+        <ellipse cx="215" cy="150" rx="165" ry="115" fill="none" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>
+        <circle cx="140" cy="155" r="58" fill="${sel === 'P' ? 'var(--accent)' : sel === 'NP' ? 'var(--accent)' : 'var(--panel)'}" stroke="${sel === 'NP' ? 'var(--on-accent)' : 'var(--panel-ink)'}" stroke-opacity=".6" stroke-width="1.5"/>
+        <text x="140" y="162" text-anchor="middle" font-size="22" font-weight="700" style="fill:${sel === 'P' || sel === 'NP' ? 'var(--on-accent)' : 'var(--ink)'}">P</text>
+        <text x="95" y="72" font-size="18" font-weight="700" style="fill:${tc('NP')}">NP</text>
+        <text x="300" y="146" text-anchor="middle" font-size="15" font-weight="700" style="fill:${tc('NPC')}">NP-</text><text x="300" y="166" text-anchor="middle" font-size="15" font-weight="700" style="fill:${tc('NPC')}">Complete</text>
+        <text x="462" y="82" text-anchor="middle" font-size="18" font-weight="700" style="fill:${tc('NPH')}">NP-Hard</text>`;
+      } else {
+        s += `<ellipse cx="215" cy="150" rx="165" ry="115" fill="${f('EQ')}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>
+        <text x="170" y="146" text-anchor="middle" font-size="20" font-weight="700" style="fill:${tc('EQ')}">P = NP</text><text x="170" y="172" text-anchor="middle" font-size="15" style="fill:${tc('EQ')}">= NP-Complete</text>
+        <text x="462" y="82" text-anchor="middle" font-size="18" font-weight="700" style="fill:${tc('NPH')}">NP-Hard</text>`;
+      }
+      $('svg', el).innerHTML = s;
+      const keys = mode === 'ne' ? [['P', 'P'], ['NP', 'NP'], ['NPC', 'NP-Complete'], ['NPH', 'NP-Hard']] : [['EQ', 'P = NP'], ['NPH', 'NP-Hard']];
+      $('#ep', el).innerHTML = keys.map(([k, l]) => `<button class="chip" aria-pressed="${sel === k}" data-k="${k}">${l}</button>`).join('');
+      $$('#ep .chip', el).forEach(b => b.onclick = () => { sel = b.dataset.k; draw(); });
+      $('#ed', el).innerHTML = D[sel];
+    };
+    $$('#em .chip', el).forEach(b => b.onclick = () => { mode = b.dataset.m; sel = mode === 'ne' ? 'NPC' : 'EQ'; $$('#em .chip', el).forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+    draw();
+  },
+  cook(el) {
+    const parts = { lit: [0, 2, 4, 6, 8, 10], cl: ['c1', 'c2', 'c3'] };
+    el.innerHTML = `<div class="tl"><div><b>1971</b><span>Stephen Cook พิสูจน์ว่า SAT เป็น NP-Complete</span></div><div><b>1972</b><span>Richard Karp พิสูจน์ NP-Complete เพิ่มอีก 21 ปัญหา</span></div><div><b>1973</b><span>Leonid Levin พิสูจน์ผลเดียวกับ Cook อย่างอิสระ</span></div></div>
+    <div class="cnf" id="cnf"><span data-g="c1"><span data-g="lit">x</span></span> ∧ <span data-g="c2">(<span data-g="lit">x</span> ∨ <span data-g="lit">y</span> ∨ <span data-g="lit">z̄</span>)</span> ∧ <span data-g="c3">(<span data-g="lit">x̄</span> ∨ <span data-g="lit">ȳ</span>)</span></div>
+    <div class="chips" id="cc"><button class="chip" data-k="lit">Literal</button><button class="chip" data-k="cl">Clause</button><button class="chip" data-k="as">Satisfying assignment</button><button class="chip" data-k="ce">Certificate</button></div><div class="cap" id="ccap">แตะคำศัพท์เพื่อดูว่าหมายถึงส่วนไหนของสูตร</div>`;
+    const cap = { lit: '<b>Literal</b> ตัวแปรหรือ negation ของตัวแปร เช่น x, x̄, y, ȳ', cl: '<b>Clause</b> กลุ่ม literal ที่เชื่อมด้วย OR แล้ว clause เชื่อมกันด้วย AND (นี่คือ CNF)', as: '<b>Satisfying assignment</b> ค่าตัวแปรที่ทำให้สูตรเป็น True เช่น x = T, y = F, z = F', ce: '<b>Certificate / Witness</b> คำตอบที่มีคนให้มาเพื่อตรวจ ในที่นี้คือชุดค่าตัวแปร x = T, y = F, z = F' };
+    $$('#cc .chip', el).forEach(b => b.onclick = () => {
+      const k = b.dataset.k; $$('#cc .chip', el).forEach(x => x.setAttribute('aria-pressed', x === b));
+      $$('#cnf span', el).forEach(s => s.classList.toggle('hl', k === 'lit' ? s.dataset.g === 'lit' : k === 'cl' ? s.dataset.g.startsWith('c') : false));
+      $('#ccap', el).innerHTML = cap[k];
+    });
+  },
+  clique(el) {
+    const V = [
+      { c: 1, v: 1, neg: 0, l: 'x₁', x: 110, y: 50 }, { c: 1, v: 2, neg: 1, l: '¬x₂', x: 280, y: 50 }, { c: 1, v: 3, neg: 0, l: 'x₃', x: 450, y: 50 },
+      { c: 2, v: 1, neg: 1, l: '¬x₁', x: 110, y: 200 }, { c: 2, v: 2, neg: 0, l: 'x₂', x: 280, y: 200 }, { c: 2, v: 3, neg: 0, l: 'x₃', x: 450, y: 200 },
+    ];
+    const E = []; [0, 1, 2].forEach(a => [3, 4, 5].forEach(b => { if (!(V[a].v === V[b].v && V[a].neg !== V[b].neg)) E.push([a, b]); }));
+    const sel = { 1: null, 2: null };
+    el.innerHTML = `<div class="cnf" style="font-size:16px;padding-top:0">(x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ x₃)</div><svg viewBox="0 0 560 250" role="img" aria-label="กราฟจาก 3-SAT"></svg><div class="cap" id="qd"></div>`;
+    const draw = () => {
+      const a = sel[1], b = sel[2], linked = a != null && b != null && E.some(e => e[0] === a && e[1] === b);
+      let s = '<text x="10" y="56" font-size="13" style="fill:var(--panel-ink)">C₁</text><text x="10" y="206" font-size="13" style="fill:var(--panel-ink)">C₂</text>';
+      E.forEach(([p, q]) => { const on = linked && p === a && q === b; s += `<line x1="${V[p].x}" y1="${V[p].y}" x2="${V[q].x}" y2="${V[q].y}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .3}" stroke-width="${on ? 4 : 1.6}"/>`; });
+      V.forEach((v, i) => { const on = sel[v.c] === i; s += `<g class="vx" data-i="${i}" role="button" tabindex="0" aria-label="${v.l} ใน clause ${v.c}"><circle cx="${v.x}" cy="${v.y}" r="27" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .5}" stroke-width="1.6"/><text x="${v.x}" y="${v.y + 6}" text-anchor="middle" font-size="17" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'};pointer-events:none">${v.l}</text></g>`; });
+      $('svg', el).innerHTML = s;
+      $$('.vx', el).forEach(g => { const go = () => { const i = +g.dataset.i, v = V[i]; sel[v.c] = sel[v.c] === i ? null : i; draw(); }; g.onclick = go; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }; });
+      const d = $('#qd', el);
+      if (a == null || b == null) d.innerHTML = `มี ${E.length} edge แตะ vertex หนึ่งตัวใน C₁ และหนึ่งตัวใน C₂ เพื่อหา 2-clique`;
+      else if (linked) { const set = {}; [V[a], V[b]].forEach(v => (set['x' + '₀₁₂₃'[v.v]] = v.neg ? 'F' : 'T')); d.innerHTML = `<b class="yes">${V[a].l} กับ ${V[b].l} เป็น 2-clique</b> ตั้ง ${Object.entries(set).map(([k, val]) => `${k} = ${val}`).join(', ')} แล้วทั้งสอง clause เป็นจริง`; }
+      else d.innerHTML = `<b class="no">${V[a].l} กับ ${V[b].l} ไม่มี edge</b> เพราะเป็น negation ของกัน จึงเป็นจริงพร้อมกันไม่ได้`;
+    };
+    draw();
+  },
+  indep(el) {
+    const P = { A: [280, 30], B: [460, 105], C: [460, 215], D: [280, 290], E: [100, 215], F: [100, 105] };
+    const ks = Object.keys(P), G = new Set(['AB', 'BC', 'CD', 'DE', 'EF', 'AF', 'BD', 'BF', 'DF']), S = new Set(['A', 'C', 'E']);
+    let comp = false;
+    el.innerHTML = `<div class="chips"><button class="chip" aria-pressed="true" data-c="0">กราฟ G</button><button class="chip" aria-pressed="false" data-c="1">Complement Ḡ</button></div><svg viewBox="0 0 560 320" role="img" aria-label="กราฟ G และ complement"></svg><div class="cap" id="ic"></div>`;
+    const draw = () => {
+      let s = '';
+      for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) {
+        const a = ks[i], b = ks[j], has = G.has(a + b) || G.has(b + a);
+        if (has !== comp) { const hot = S.has(a) && S.has(b); s += `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="${hot ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${hot ? 1 : .3}" stroke-width="${hot ? 4 : 1.6}"/>`; }
+      }
+      ks.forEach(k => { const on = S.has(k); s += `<circle cx="${P[k][0]}" cy="${P[k][1]}" r="22" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .5}" stroke-width="1.6"/><text x="${P[k][0]}" y="${P[k][1] + 6}" text-anchor="middle" font-size="16" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'}">${k}</text>`; });
+      $('svg', el).innerHTML = s;
+      $('#ic', el).innerHTML = comp ? '<b>ใน Ḡ เส้นระหว่าง A, C, E ครบทุกคู่</b> {A, C, E} กลายเป็น clique ขนาด 3' : '<b>{A, C, E} ไม่มี edge เชื่อมกันเลย</b> จึงเป็น independent set ขนาด 3 ใน G';
+    };
+    $$('.chip', el).forEach(b => b.onclick = () => { comp = b.dataset.c === '1'; $$('.chip', el).forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+    draw();
+  },
+  hamtsp(el) {
+    el.innerHTML = `<div class="tbl"><table><tr><th></th><th>Hamiltonian Path</th><th>TSP</th></tr><tr><td>ประเภท</td><td>Decision</td><td>Optimization</td></tr><tr><td>ถาม</td><td>มี path ผ่านทุก node ครั้งเดียวไหม</td><td>route สั้นที่สุดที่ผ่านทุกเมืองแล้วกลับจุดเริ่ม</td></tr><tr><td>ตอบ</td><td>Yes / No</td><td>เส้นทาง + ระยะทาง</td></tr><tr><td>Class</td><td><b>NP-Complete</b></td><td><b>NP-Hard</b></td></tr></table></div>
+    <div class="tbl" style="margin-top:14px"><table><tr><th>NP-Complete ที่ควรรู้จัก</th><th>คืออะไร</th></tr><tr><td>SAT / 3-SAT</td><td>Boolean satisfiability</td></tr><tr><td>CLIQUE</td><td>complete subgraph ขนาด k</td></tr><tr><td>INDEPENDENT SET</td><td>vertex ที่ไม่เชื่อมกันขนาด k</td></tr><tr><td>VERTEX COVER</td><td>vertex ที่ครอบคลุมทุก edge</td></tr><tr><td>HAMILTONIAN PATH / CYCLE</td><td>เส้นทางผ่านทุก node</td></tr><tr><td>GRAPH COLORING</td><td>ระบายสีด้วยสีน้อยที่สุด</td></tr><tr><td>SUBSET-SUM / PARTITION</td><td>แบ่งกลุ่มตัวเลข</td></tr><tr><td>MINESWEEPER</td><td>เกมกู้ระเบิดแบบทั่วไป</td></tr></table></div>`;
+  },
+};
+
+/*CH789*/
+
+/* ---------- chapters ---------- */
+const PNP_CARDS = [
+  { t: 'Polynomial time', s: 'O(nᵏ) กับสิ่งที่ไม่ใช่', key: 'Polynomial time คือ running time ในรูป <span class="mono">O(nᵏ)</span> เมื่อ k เป็นค่าคงที่', body: 'Polynomial ใช้แค่ +, −, × และยกกำลังด้วยจำนวนเต็มไม่ติดลบ ถ้าตัวแปรไปอยู่ในเลขชี้กำลังอย่าง 2ⁿ หรือเป็น n! ก็ไม่ใช่แล้ว ส่วน O(log n) และ O(n log n) นับเป็น polynomial time เพราะ log n ≤ n ลองเลื่อน n ดูว่าแต่ละแบบโตเร็วแค่ไหน', viz: 'growth' },
+  { t: 'Decision problems', s: 'คำตอบมีแค่ Yes หรือ No', key: 'Decision problem คือปัญหาที่ตอบได้แค่ <b>Yes</b> หรือ <b>No</b>', body: 'ทฤษฎีทั้งบทนี้นิยามบน decision problem ปัญหาที่ถามหาค่าที่ดีที่สุด เช่น เส้นทางที่สั้นที่สุด เรียกว่า optimization problem', viz: 'decide' },
+  { t: 'Class P', s: 'แก้ได้เร็ว', key: 'P คือ decision problem ที่แก้ได้ด้วย <b>deterministic algorithm</b> ใน polynomial time', body: 'ตัวอย่าง Sorting, Searching, Shortest Path, MST และ PATH ซึ่งถามว่ามีเส้นทางจาก a ไป b ไหม PATH ใช้ BFS หรือ DFS ได้ใน O(V + E) ไม่ต้องใช้ Dijkstra เพราะไม่ได้ถามระยะสั้นที่สุด', viz: 'bfs' },
+  { t: 'Class NP', s: 'ตรวจคำตอบได้เร็ว', key: 'NP คือ decision problem ที่ <b>ตรวจคำตอบ</b> ที่ให้มาได้ใน polynomial time', body: 'NP ย่อจาก Nondeterministic Polynomial มองเป็นสองขั้น คือเดาคำตอบ (guess) แล้วตรวจ (verify) ให้เสร็จใน O(nᵏ) ลองตรวจ SAT ข้างล่าง ตรวจทีละ clause ใช้ O(n) แต่ถ้าต้องหาเองต้องลองถึง 2ⁿ ชุด', viz: 'sat', work: ['sat'] },
+  { t: 'P ⊆ NP', s: 'tractable และคำถามล้านดอลลาร์', key: 'ทุกปัญหาใน P อยู่ใน NP เพราะแก้ได้เร็วก็ตรวจได้เร็ว', body: 'P = NP หรือไม่ยังไม่มีใครพิสูจน์ได้ เป็นหนึ่งใน 7 Millennium Prize Problems ของ Clay Mathematics Institute รางวัล $1,000,000 ปัญหาใน P เป็น tractable ทั้งหมด ส่วนปัญหาใน NP อาจเป็น tractable หรือ intractable ก็ได้', viz: 'tract' },
+  { t: 'Polynomial reduction', s: 'D₁ ≤ₚ D₂', key: '<span class="mono">D₁ ≤ₚ D₂</span> คือแปลง input ของ D₁ เป็น input ของ D₂ ได้ใน polynomial time โดยคำตอบ Yes/No ไม่เปลี่ยน', body: 'ถ้าแก้ D₂ ได้ก็แก้ D₁ ได้ D₂ จึงยากอย่างน้อยเท่า D₁ ฟังก์ชัน f ต้อง (1) ส่ง Yes-instance ไปเป็น Yes-instance (2) ส่ง No ไปเป็น No (3) ทำงานใน polynomial time', viz: 'reduce', work: ['reduce'] },
+  { t: 'NP-Complete และ NP-Hard', s: 'NP ∩ NP-Hard', key: '<span class="mono">NP-Complete = NP ∩ NP-Hard</span>', body: 'Q เป็น <b>NP-Hard</b> เมื่อทุกปัญหาใน NP reduce มาหา Q ได้ใน polynomial time ถ้า Q อยู่ใน NP ด้วยจึงเป็น <b>NP-Complete</b> คือปัญหาที่ยากที่สุดใน NP แก้ข้อใดได้เร็วก็แก้ได้ทุกข้อ NP-Hard บางข้ออยู่นอก NP เช่น Halting Problem และ TSP แบบ optimization', viz: 'euler', work: ['classes'] },
+  { t: 'Cook-Levin และ SAT', s: 'NPC ปัญหาแรก, CNF, 2-SAT กับ 3-SAT', key: 'SAT เป็นปัญหา NP-Complete ปัญหาแรกที่ถูกพิสูจน์ (Cook-Levin Theorem)', body: 'สูตร SAT เขียนแบบ CNF คือหลาย clause เชื่อมด้วย AND และภายใน clause เชื่อมด้วย OR ถ้าทุก clause มีไม่เกิน 2 literals (2-SAT) แก้ได้ใน P แต่ถ้ามี 3 literals พอดี (3-SAT) เป็น NP-Complete', viz: 'cook' },
+  { t: 'พิสูจน์ NP-Complete', s: '3 ขั้น และ 3-SAT ≤ₚ CLIQUE', key: 'พิสูจน์ว่าปัญหาใหม่อยู่ใน NP แล้ว reduce ปัญหา NPC ที่รู้จักมาหามัน', body: 'สามขั้น: (1) ตรวจคำตอบได้ใน polynomial time (2) เลือก NPC ที่รู้จัก เช่น 3-SAT, CLIQUE, VERTEX COVER, HAMPATH (3) แสดง <span class="mono">Known NPC ≤ₚ New</span> ตัวอย่างคือ 3-SAT ≤ₚ CLIQUE สร้าง vertex ต่อ literal ลาก edge เมื่ออยู่คนละ clause และไม่ใช่ negation กัน k-clique มีอยู่ก็ต่อเมื่อสูตร satisfiable (CLIQUE ตรวจได้ O(k²))', viz: 'clique', work: ['clique'] },
+  { t: 'Independent Set, HAMPATH, TSP', s: 'ปัญหา NPC อื่นๆ', key: 'G มี independent set ขนาด k ก็ต่อเมื่อ complement <span class="mono">Ḡ</span> มี clique ขนาด k', body: 'จึงได้ CLIQUE ≤ₚ INDEPENDENT SET HAMPATH ถามว่ามีเส้นทางผ่านทุก node ครั้งเดียวจาก a ไป b ไหม ตรวจได้ O(V) หาเองต้อง O(n!) และ 3-SAT ≤ₚ HAMPATH จึงเป็น NP-Complete ส่วน TSP แบบหาเส้นทางสั้นที่สุดเป็น optimization จึงเป็น NP-Hard', viz: 'indep', viz2: 'hamtsp', work: ['indep', 'classify'] },
+];
+const CHAPTERS = [
+  { id: '7', name: 'Sorting, String & Hash', blurb: 'Space and time trade-offs: Counting sort, Horspool, Boyer-Moore, Hashing และ B-Tree', cards: CARDS7 },
+  { id: '8', name: 'Dynamic Programming', blurb: 'เก็บคำตอบปัญหาย่อยไว้ใช้ซ้ำ: Coin-row, Change-making, Robot coin collection, Knapsack, Warshall, Floyd และ LCS', cards: CARDS8 },
+  { id: '9', name: 'Greedy', blurb: 'เลือกสิ่งที่ดีที่สุดตอนนี้: Prim, Kruskal, Dijkstra, Activity selection, Fractional knapsack และ Huffman', cards: CARDS9 },
+  { id: '10', name: 'P vs NP', blurb: 'แบ่งปัญหาตามความยาก ปัญหาไหนแก้ได้เร็ว ปัญหาไหนแค่ตรวจคำตอบได้เร็ว', cards: PNP_CARDS },
+];
+const HERO_ART = {
+  '10': `<svg viewBox="0 0 360 230" aria-hidden="true"><ellipse class="draw" cx="140" cy="115" rx="118" ry="88" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2"/><ellipse class="draw d2" cx="250" cy="115" rx="100" ry="100" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2"/><circle class="draw d3" cx="88" cy="120" r="40" fill="rgba(255,255,255,.14)" stroke="#fff" stroke-width="2"/><g class="fadein" fill="#fff" font-family="IBM Plex Sans Thai, sans-serif" font-weight="700"><text x="88" y="127" text-anchor="middle" font-size="20">P</text><text x="62" y="52" font-size="16">NP</text><text x="200" y="112" text-anchor="middle" font-size="12">NP-</text><text x="200" y="128" text-anchor="middle" font-size="12">Complete</text><text x="300" y="38" text-anchor="middle" font-size="15">NP-Hard</text></g></svg>`,
+  '7': `<svg viewBox="0 0 360 230" aria-hidden="true"><g font-family="JetBrains Mono, monospace" font-size="20" fill="#fff">${'GREEDY'.split('').map((c, i) => `<rect class="draw" x="${30 + i * 50}" y="60" width="44" height="44" rx="8" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2"/><text class="fadein" x="${52 + i * 50}" y="89" text-anchor="middle">${c}</text>`).join('')}${'TREE'.split('').map((c, i) => `<rect class="draw d2" x="${130 + i * 50}" y="130" width="44" height="44" rx="8" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="2"/><text class="fadein" x="${152 + i * 50}" y="159" text-anchor="middle">${c}</text>`).join('')}</g></svg>`,
+  '8': `<svg viewBox="0 0 360 230" aria-hidden="true"><g font-family="JetBrains Mono, monospace" font-size="15" fill="#fff">${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4, 5].map(c => `<rect class="draw${r > 1 ? ' d2' : ''}" x="${30 + c * 50}" y="${20 + r * 50}" width="44" height="44" rx="8" fill="rgba(255,255,255,${(r + c) % 3 === 0 ? .2 : .07})" stroke="#fff" stroke-width="1.6"/>`).join('')).join('')}</g></svg>`,
+  '9': `<svg viewBox="0 0 360 230" aria-hidden="true"><g stroke="#fff" stroke-width="2"><line class="draw" x1="50" y1="60" x2="160" y2="40"/><line class="draw" x1="160" y1="40" x2="300" y2="80"/><line class="draw d2" x1="50" y1="60" x2="120" y2="180"/><line class="draw d2" x1="120" y1="180" x2="250" y2="190"/><line class="draw d3" x1="250" y1="190" x2="300" y2="80"/></g>${[[50, 60], [160, 40], [300, 80], [120, 180], [250, 190]].map(([x, y]) => `<circle class="draw d3" cx="${x}" cy="${y}" r="14" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="2"/>`).join('')}</svg>`,
+};
+
+let state = { mode: store.get('mode', 'learn'), ch: store.get('ch', '10'), card: null };
+const seen = () => store.get('seen-' + state.ch, []);
+
+function renderTabs() {
+  const tabs = $('#tabs');
+  tabs.hidden = !(state.mode === 'learn' && state.card == null);
+  tabs.innerHTML = CHAPTERS.map(c => `<button class="tab" role="tab" aria-selected="${c.id === state.ch}" data-ch="${c.id}"><i>${c.id}</i>${c.name}</button>`).join('');
+  $$('.tab', tabs).forEach(b => b.onclick = () => { state.ch = b.dataset.ch; store.set('ch', state.ch); renderTabs(); renderCover(); });
+}
+
+function renderCover() {
+  closeSheet();
+  const c = CHAPTERS.find(x => x.id === state.ch);
+  const cards = c.cards || [], done = seen(), next = cards.findIndex((_, i) => !done.includes(i));
+  const pct = cards.length ? done.length / cards.length : 0;
+  main.innerHTML = `<section class="hero"><div><div class="meta">บทที่ ${c.id}</div><h1>${esc(c.name)}</h1><p>${esc(c.blurb)}</p>${cards.length ? `<div class="prog-line"><div class="track"><div class="fill" style="transform:scaleX(${pct})"></div></div>${done.length}/${cards.length} การ์ด</div><button class="btn light" id="start">${done.length === 0 ? 'เริ่มเรียน' : next < 0 ? 'ทบทวนอีกครั้ง' : 'เรียนต่อ'} →</button>` : `<button class="btn light" id="toquiz">ฝึกควิซบทนี้ →</button>`}</div>${HERO_ART[c.id]}</section>` +
+    (cards.length ? `<ol class="cards">${cards.map((k, i) => `<li><button class="cardrow${done.includes(i) ? ' done' : ''}${i === next ? ' next' : ''}" data-i="${i}"><span class="dot">${done.includes(i) ? '✓' : i + 1}</span><span><span class="t">${esc(k.t)}</span><br><span class="s">${esc(k.s)}</span></span><span class="go">›</span></button></li>`).join('')}</ol>`
+      : `<div class="soon"><h2>การ์ดบทนี้กำลังทำ</h2><ol>${c.topics.map(t => `<li>${esc(t)}</li>`).join('')}</ol><p style="color:var(--muted);font-size:15px">ระหว่างนี้อ่านบทเรียนเดิมได้ที่ <a href="https://bvnixx649.github.io/algo-playground/" target="_blank" rel="noopener">Algo Playground</a></p></div>`);
+  if (cards.length) {
+    $('#start').onclick = () => openCard(next < 0 ? 0 : next);
+    $$('.cardrow', main).forEach(b => b.onclick = () => openCard(+b.dataset.i));
+  } else $('#toquiz').onclick = () => { quizCfg.ch = c.id; setMode('quiz'); };
+  setDock('');
+}
+
+function openCard(i, dir = 1) {
+  const c = CHAPTERS.find(x => x.id === state.ch), cards = c.cards;
+  state.card = i; renderTabs();
+  const k = cards[i], done = seen();
+  if (!done.includes(i)) store.set('seen-' + state.ch, [...done, i]);
+  main.innerHTML = `<div class="player-top"><button class="iconbtn" id="close" aria-label="กลับไปหน้าบท">✕</button><div class="segs" style="grid-template-columns:repeat(${cards.length},1fr)">${cards.map((_, j) => `<i class="${j <= i ? 'on' : ''}"></i>`).join('')}</div><span class="pcount">${i + 1}/${cards.length}</span></div>
+  <article class="card${dir < 0 ? ' back' : ''}"><h2>${esc(k.t)}</h2><p class="key">${k.key}</p><p class="body">${k.body}</p><div class="panel" id="viz"></div>${k.viz2 ? '<div class="panel" id="viz2"></div>' : ''}${(k.work || []).map(w => `<div data-work="${w}"></div>`).join('')}</article>`;
+  VIZ[k.viz]($('#viz'));
+  if (k.viz2) VIZ[k.viz2]($('#viz2'));
+  $$('[data-work]', main).forEach(el => mountWork(el, WORK[el.dataset.work]));
+  $('#close').onclick = () => { state.card = null; renderTabs(); renderCover(); window.scrollTo({ top: 0 }); };
+  const last = i === cards.length - 1;
+  setDock(`<button class="btn back" id="prev" aria-label="การ์ดก่อนหน้า"${i === 0 ? ' disabled' : ''}>←</button><button class="btn primary" id="next">${last ? 'จบบท' : 'ต่อไป'}</button>`);
+  $('#prev').onclick = () => openCard(i - 1, -1);
+  $('#next').onclick = () => { if (last) { state.card = null; renderTabs(); renderCover(); } else openCard(i + 1); };
+  window.scrollTo({ top: 0 });
+}
+
+/* ---------- quiz ---------- */
+const quizCfg = { ch: 'all', type: 'mix' };
+let run = null;
+
+function mcq(item, shuffle) {
+  const ord = shuffle ? Core.shuffle(item.c.map((_, i) => i)) : item.c.map((_, i) => i);
+  return { type: 'mcq', ch: item.ch, q: item.q, c: ord.map(i => item.c[i]), a: ord.indexOf(item.a), why: item.why, pts: 1 };
+}
+function calc(spec) {
+  const r = Core.solve(spec);
+  return { type: 'calc', ch: spec.ch, spec, q: CALC_TEXT[spec.kind](spec).replace(/<span class="mono">/g, '<span class="data">'), fmt: CALC_FORMAT[spec.kind], answer: r.answer, lines: r.lines, keyNote: spec.keyNote, pts: 4 };
+}
+function buildPast() { return PAST.map(it => (it.kind ? calc(it) : mcq(it, false))); }
+function buildRandom() {
+  const okCh = it => quizCfg.ch === 'all' || it.ch === quizCfg.ch;
+  const pool = [...PAST.filter(i => !i.kind), ...EXTRA].filter(okCh);
+  const kinds = Object.keys(Core.gen).filter(k => okCh({ ch: Core.gen[k]().ch }));
+  let m = [], c = [];
+  const type = quizCfg.type === 'calc' && !kinds.length ? 'mcq' : quizCfg.type;
+  if (type !== 'calc') m = Core.shuffle(pool).slice(0, type === 'mcq' ? 20 : 15).map(it => mcq(it, true));
+  if (type !== 'mcq' && kinds.length) {
+    const n = type === 'calc' ? 6 : 5, ks = [];
+    while (ks.length < n) ks.push(...Core.shuffle(kinds));
+    c = ks.slice(0, n).map(k => calc(Core.gen[k]()));
+  }
+  const all = Core.shuffle(m);
+  c.forEach((q, i) => all.splice(Math.min(all.length, Math.round((i + 1) * all.length / (c.length + 1)) + i), 0, q));
+  return all;
+}
+
+function ring(frac, size, stroke, color, track) {
+  const r = (size - stroke) / 2, C = 2 * Math.PI * r;
+  return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${track}" stroke-width="${stroke}"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}" style="transition:stroke-dashoffset 900ms var(--ease)"/></svg>`;
+}
+
+function renderQuizHome() {
+  closeSheet(); run = null;
+  const best = store.get('best-past', null);
+  const chs = [['all', 'ทุกบท'], ['7', 'บท 7'], ['8', 'บท 8 DP'], ['9', 'บท 9 Greedy'], ['10', 'บท 10 P/NP']];
+  const types = [['mix', 'ผสม'], ['mcq', 'ปรนัย'], ['calc', 'คำนวณ']];
+  main.innerHTML = `<section class="qhero"><div><h1>ควิซที่ผ่านมา</h1><p>25 ข้อ 40 คะแนน ข้อเดิมทุกตัวอักษร ตรวจทีละข้อพร้อมเหตุผลและวิธีทำ</p><button class="btn light" id="start-past">เริ่มทำ →</button></div><div class="ring">${ring(best == null ? 0 : best / 40, 112, 10, '#fff', 'rgba(255,255,255,.25)')}<div><b>${best == null ? '-' : best}</b><small>ดีที่สุด /40</small></div></div></section>
+  <section class="builder"><h2>ชุดสุ่มใหม่</h2><p>ปรนัยสุ่มจากคลัง ข้อคำนวณสร้างโจทย์ใหม่ทุกครั้ง ทำซ้ำได้ไม่จำกัด</p>
+    <div class="kinds">${Object.values(CALC_NAME).map(n => `<span>${n}</span>`).join('')}</div>
+    <div class="grp"><div class="lbl">บท</div><div class="chips" id="f-ch">${chs.map(([k, l]) => `<button class="chip" aria-pressed="${quizCfg.ch === k}" data-k="${k}">${l}</button>`).join('')}</div></div>
+    <div class="grp"><div class="lbl">ชนิดข้อ</div><div class="chips" id="f-ty">${types.map(([k, l]) => `<button class="chip" aria-pressed="${quizCfg.type === k}" data-k="${k}">${l}</button>`).join('')}</div></div>
+    <button class="btn primary wide" id="start-rand">สุ่มชุดใหม่</button></section>`;
+  $$('#f-ch .chip').forEach(b => b.onclick = () => { quizCfg.ch = b.dataset.k; $$('#f-ch .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $$('#f-ty .chip').forEach(b => b.onclick = () => { quizCfg.type = b.dataset.k; $$('#f-ty .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $('#start-past').onclick = () => startRun('past');
+  $('#start-rand').onclick = () => startRun('rand');
+  setDock('');
+}
+
+function startRun(kind) {
+  const qs = kind === 'past' ? buildPast() : buildRandom();
+  run = { kind, qs, i: 0, ans: {}, res: {}, review: false };
+  renderQ(); window.scrollTo({ top: 0 });
+}
+const runPts = () => run.qs.reduce((s, q, i) => s + (run.res[i] ? q.pts : 0), 0);
+
+function renderQ() {
+  closeSheet();
+  const i = run.i, q = run.qs[i], checked = i in run.res;
+  main.innerHTML = `<div class="qtop"><button class="iconbtn" id="qx" aria-label="ออกจากควิซ">✕</button><div class="qbar">${run.qs.map((_, j) => `<i class="${j in run.res ? (run.res[j] ? 'g' : 'b') : ''}"></i>`).join('')}</div><span class="qpts">${runPts()} คะแนน</span></div>
+  <article class="qcard"><div class="qno">ข้อ ${i + 1} <span>/ ${run.qs.length}  ${q.pts} คะแนน</span></div><div class="qtext">${q.q}</div>${q.type === 'mcq'
+    ? `<div class="tiles${checked ? ' locked' : ''}" role="radiogroup">${q.c.map((c, j) => `<label class="tile"><input type="radio" name="q" value="${j}"><span class="k">${'ABCD'[j]}</span><span>${c}</span><span class="mk"></span></label>`).join('')}</div>`
+    : `<div class="ans"><div class="hint">${esc(q.fmt.hint)}</div><input id="qin" type="text" inputmode="${q.fmt.mode}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="${esc(q.fmt.ph)}"></div>`}</article>`;
+  $('#qx').onclick = () => { if (run.review) showResult(); else renderQuizHome(); };
+  if (q.type === 'mcq') {
+    $$('.tile', main).forEach((t, j) => { $('input', t).onchange = () => { if (i in run.res) return; run.ans[i] = j; $$('.tile', main).forEach((x, k) => x.classList.toggle('sel', k === j)); $('#check').disabled = false; }; });
+  } else {
+    const inp = $('#qin');
+    inp.value = run.ans[i] || '';
+    inp.oninput = () => { run.ans[i] = inp.value; $('#check').disabled = !inp.value.trim(); };
+    inp.onkeydown = e => { if (e.key === 'Enter' && inp.value.trim() && !(i in run.res)) check(); };
+  }
+  if (checked) { paintChecked(); showSheet(); setDock(''); }
+  else { setDock(`<button class="btn primary" id="check" disabled>ตรวจคำตอบ</button>`); $('#check').onclick = check; }
+}
+
+function check() {
+  const i = run.i, q = run.qs[i];
+  run.res[i] = q.type === 'mcq' ? run.ans[i] === q.a : Core.check(q.spec, run.ans[i], q.answer);
+  if (document.activeElement) document.activeElement.blur();
+  paintChecked(); setDock(''); showSheet();
+  $$('.qbar i', main)[i].className = run.res[i] ? 'g' : 'b';
+  $('.qpts', main).textContent = runPts() + ' คะแนน';
+}
+
+function paintChecked() {
+  const i = run.i, q = run.qs[i];
+  if (q.type === 'mcq') {
+    $('.tiles', main).classList.add('locked');
+    $$('.tile', main).forEach((t, j) => {
+      $('input', t).disabled = true;
+      if (j === q.a) { t.classList.add('right'); $('.mk', t).textContent = '✓'; }
+      else if (j === run.ans[i]) { t.classList.add('wrong'); $('.mk', t).textContent = '✗'; }
+    });
+  } else { const inp = $('#qin'); inp.value = run.ans[i] || ''; inp.disabled = true; inp.classList.add(run.res[i] ? 'right' : 'wrong'); }
+}
+
+function showSheet() {
+  const i = run.i, q = run.qs[i], ok = run.res[i], last = i === run.qs.length - 1;
+  sheetIn.innerHTML = `<div class="verdict"><span class="badge">${ok ? '✓' : '✗'}</span>${ok ? 'ถูกต้อง' : 'ยังไม่ถูก'}<small>${ok ? '+' + q.pts : '0'}/${q.pts}</small></div>` +
+    (q.type === 'mcq' ? (q.why ? `<p class="why">${esc(q.why)}</p>` : '') :
+      `${ok ? '' : `<div class="right-ans"><small>คำตอบที่ถูกต้อง</small>${esc(q.answer)}</div>`}${q.keyNote ? `<p class="why" style="font-size:14px">${esc(q.keyNote)}</p>` : ''}<div id="sol"></div>`) +
+    `<div class="acts">${run.review ? '<button class="btn" id="s-back">กลับหน้าสรุป</button>' : `<button class="btn primary" id="s-next">${last ? 'ดูคะแนน' : 'ข้อต่อไป'}</button>`}</div>`;
+  if (q.type === 'calc') mountWork($('#sol', sheetIn), { lines: q.lines }, { code: true });
+  sheet.classList.remove('good', 'bad'); sheet.classList.add(ok ? 'good' : 'bad');
+  requestAnimationFrame(() => sheet.classList.add('open'));
+  sheetIn.scrollTop = 0;
+  if (run.review) $('#s-back').onclick = showResult;
+  else $('#s-next').onclick = () => { if (last) showResult(); else { run.i++; renderQ(); window.scrollTo({ top: 0 }); } };
+}
+
+function showResult() {
+  closeSheet(); run.review = true;
+  const total = run.qs.reduce((s, q) => s + q.pts, 0), got = runPts();
+  const mT = run.qs.filter(q => q.type === 'mcq').length, mG = run.qs.filter((q, i) => q.type === 'mcq' && run.res[i]).length;
+  const cT = run.qs.filter(q => q.type === 'calc').length, cG = run.qs.filter((q, i) => q.type === 'calc' && run.res[i]).length;
+  if (run.kind === 'past' && Object.keys(run.res).length === run.qs.length) { const b = store.get('best-past', null); if (b == null || got > b) store.set('best-past', got); }
+  main.innerHTML = `<div class="qtop"><button class="iconbtn" id="qx" aria-label="ออกจากควิซ">✕</button><div class="qbar">${run.qs.map((_, j) => `<i class="${j in run.res ? (run.res[j] ? 'g' : 'b') : ''}"></i>`).join('')}</div><span class="qpts">${got} คะแนน</span></div>
+  <section class="result"><div class="ring">${ring(0, 168, 14, 'var(--accent)', 'var(--surface-2)')}<div><b>${got}</b><small>จาก ${total} คะแนน</small></div></div><h1>${run.kind === 'past' ? 'ควิซที่ผ่านมา' : 'ชุดสุ่ม'}</h1><div class="split">${mT ? `ปรนัยถูก ${mG}/${mT} ข้อ` : ''}${mT && cT ? '   ' : ''}${cT ? `คำนวณถูก ${cG}/${cT} ข้อ` : ''}</div>
+  <div class="lbl">แตะเลขข้อเพื่อดูเฉลยและวิธีทำ</div><div class="nums">${run.qs.map((_, j) => `<button class="num ${run.res[j] ? 'g' : 'b'}" data-j="${j}">${j + 1}</button>`).join('')}</div>
+  <div class="acts"><button class="btn" id="again">ทำชุดนี้ใหม่</button><button class="btn primary" id="new">สุ่มชุดใหม่</button></div></section>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => { const c = $$('.result .ring circle', main)[1]; const C = +c.getAttribute('stroke-dasharray'); c.setAttribute('stroke-dashoffset', C * (1 - got / total)); }));
+  $('#qx').onclick = renderQuizHome;
+  $$('.num', main).forEach(b => b.onclick = () => { run.i = +b.dataset.j; renderQ(); window.scrollTo({ top: 0 }); });
+  $('#again').onclick = () => { run = { ...run, i: 0, ans: {}, res: {}, review: false }; renderQ(); };
+  $('#new').onclick = () => startRun('rand');
+  setDock(''); window.scrollTo({ top: 0 });
+}
+
+/* ---------- mode + theme ---------- */
+function setMode(m) {
+  state.mode = m; store.set('mode', m); state.card = null;
+  $('#seg').dataset.on = m === 'quiz' ? 1 : 0;
+  $('#m-learn').setAttribute('aria-pressed', m === 'learn');
+  $('#m-quiz').setAttribute('aria-pressed', m === 'quiz');
+  renderTabs();
+  if (m === 'quiz') renderQuizHome(); else renderCover();
+  window.scrollTo({ top: 0 });
+}
+$('#m-learn').onclick = () => setMode('learn');
+$('#m-quiz').onclick = () => setMode('quiz');
+const root = document.documentElement, savedTheme = store.get('theme', null);
+if (savedTheme) root.dataset.theme = savedTheme;
+$('#theme').onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark'; store.set('theme', root.dataset.theme);
+};
+setMode(state.mode);
+})();
+</script>

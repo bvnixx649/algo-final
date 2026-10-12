@@ -1,0 +1,28 @@
+const A = require('./algo789.js');
+const last = f => f[f.length - 1];
+const strip = s => s.replace(/<[^>]+>/g, '');
+console.log('dist', strip(last(A.distCount([13, 11, 12, 13, 12, 12], 11, 13)).cap));
+console.log('hors', A.shiftTable('BARBER'), A.horspoolFrames('JIM_SAW_ME_IN_A_BARBERSHOP', 'BARBER').map(f => strip(f.cap)).join(' | '));
+console.log('bm d2', A.bmD2('BAOBAB'));
+console.log('bm', A.bmFrames('BESS_KNEW_ABOUT_BAOBABS', 'BAOBAB').map(f => strip(f.cap)).join(' | '));
+console.log('hash open', A.hashFrames('A FOOL AND HIS MONEY ARE SOON PARTED'.split(' '), 'open').map(f => strip(f.cap)).join(' | '));
+console.log('hash closed', A.hashFrames('A FOOL AND HIS MONEY ARE SOON PARTED'.split(' '), 'closed').map(f => strip(f.cap)).slice(-3).join(' | '));
+let t = A.btreeStart();
+for (const k of [65, 5, 6, 8, 9]) { const r = A.btreeInsert(t, k); t = r.root; console.log('bt', k, r.frames.map(f => strip(f.cap)).slice(1).join(' | ')); }
+const cnt = n => 1 + n.kids.reduce((s, k) => s + cnt(k), 0);
+console.log('fib', cnt(A.fibTree(5, false)), cnt(A.fibTree(5, true)));
+console.log('coin', strip(last(A.coinRowFrames([5, 1, 2, 10, 6, 2])).cap));
+console.log('change', strip(last(A.changeFrames([1, 3, 4], 6)).cap));
+console.log('collect', strip(last(A.collectFrames([[0,0,0,0,1,0],[0,1,0,1,0,0],[0,0,0,1,0,1],[0,0,1,0,0,1],[1,0,0,0,1,0]])).cap));
+console.log('knap', strip(last(A.knapFrames([{ w: 2, v: 12 }, { w: 1, v: 10 }, { w: 3, v: 20 }, { w: 2, v: 15 }], 5)).cap));
+console.log('warsh', A.closureFrames(['a','b','c','d'], [['a','b'],['b','d'],['d','a'],['d','c']], 'w').map(f => f.w).join(' | '));
+console.log('floyd', A.closureFrames(['a','b','c','d'], [['a','c',3],['b','a',2],['c','b',7],['c','d',1],['d','a',6]], 'f').map(f => f.w).join(' | '));
+console.log('lcs', strip(last(A.lcsFrames('ABCBDAB', 'BDCABA')).cap));
+const MST = { pos: { a: 0, b: 0, c: 0, d: 0, e: 0, f: 0 }, E: [['a','b',3],['a','e',6],['a','f',5],['b','c',1],['b','f',4],['c','f',4],['c','d',6],['d','f',5],['d','e',8],['e','f',2]] };
+console.log('prim', A.primFrames(MST, 'a').map(f => f.w).join(' | '));
+console.log('krus', A.kruskalFrames(MST).map(f => f.w).join(' | '));
+const DG = { pos: { a: 0, b: 0, c: 0, d: 0, e: 0 }, E: [['a','b',3],['a','d',7],['b','c',4],['b','d',2],['c','d',5],['c','e',6],['d','e',4]] };
+console.log('dijk', A.dijkstraFrames(DG, 'a').map(f => f.w).join(' | '));
+console.log('act', A.activityFrames([[1,4],[3,5],[0,6],[5,7],[3,8],[5,9],[6,10],[8,11]]).map(f => strip(f.cap)).join(' | '));
+console.log('frac', A.fracFrames([{ v: 60, w: 10 }, { v: 100, w: 20 }, { v: 120, w: 30 }], 50).map(f => f.w).join(' | '));
+console.log('huff', A.huffmanFrames([['A', 0.35], ['B', 0.1], ['C', 0.2], ['D', 0.2], ['_', 0.15]]).map(f => f.w).join(' | '));

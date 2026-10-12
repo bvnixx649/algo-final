@@ -1,0 +1,1817 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAF9">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101013">
+<meta name="description" content="สรุปและฝึกควิซ Algorithm 254383 ก่อนสอบ final">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Algo Final 254383</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: Brilliant-style. Chapter cover (solid cobalt hero + card list) -> one-idea card player; quiz = one question per screen with a feedback sheet. One accent, used heavily. */
+:root {
+  --bg: #FAFAF9; --surface: #F0F0EE; --surface-2: #E6E6E3; --ink: #17171B; --muted: #686872; --line: rgba(23,23,27,.10);
+  --accent: #2F5BEA; --accent-press: #2549C4; --on-accent: #FFFFFF; --panel: #EBF0FE; --panel-ink: #1D3A9E; --accent-soft: rgba(47,91,234,.14);
+  --good: #17804E; --good-soft: #DDF3E6; --bad: #C2331D; --bad-soft: #FCE6E1;
+  --font: "IBM Plex Sans Thai", "Noto Sans Thai", "Leelawadee UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --ease: cubic-bezier(.23,1,.32,1); --ease-io: cubic-bezier(.77,0,.175,1); --drawer: cubic-bezier(.32,.72,0,1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #101013; --surface: #1A1A1F; --surface-2: #25252B; --ink: #EDEDF0; --muted: #9D9DA8; --line: rgba(255,255,255,.09);
+  --accent: #5E7BFF; --accent-press: #4C69EE; --on-accent: #FFFFFF; --panel: #171C33; --panel-ink: #A9B9FF; --accent-soft: rgba(94,123,255,.18);
+  --good: #56C98B; --good-soft: rgba(86,201,139,.14); --bad: #F2846F; --bad-soft: rgba(242,132,111,.14); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #101013; --surface: #1A1A1F; --surface-2: #25252B; --ink: #EDEDF0; --muted: #9D9DA8; --line: rgba(255,255,255,.09);
+  --accent: #5E7BFF; --accent-press: #4C69EE; --on-accent: #FFFFFF; --panel: #171C33; --panel-ink: #A9B9FF; --accent-soft: rgba(94,123,255,.18);
+  --good: #56C98B; --good-soft: rgba(86,201,139,.14); --bad: #F2846F; --bad-soft: rgba(242,132,111,.14); color-scheme: dark; }
+
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink); font: 400 17px/1.7 var(--font); margin: 0; }
+* { box-sizing: border-box; }
+button, a, label.tile { touch-action: manipulation; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; -webkit-user-select: none; user-select: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 10px; }
+a { color: var(--accent); }
+.mono { font-family: var(--mono); font-size: .92em; }
+b { font-weight: 600; }
+[hidden] { display: none !important; }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: saturate(170%) blur(16px); -webkit-backdrop-filter: saturate(170%) blur(16px); }
+.bar-in { max-width: 820px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+.brand span { color: var(--muted); font: 500 13px var(--mono); margin-left: 6px; }
+.seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); border-radius: 999px; padding: 4px; min-width: 250px; }
+.seg button { position: relative; z-index: 1; height: 40px; border-radius: 999px; font-weight: 600; font-size: 15px; color: var(--muted); transition: color 220ms ease; }
+.seg button[aria-pressed="true"] { color: var(--on-accent); }
+.seg .knob { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: var(--accent); transition: transform 300ms var(--ease-io); }
+.seg[data-on="1"] .knob { transform: translateX(100%); }
+.iconbtn { width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center; color: var(--muted); flex: none; }
+.tabs { max-width: 820px; margin: 0 auto; padding: 0 16px 10px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; height: 38px; padding: 0 15px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--muted); background: var(--surface); white-space: nowrap; }
+.tab i { font: normal 500 12px var(--mono); margin-right: 6px; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+
+main { max-width: 820px; margin: 0 auto; padding: 18px 16px 140px; }
+
+/* press feedback */
+.btn, .tile, .tab, .chip, .iconbtn, .seg button, .cardrow, .num { transition: transform 140ms var(--ease), background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease; }
+.btn:active, .tile:active, .tab:active, .chip:active, .iconbtn:active, .seg button:active, .cardrow:active, .num:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .iconbtn:hover { background: var(--surface); color: var(--ink); }
+  .tile:hover { border-color: var(--muted); }
+  .cardrow:hover { background: var(--surface); }
+  .btn.primary:hover { background: var(--accent-press); }
+}
+
+.btn { height: 52px; padding: 0 24px; border-radius: 16px; font-weight: 600; font-size: 16px; background: var(--surface-2); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--accent); color: var(--on-accent); box-shadow: 0 2px 0 var(--accent-press); }
+.btn.light { background: var(--on-accent); color: #1D3A9E; }
+.btn.wide { width: 100%; }
+.btn[disabled] { opacity: .4; pointer-events: none; box-shadow: none; }
+.btn.small { height: 40px; padding: 0 16px; font-size: 14px; border-radius: 12px; }
+.btn.ghost { background: transparent; color: var(--muted); }
+
+/* chapter cover */
+.hero { background: var(--accent); color: var(--on-accent); border-radius: 28px; padding: 28px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: center; overflow: hidden; }
+.hero h1 { font-size: clamp(34px, 6vw, 48px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px; text-wrap: balance; }
+.hero p { margin: 0 0 22px; opacity: .85; font-size: 16px; max-width: 34ch; }
+.hero .meta { font: 500 13px var(--mono); opacity: .8; margin-bottom: 8px; }
+.hero svg { width: 100%; height: auto; display: block; }
+.hero .draw { stroke-dasharray: 1100; stroke-dashoffset: 1100; animation: draw 1.6s var(--ease) .15s forwards; }
+.hero .draw.d2 { animation-delay: .45s; } .hero .draw.d3 { animation-delay: .75s; }
+.hero .fadein { opacity: 0; animation: fade 600ms ease 1.1s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fade { to { opacity: 1; } }
+.prog-line { display: flex; align-items: center; gap: 10px; font: 500 13px var(--mono); opacity: .9; margin-bottom: 16px; }
+.prog-line .track { flex: 1; height: 6px; background: rgba(255,255,255,.25); border-radius: 99px; overflow: hidden; max-width: 180px; }
+.prog-line .fill { height: 100%; background: var(--on-accent); border-radius: 99px; transform-origin: left; }
+.cards { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 4px; }
+.cardrow { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; align-items: center; width: 100%; text-align: left; padding: 12px 12px; border-radius: 16px; }
+.cardrow .dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 600 13px var(--mono); background: var(--surface); color: var(--muted); }
+.cardrow.done .dot { background: var(--accent); color: var(--on-accent); }
+.cardrow.next .dot { box-shadow: 0 0 0 2px var(--accent); color: var(--accent); background: var(--bg); }
+.cardrow .t { font-weight: 600; font-size: 16px; line-height: 1.35; }
+.cardrow .s { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.cardrow .go { color: var(--muted); font-size: 18px; }
+.soon { margin-top: 26px; }
+.soon h2 { font-size: 20px; margin: 0 0 8px; }
+.soon ol { padding-left: 22px; color: var(--muted); margin: 0 0 18px; }
+
+/* card player */
+.player-top { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.segs { flex: 1; display: grid; gap: 4px; }
+.segs i { height: 6px; border-radius: 99px; background: var(--surface-2); position: relative; overflow: hidden; }
+.segs i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 380ms var(--ease); }
+.segs i.on::after { transform: scaleX(1); }
+.pcount { font: 500 13px var(--mono); color: var(--muted); }
+.card { animation: cardIn 340ms var(--ease) both; }
+.card.back { animation-name: cardBack; }
+@keyframes cardIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes cardBack { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+.card h2 { font-size: 15px; font-weight: 600; color: var(--accent); margin: 0 0 6px; letter-spacing: 0; }
+.card .key { font-size: clamp(23px, 4.2vw, 30px); line-height: 1.38; font-weight: 650; letter-spacing: -.015em; margin: 0 0 14px; text-wrap: pretty; max-width: 30ch; }
+.card .key .mono { font-size: .86em; font-weight: 600; }
+.card .body { color: var(--muted); font-size: 16.5px; max-width: 62ch; margin: 0 0 22px; }
+.card .body b { color: var(--ink); }
+.panel { background: var(--panel); border-radius: 24px; padding: 22px; margin: 0 0 22px; }
+/* captions: big readable strip on a plain ground, key phrases marked */
+.cap { margin-top: 14px; background: var(--bg); border-radius: 16px; padding: 14px 16px; font-size: 16.5px; line-height: 1.65; color: var(--ink); min-height: 54px; }
+.cap.step { display: flex; gap: 12px; align-items: flex-start; }
+.cap .ct { min-width: 0; }
+.cap b { font-weight: 700; background: var(--accent-soft); border-radius: 6px; padding: 1px 5px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.cap b.yes { background: var(--good-soft); } .cap b.no { background: var(--bad-soft); }
+.cap .ico { flex: none; width: 30px; height: 30px; border-radius: 10px; background: var(--accent); color: var(--on-accent); font: 600 13px var(--mono); display: grid; place-items: center; }
+.cap .ico.fin { background: var(--good); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 15px; font-weight: 500; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { flex: none; width: 16px; height: 16px; border-radius: 5px; background: var(--c); }
+.legend i.ring { background: transparent; border: 3px solid var(--c); }
+.legend i.ringd { background: transparent; border: 2px dashed var(--c); border-radius: 50%; }
+.legend i.line { width: 24px; height: 5px; border-radius: 3px; }
+.legend i.dash { width: 24px; height: 0; border-top: 3px dashed var(--c); background: none; border-radius: 0; }
+.legend i.dot { border-radius: 50%; }
+.stepbar { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+.stepbar .sb-back { width: 52px; padding: 0; }
+.stepbar .count { margin-left: auto; font: 500 13px var(--mono); color: var(--panel-ink); }
+.panel > .chips:first-child { margin-bottom: 14px; }
+.sub { font-size: 14px; font-weight: 600; color: var(--panel-ink); margin-bottom: 2px; }
+.scrollx { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+.cells { display: flex; flex-wrap: wrap; gap: 6px; }
+.cells.nowrap { flex-wrap: nowrap; }
+.cl { position: relative; flex: none; min-width: 40px; height: 42px; padding: 0 8px; border-radius: 10px; background: var(--bg); display: inline-grid; place-items: center; font: 600 15px var(--mono); margin-top: 20px; transition: background-color 200ms ease, color 200ms ease; }
+.cl small { position: absolute; top: -19px; left: -4px; right: -4px; text-align: center; font: 500 11px var(--mono); color: var(--panel-ink); white-space: nowrap; }
+.cl.hi { background: var(--accent); color: var(--on-accent); }
+.cl.ok { background: var(--good-soft); color: var(--good); }
+.cl.bad { background: var(--bad-soft); color: var(--bad); }
+.cl.ring, .cl.src { box-shadow: inset 0 0 0 3px var(--ink); }
+.cl.empty { color: transparent; opacity: .55; }
+.cl.gap { background: transparent; }
+.cl.pat { background: var(--surface-2); }
+.scrollx.sm .cl { min-width: 30px; width: 30px; height: 36px; padding: 0; font-size: 14px; }
+.scrollx.sm .cells + .cells .cl { margin-top: 6px; }
+.rows { display: grid; gap: 2px; }
+.rw { display: grid; grid-template-columns: 40px 1fr; align-items: end; gap: 6px; }
+.rl { font: 600 14px var(--mono); color: var(--panel-ink); padding-bottom: 11px; }
+.duo2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.flip.three { grid-template-columns: repeat(3, 1fr); }
+.flipc.grpA { box-shadow: inset 0 0 0 2.5px var(--accent); } .flipc.grpA small { color: var(--accent); }
+.flipc.grpB { box-shadow: inset 0 0 0 2.5px var(--ink); } .flipc.grpB small { color: var(--ink); }
+.mx { border-collapse: separate; border-spacing: 4px; width: auto; margin: 0 auto; }
+.mx th { font: 600 13px var(--mono); color: var(--panel-ink); padding: 0 6px; text-align: center; border: 0; }
+.mx th small { display: block; font-size: 10px; font-weight: 500; }
+.mx td { min-width: 42px; height: 40px; text-align: center; background: var(--bg); border-radius: 9px; font: 600 15px var(--mono); border: 0; padding: 0 6px; transition: background-color 200ms ease; }
+.mx td.k { background: var(--accent-soft); }
+.mx td.ch { background: var(--accent); color: var(--on-accent); }
+.mx th.kh { color: var(--accent); }
+.grid { border-collapse: separate; border-spacing: 4px; margin: 0 auto; width: auto; }
+.grid td { width: 50px; height: 50px; background: var(--bg); border-radius: 10px; text-align: center; position: relative; font: 600 15px var(--mono); border: 0; padding: 0; }
+.grid td.row { background: var(--accent-soft); }
+.grid td.path { background: var(--accent); color: var(--on-accent); }
+.grid i.coin { position: absolute; top: 5px; right: 5px; width: 11px; height: 11px; border-radius: 50%; background: #E8A33D; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: center; }
+.split > div { min-width: 0; }
+.hgrid { display: grid; grid-template-columns: repeat(13, minmax(46px, 1fr)); gap: 4px; min-width: 640px; }
+.hcol { display: grid; gap: 4px; align-content: start; }
+.hix { text-align: center; font: 600 12px var(--mono); color: var(--panel-ink); padding: 5px 0; border-radius: 8px; background: var(--bg); }
+.hix.on { background: var(--accent); color: var(--on-accent); }
+.hw { font: 600 11px var(--mono); text-align: center; padding: 7px 2px; border-radius: 8px; background: var(--bg); overflow-wrap: anywhere; }
+.hw.hi { background: var(--accent); color: var(--on-accent); }
+.hw.bad { background: var(--bad-soft); color: var(--bad); }
+.elist { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.elist span { font: 500 13px var(--mono); padding: 6px 11px; border-radius: 99px; background: var(--bg); }
+.elist span.ok { background: var(--accent); color: var(--on-accent); }
+.elist span.rej { background: var(--bad-soft); color: var(--bad); text-decoration: line-through; }
+.elist span.now { box-shadow: inset 0 0 0 2.5px var(--ink); }
+.hq { display: flex; flex-wrap: wrap; gap: 8px; }
+.hq span { display: grid; place-items: center; min-width: 70px; padding: 10px 12px; border-radius: 14px; background: var(--bg); font: 500 13px var(--mono); }
+.hq b { font-size: 16px; background: none; }
+.hq span.now { background: var(--accent); color: var(--on-accent); }
+.coins { display: flex; gap: 10px; margin: 14px 0 4px; }
+.cn { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font: 700 20px var(--mono); background: #E8A33D; color: #3A2600; animation: lineIn 300ms var(--ease) both; }
+.cn.o { background: var(--accent); color: var(--on-accent); }
+.cap50 { margin-top: 18px; }
+.bar50 { display: flex; height: 46px; border-radius: 12px; background: var(--bg); overflow: hidden; }
+.bar50 .seg { background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font: 600 14px var(--mono); border-right: 2px solid var(--panel); }
+.axis50 { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--panel-ink); margin-top: 4px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--font); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { height: 40px; padding: 0 16px; border-radius: 999px; background: var(--bg); font-size: 14px; font-weight: 600; color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* viz bits */
+.grow { display: grid; gap: 8px; }
+.grow .r { display: grid; grid-template-columns: 92px 1fr 118px; gap: 10px; align-items: center; font: 500 14px var(--mono); }
+.grow .bar2 { height: 14px; border-radius: 99px; background: var(--accent); transform-origin: left; transition: transform 300ms var(--ease); }
+.grow .r.x .bar2 { background: var(--bad); }
+.grow .r .v { text-align: right; color: var(--muted); font-size: 13px; }
+.grow .r.x { color: var(--bad); }
+input[type="range"] { width: 100%; accent-color: var(--accent); height: 32px; }
+.slider { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; font: 600 15px var(--mono); }
+.slider span, .slider b { white-space: nowrap; flex: none; }
+.slider b { min-width: 2ch; }
+.flip { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.flipc { min-height: 86px; border-radius: 16px; background: var(--bg); padding: 12px 14px; text-align: left; font-size: 15px; line-height: 1.45; display: grid; align-content: space-between; gap: 8px; }
+.flipc small { font: 600 12px var(--mono); color: var(--muted); }
+.flipc.dec small { color: var(--good); } .flipc.opt small { color: var(--bad); }
+.toggles { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.tg { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px 0 14px; border-radius: 14px; background: var(--bg); font: 500 16px var(--mono); }
+.tg b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; font-weight: 600; transition: background-color 180ms ease, color 180ms ease; }
+.tg[data-v="1"] b { background: var(--good-soft); color: var(--good); }
+.tg[data-v="0"] b { background: var(--bad-soft); color: var(--bad); }
+.clauses { display: grid; gap: 6px; font: 15px var(--mono); }
+.clauses div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 14px; border-radius: 12px; background: var(--bg); }
+.yes { color: var(--good); } .no { color: var(--bad); }
+.combos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 14px; }
+.combo { height: 54px; border-radius: 12px; background: var(--bg); font: 500 14px var(--mono); display: grid; place-items: center; line-height: 1.2; transition: background-color 220ms ease, color 220ms ease; }
+.combo small { font-size: 11px; color: var(--muted); }
+.combo.ok { background: var(--good-soft); color: var(--good); } .combo.ok small { color: var(--good); }
+.combo.ko small { color: var(--bad); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+.flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font: 500 14px var(--mono); }
+.flow span { background: var(--bg); border-radius: 12px; padding: 10px 14px; }
+.flow span.hot { background: var(--accent); color: var(--on-accent); }
+.flow em { font-style: normal; color: var(--panel-ink); }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.duo > div { background: var(--bg); border-radius: 16px; padding: 14px 16px; min-width: 0; font-size: 15px; }
+.duo h4 { margin: 0 0 6px; font-size: 14px; }
+.duo ul { margin: 0; padding-left: 18px; }
+.duo .mono { font-size: 13.5px; }
+.tl { display: grid; gap: 10px; }
+.tl div { display: grid; grid-template-columns: 64px 1fr; gap: 12px; background: var(--bg); border-radius: 14px; padding: 12px 14px; font-size: 15px; }
+.tl b { font-family: var(--mono); color: var(--accent); }
+.cnf { font: 500 19px var(--mono); text-align: center; padding: 14px 0 10px; line-height: 2; }
+.cnf span { border-radius: 8px; padding: 2px 3px; transition: background-color 200ms ease, color 200ms ease; }
+.cnf span.hl { background: var(--accent); color: var(--on-accent); }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--panel-ink); font-size: 13px; }
+.vx { cursor: pointer; }
+.vx circle { transition: fill 200ms ease, stroke 200ms ease; }
+
+/* worked written answer */
+.work { margin: 0 0 22px; border: 1px solid var(--line); border-radius: 24px; overflow: hidden; }
+.work .q { padding: 18px 20px; font-size: 16px; background: var(--surface); }
+.work .q small { display: block; color: var(--muted); font-size: 13px; }
+.work .paper { padding: 4px 20px 16px; }
+.work ol { list-style: none; margin: 0; padding: 0; counter-reset: l; }
+.work li { counter-increment: l; display: grid; grid-template-columns: 26px 1fr; gap: 0 10px; padding: 12px 0; border-bottom: 1px dashed var(--line); animation: lineIn 320ms var(--ease) both; }
+.work li::before { content: counter(l); font: 12px var(--mono); color: var(--muted); padding-top: 4px; }
+.work li .t { font-size: 16px; overflow-wrap: anywhere; }
+.work li .t.code { font: 14px/1.6 var(--mono); }
+.work li .n { grid-column: 2; font-size: 14px; color: var(--muted); margin-top: 2px; }
+.work .ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding-top: 14px; }
+.work .count { font: 13px var(--mono); color: var(--muted); margin-left: auto; }
+@keyframes lineIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* dock */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(170%) blur(16px); -webkit-backdrop-filter: saturate(170%) blur(16px); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock-in { max-width: 820px; margin: 0 auto; display: flex; gap: 10px; }
+.dock-in .btn { flex: 1; }
+.dock-in .btn.back { flex: 0 0 auto; width: 64px; padding: 0; }
+
+/* quiz home */
+.qhero { background: var(--accent); color: var(--on-accent); border-radius: 28px; padding: 28px; display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: end; }
+.qhero h1 { font-size: clamp(30px, 5.6vw, 42px); line-height: 1.1; letter-spacing: -.025em; margin: 0 0 8px; }
+.qhero p { margin: 0 0 20px; opacity: .85; font-size: 16px; max-width: 40ch; }
+.ring { width: 112px; height: 112px; position: relative; display: grid; place-items: center; }
+.ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.ring b { font: 700 28px/1 var(--font); }
+.ring small { display: block; font: 500 12px var(--mono); opacity: .85; text-align: center; margin-top: 4px; }
+.builder { margin-top: 16px; background: var(--surface); border-radius: 28px; padding: 26px; }
+.builder h2 { font-size: 24px; letter-spacing: -.015em; margin: 0 0 6px; line-height: 1.25; }
+.builder > p { color: var(--muted); font-size: 15px; margin: 0 0 18px; max-width: 56ch; }
+.builder .lbl { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.builder .grp { margin-bottom: 16px; }
+.builder .chip { background: var(--bg); }
+.builder .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.kinds { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.kinds span { font: 500 12px var(--mono); padding: 5px 10px; border-radius: 99px; background: var(--bg); color: var(--muted); }
+
+/* quiz runner */
+.qtop { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.qbar { flex: 1; height: 10px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
+.qbar i { height: 100%; flex: 1; transition: background-color 260ms ease; }
+.qbar i.g { background: var(--good); } .qbar i.b { background: var(--bad); }
+.qpts { font: 600 14px var(--mono); color: var(--muted); min-width: 64px; text-align: right; }
+.qcard { animation: cardIn 320ms var(--ease) both; }
+.qno { font: 600 13px var(--mono); color: var(--accent); margin-bottom: 8px; }
+.qno span { color: var(--muted); font-weight: 500; }
+.qtext { font-size: clamp(19px, 3.4vw, 22px); line-height: 1.55; font-weight: 500; margin-bottom: 22px; overflow-wrap: anywhere; }
+.qtext b { font-weight: 650; }
+.qtext .data { display: block; margin-top: 12px; background: var(--panel); color: var(--ink); border-radius: 16px; padding: 14px 16px; font: 500 15px/1.75 var(--mono); overflow-x: auto; white-space: pre; }
+.tiles { display: grid; gap: 10px; }
+.tile { position: relative; display: grid; grid-template-columns: 34px 1fr 24px; gap: 14px; align-items: center; padding: 14px 16px; min-height: 62px; border-radius: 18px; border: 2px solid var(--line); background: var(--bg); font-size: 16px; line-height: 1.5; cursor: pointer; text-align: left; -webkit-user-select: none; user-select: none; box-shadow: 0 2px 0 var(--line); }
+.tile input { position: absolute; opacity: 0; pointer-events: none; }
+.tile .k { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font: 600 14px var(--mono); background: var(--surface); color: var(--muted); }
+.tile.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 2px 0 var(--accent); }
+.tile.sel .k { background: var(--accent); color: var(--on-accent); }
+.tile .mk { font-weight: 700; text-align: center; }
+.tile.right { border-color: var(--good); background: var(--good-soft); box-shadow: 0 2px 0 var(--good); }
+.tile.right .k { background: var(--good); color: #fff; } .tile.right .mk { color: var(--good); }
+.tile.wrong { border-color: var(--bad); background: var(--bad-soft); box-shadow: 0 2px 0 var(--bad); }
+.tile.wrong .k { background: var(--bad); color: #fff; } .tile.wrong .mk { color: var(--bad); }
+.locked .tile { cursor: default; }
+.locked .tile:not(.right):not(.wrong) { opacity: .55; }
+.ans .hint { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+.ans input { width: 100%; height: 60px; border-radius: 18px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); padding: 0 18px; font: 500 17px var(--mono); }
+.ans input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 4px var(--accent-soft); }
+.ans input.right { border-color: var(--good); background: var(--good-soft); }
+.ans input.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; transform: translateY(105%); transition: transform 380ms var(--drawer); }
+.sheet.open { transform: none; }
+.sheet-in { max-width: 820px; margin: 0 auto; border-radius: 28px 28px 0 0; padding: 22px 20px calc(16px + env(safe-area-inset-bottom, 0px)); max-height: 78vh; overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 -10px 40px rgba(0,0,0,.12); }
+.sheet.good .sheet-in { background: var(--good-soft); background: color-mix(in srgb, var(--good) 14%, var(--bg)); }
+.sheet.bad .sheet-in { background: color-mix(in srgb, var(--bad) 14%, var(--bg)); }
+.verdict { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.sheet.good .verdict { color: var(--good); } .sheet.bad .verdict { color: var(--bad); }
+.verdict .badge { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 20px; }
+.sheet.good .badge { background: var(--good); } .sheet.bad .badge { background: var(--bad); }
+.verdict small { font: 600 14px var(--mono); margin-left: auto; }
+.sheet .why { font-size: 16px; margin: 0 0 14px; }
+.sheet .right-ans { font: 500 14px/1.7 var(--mono); background: var(--bg); border-radius: 14px; padding: 12px 14px; margin: 0 0 14px; overflow-wrap: anywhere; }
+.sheet .right-ans small { display: block; font: 500 12px var(--font); color: var(--muted); }
+.sheet .work { background: var(--bg); }
+.sheet .acts { display: flex; gap: 10px; }
+.sheet .acts .btn { flex: 1; }
+.sheet.good .btn.primary { background: var(--good); box-shadow: 0 2px 0 color-mix(in srgb, var(--good) 70%, #000); }
+.sheet.bad .btn.primary { background: var(--bad); box-shadow: 0 2px 0 color-mix(in srgb, var(--bad) 70%, #000); }
+
+/* result */
+.result { text-align: center; padding-top: 8px; }
+.result .ring { width: 168px; height: 168px; margin: 0 auto 14px; color: var(--accent); }
+.result .ring b { font-size: 44px; }
+.result .ring small { color: var(--muted); }
+.result h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -.02em; }
+.result .split { color: var(--muted); margin-bottom: 22px; }
+.nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 8px; text-align: center; margin: 0 0 24px; }
+.num { height: 48px; border-radius: 14px; font: 600 15px var(--mono); }
+.num.g { background: var(--good-soft); color: var(--good); }
+.num.b { background: var(--bad-soft); color: var(--bad); }
+.result .lbl { text-align: left; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.result .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+@media (max-width: 620px) {
+  body { font-size: 16px; }
+  .seg { flex: 1 1 100%; order: 3; }
+  .hero { grid-template-columns: 1fr; padding: 24px 20px; border-radius: 24px; }
+  .hero svg { max-width: 320px; }
+  .qhero { grid-template-columns: 1fr; padding: 24px 20px; border-radius: 24px; }
+  .qhero .ring { order: -1; }
+  .panel { padding: 18px 14px; border-radius: 20px; }
+  .duo, .flip, .split, .duo2 { grid-template-columns: 1fr; }
+  .flip.three { grid-template-columns: 1fr 1fr; }
+  .cap { font-size: 16px; padding: 12px 14px; }
+  .grow .r { grid-template-columns: 78px 1fr 92px; font-size: 13px; }
+  .combos { grid-template-columns: repeat(2, 1fr); }
+  .builder { padding: 22px 18px; }
+  .work .q, .work .paper { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand">Algo Final<span>254383</span></div>
+    <div class="seg" id="seg" data-on="0" role="group" aria-label="โหมด">
+      <div class="knob"></div>
+      <button id="m-learn" aria-pressed="true">บทเรียน</button>
+      <button id="m-quiz" aria-pressed="false">ฝึกควิซ</button>
+    </div>
+    <button class="iconbtn" id="theme" aria-label="สลับธีมสว่างหรือมืด">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5a7.5 7.5 0 0 1 0 15z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="บท"></nav>
+</header>
+
+<main id="main"></main>
+<div class="dock" id="dock" hidden><div class="dock-in" id="dock-in"></div></div>
+<div class="sheet" id="sheet" aria-live="polite"><div class="sheet-in" id="sheet-in"></div></div>
+
+<script>// Question data. ch = week number. a = index of the correct choice in `c`.
+const PAST = [
+  { ch: '8', q: 'ข้อใด <b>ไม่ใช่</b> คุณสมบัติพื้นฐานที่จำเป็นในการประยุกต์ใช้ Dynamic Programming?', c: ['Optimal Substructure', 'Overlapping Subproblems', 'Greedy Choice Property', 'Memory for Storing Solutions (Table/Array)'], a: 2, why: 'Greedy Choice Property เป็นคุณสมบัติของ Greedy ส่วน DP ใช้ Optimal Substructure + Overlapping Subproblems และตารางเก็บคำตอบ' },
+  { ch: '8', q: 'ตาราง DP ในปัญหา 0/1 Knapsack ขนาด W (น้ำหนักที่รับได้) และ N (จำนวนสิ่งของ) มีขนาดความจุของตารางเท่าใด?', c: ['(N) x (W)', '(N + 1) x (W + 1)', '(N^2) x (W^2)', '2^(N + W)'], a: 1, why: 'ต้องมีแถว 0 (ยังไม่มีของ) และคอลัมน์ 0 (กระเป๋าจุ 0) เพิ่มอีกอย่างละหนึ่ง' },
+  { kind: 'coin', ch: '8', c: [3, 15, 2, 1, 3, 12, 19, 4, 7, 25, 6, 11, 18, 5, 9, 21, 14, 8, 2, 10] },
+  { kind: 'dijk', ch: '9', nodes: ['A', 'B', 'C', 'D', 'E'], edges: [['A', 'B', 5], ['A', 'C', 1], ['C', 'B', 1], ['B', 'D', 3], ['C', 'D', 8], ['C', 'E', 1], ['E', 'B', 2], ['E', 'D', 2]], keyNote: 'เฉลยในระบบเขียนว่า A->C->B:2 A->C:1 A->C->E:3 A->B->D:5 ซึ่งไม่ตรงกับกราฟ เพราะ C->E หนัก 1 จึงได้ E = 2 และ D ไปทาง A->C->E->D = 1+1+2 = 4 ส่วน A->B->D จริงๆ ยาว 5+3 = 8 ถ้าตอบตามกราฟแบบนี้ถือว่าถูก' },
+  { ch: '8', q: 'ขั้นตอน "Traceback" หรือ "Backtracking" ในการแก้ปัญหาด้วย Dynamic Programming ทำหน้าที่อะไร?', c: ['เรียงลำดับคำตอบจากน้อยไปมาก', 'ตรวจสอบว่าตาราง DP มีข้อผิดพลาดหรือไม่', 'ลบข้อมูลในตารางเพื่อคืนหน่วยความจำให้ระบบ', 'ย้อนรอยจากค่าคำตอบสูงสุดเพื่อระบุว่าสิ่งของหรือองค์ประกอบใดบ้างที่ถูกเลือก'], a: 3, why: 'ตารางบอกแค่ค่าที่ดีที่สุด ต้องย้อนจากช่องคำตอบกลับไปดูว่าแต่ละขั้นเลือกอะไร' },
+  { ch: '9', q: 'ข้อใดกล่าวถึง Dijkstra\'s Algorithm ได้ถูกต้อง?', c: ['เป็น Greedy Algorithm สำหรับหา Shortest Path ที่รองรับเส้นทางที่มีน้ำหนักเป็นลบ (-)', 'ให้ผลลัพธ์ที่เป็น Minimum Spanning Tree (MST) ของกราฟเสมอ', 'คำนวณหาเส้นทางสั้นสุดโดยการเลือก Node ที่มีระยะทางสะสมน้อยที่สุดในแต่ละก้าว', 'ทำงานได้รวดเร็วเท่ากับ Breadth-First Search (BFS) ในทุกกรณี'], a: 2, why: 'Dijkstra ใช้ไม่ได้กับน้ำหนักติดลบ และผลลัพธ์คือ shortest-path tree ไม่ใช่ MST' },
+  { ch: '7', q: 'ในอัลกอริทึมการค้นหาข้อความแบบ Horspool\'s Algorithm มีการใช้ตาราง Shift Table เพื่อวัตถุประสงค์ใด?', c: ['กำหนดระยะการข้าม (Shift) ของ Pattern ตามอักขระที่ไม่ตรงกัน เพื่อลดเวลาค้นหา', 'จัดเรียงอักขระในข้อความค้นหาตามลำดับตัวอักษร', 'คำนวณหาความยาวของอักขระที่ซ้ำกันมากที่สุด', 'บีบอัดขนาดของข้อความต้นฉบับก่อนการค้นหา'], a: 0, why: 'shift table สร้างล่วงหน้าจาก pattern (input enhancement) เพื่อรู้ว่าต้องเลื่อนกี่ช่อง' },
+  { ch: '8', q: 'พิจารณาตาราง DP ของปัญหา 0/1 Knapsack ที่มีน้ำหนักจุได้ 5 กิโลกรัม หากช่อง V[3][5] มีค่าเท่ากับ 18 หมายความว่าอย่างไร?', c: ['ต้องใส่ของอย่างน้อย 3 ชิ้น เพื่อให้ได้มูลค่า 18', 'ของชิ้นที่ 3 มีน้ำหนัก 5 กิโลกรัม และมีมูลค่า 18', 'มีวิธีใส่ของทั้งหมด 18 วิธีในกระเป๋าความจุ 5 กิโลกรัม', 'มูลค่าสูงสุดที่ทำได้จากของ 3 ชิ้นแรก ในกระเป๋าความจุ 5 กิโลกรัม คือ 18'], a: 3, why: 'V[i][j] = มูลค่าสูงสุดเมื่อใช้ของ i ชิ้นแรกกับกระเป๋าจุ j' },
+  { ch: '7', q: 'ข้อเสียหรือความเสี่ยงที่สำคัญที่สุดของการใช้อัลกอริทึมประเภท Space and Time Trade-offs คือข้อใด?', c: ['โค้ดอ่านยากและซับซ้อนเกินไป', 'อาจเกิดปัญหา Out of Memory หากข้อมูลมีขนาดใหญ่มากเกินไป', 'ทำให้เวลาในการทำงานแบบ Big-O เพิ่มขึ้นเสมอ', 'ผลลัพธ์ที่ได้จะไม่ถูกต้องแม่นยำ 100%'], a: 1, why: 'แลกความเร็วด้วยหน่วยความจำ ถ้าข้อมูลใหญ่มากก็อาจเกินหน่วยความจำ' },
+  { ch: '8', q: 'ความแตกต่างสำคัญระหว่าง Top-down Approach (Memoization) กับ Bottom-up Approach (Tabulation) ใน DP คือข้อใด?', c: ['Top-down ใช้ Loop ในขณะที่ Bottom-up ใช้ Recursion', 'Top-down ให้ผลลัพธ์ที่ถูกต้อง แต่ Bottom-up เป็นเพียงการประมาณค่า', 'Top-down ใช้เวลาประมวลผลเป็น O(N^2) ส่วน Bottom-up เป็น O(N)', 'Top-down คำนวณเฉพาะปัญหาย่อยที่ถูกเรียกใช้ ส่วน Bottom-up คำนวณปัญหาย่อยทั้งหมดตามลำดับ'], a: 3, why: 'Top-down คือ recursion + memo (คำนวณเท่าที่ถูกเรียก) ส่วน Bottom-up คือ loop เติมตารางทุกช่อง' },
+  { ch: '8', q: 'เหตุใดการแก้ไขปัญหา Fibonacci Sequence ด้วย Dynamic Programming จึงมีประสิทธิภาพมากกว่า Naive Recursion?', c: ['เพราะ Naive Recursion ให้คำตอบที่ไม่ถูกต้องในค่า N ขนาดใหญ่', 'เพราะ DP ใช้เทคนิคเรียงลำดับข้อมูลก่อนทำการคำนวณ', 'เพราะ DP เปลี่ยนความซับซ้อนเชิงเวลาจาก O(2^N) เหลือเพียง O(N)', 'เพราะ DP ไม่ต้องใช้พื้นที่หน่วยความจำใน RAM เลย'], a: 2, why: 'เก็บ F(i) ไว้ใช้ซ้ำ จึงไม่ต้องคำนวณปัญหาย่อยเดิมซ้ำแบบ exponential' },
+  { ch: '7', q: 'แนวคิด Space and Time Trade-offs ในทางอัลกอริทึม หมายถึงข้อใดถูกต้องที่สุด?', c: ['การเพิ่มขนาดของข้อมูลป้อนเข้าเพื่อให้เวลาในการคำนวณคงที่', 'การประมวลผลที่ใช้เวลาน้อยที่สุดจะต้องไม่ใช้หน่วยความจำเพิ่มเติม', 'การลดพื้นที่หน่วยความจำลงจะช่วยให้อัลกอริทึมทำงานเร็วขึ้นเสมอ', 'การยอมใช้พื้นที่หน่วยความจำเพิ่มขึ้น เพื่อแลกกับความเร็วในการทำงานที่เพิ่มขึ้น'], a: 3, why: 'ใช้ที่เก็บเพิ่ม (ตาราง, hash) เพื่อให้ทำงานเร็วขึ้น' },
+  { ch: '9', q: 'อัลกอริทึม Huffman Coding ใช้แนวคิดแบบ Greedy เพื่อวัตถุประสงค์ใด?', c: ['ค้นหาเส้นทางที่สั้นที่สุดในเครือข่าย', 'ถอดรหัสไฟล์ที่ถูกเข้ารหัสแบบความปลอดภัยสูง', 'สร้างรหัสบีบอัดข้อมูลแบบความยาวผันแปร (Variable-length Code) เพื่อลดขนาดไฟล์', 'เรียงลำดับตัวอักษรตามพจนานุกรม'], a: 2, why: 'ตัวที่ใช้บ่อยได้รหัสสั้น ตัวที่ใช้น้อยได้รหัสยาว' },
+  { ch: '9', q: 'แนวคิดพื้นฐานของ Greedy Technique คืออะไร?', c: ['เลือกตัวเลือกที่ดีที่สุด ณ ตอนนั้น (Local Optimal Choice) ในทุกๆ ขั้นตอน', 'แก้ปัญหาย่อยทั้งหมดก่อนแล้วค่อยนำมารวมกันทีหลัง', 'ลองทำทุกวิธีที่เป็นไปได้ทั้งหมด แล้วเลือกวิธีที่ดีที่สุด', 'สุ่มเลือกคำตอบไปเรื่อยๆ จนกว่าจะได้ผลลัพธ์ที่พอใจ'], a: 0, why: 'ตัวเลือกที่สองคือ divide/DP ตัวเลือกที่สามคือ brute force' },
+  { ch: '9', q: 'ปัญหาในข้อใดที่แนวคิดแบบ Greedy <b>ไม่สามารถ</b> การันตีว่าจะได้คำตอบที่ดีที่สุดระดับโลก (Global Optimum) เสมอไป?', c: ['Traveling Salesperson Problem (TSP)', 'Fractional Knapsack Problem', 'Huffman Coding', 'Minimum Spanning Tree (Prim / Kruskal)'], a: 0, why: 'Fractional Knapsack, Huffman, Prim, Kruskal พิสูจน์แล้วว่า greedy ได้คำตอบดีที่สุด ส่วน TSP (เช่น nearest neighbor) ไม่การันตี' },
+  { ch: '9', q: 'เหตุใดปัญหา 0/1 Knapsack จึง <b>ไม่สามารถ</b> แก้ไขให้ได้คำตอบที่ดีที่สุดเสมอด้วย Greedy Technique?', c: ['เพราะ Greedy ไม่สามารถแบ่งส่วนของ (Fraction) ออกเป็นส่วนย่อยได้', 'เพราะ 0/1 Knapsack ไม่สามารถเรียงลำดับมูลค่าต่อหน่วยน้ำหนักได้', 'เพราะ Greedy ใช้เวลาประมวลผลมากกว่า Dynamic Programming', 'เพราะปัญหา 0/1 Knapsack ไม่มีคุณสมบัติ Optimal Substructure'], a: 0, why: 'ของต้องหยิบทั้งชิ้นหรือไม่หยิบเลย จึงเติมช่องว่างที่เหลือด้วยเศษของไม่ได้' },
+  { kind: 'hors', ch: '7', p: 'bacedbcdeeda' },
+  { ch: '9', q: 'สำหรับปัญหา Activity Selection Problem หากต้องการเลือกกิจกรรมให้ได้จำนวนมากที่สุดโดยไม่คาบเกี่ยวกัน ควรเรียงลำดับกิจกรรมตามเงื่อนไขใด?', c: ['ระยะเวลาที่ใช้ (Duration) จากมากไปน้อย', 'มูลค่าความสำคัญ (Priority) จากมากไปน้อย', 'เวลาสิ้นสุด (Finish Time) จากน้อยไปมาก', 'เวลาเริ่มต้น (Start Time) จากน้อยไปมาก'], a: 2, why: 'กิจกรรมที่จบเร็วที่สุดเหลือเวลาให้กิจกรรมอื่นมากที่สุด เรียงตาม start ใช้ไม่ได้เพราะกิจกรรมยาวที่เริ่มก่อนจะกินเวลาทั้งหมด' },
+  { kind: 'huff', ch: '9', f: [{ s: 'A', p: 51 }, { s: 'B', p: 25 }, { s: 'C', p: 14 }, { s: 'D', p: 10 }] },
+  { ch: '8', q: 'ในปัญหา Longest Common Subsequence (LCS) หากกำหนดให้ Xi = Yj ค่าในตาราง L[i, j] จะถูกคำนวณจากสูตรใด?', c: ['L[i-1, j] + L[i, j-1]', 'max(L[i-1, j], L[i, j-1])', 'L[i-1, j-1] + 1', 'L[i-1, j-1] + L[i-1, j]'], a: 2, why: 'ตัวอักษรตรงกันให้ต่อจากช่องทแยงบนซ้าย +1 ส่วน max(...) ใช้ตอนตัวอักษรไม่ตรงกัน' },
+  { ch: '7', q: 'การใช้งาน Direct Address Table หรือ Counting Sort ถือเป็นการประยุกต์ใช้เทคนิค Space and Time Trade-offs ในรูปแบบใด?', c: ['Input Enhancement (การเตรียมข้อมูลป้อนเข้าก่อนการประมวลผล)', 'Greedy Choice (การเลือกสิ่งที่ดีที่สุดในแต่ละขั้นตอน)', 'Prestructuring (การสร้างโครงสร้างข้อมูลล่วงหน้า)', 'Dynamic Programming (การแบ่งปัญหาย่อย)'], a: 0, why: 'Counting sort นับความถี่ของ input ล่วงหน้า (input enhancement) ส่วน prestructuring คือ hashing และ B-tree' },
+  { ch: '9', q: 'การเปรียบเทียบระหว่าง Prim\'s Algorithm และ Kruskal\'s Algorithm ในการหา Minimum Spanning Tree (MST) ข้อใดถูกต้อง?', c: ['Prim เป็น Dynamic Programming ส่วน Kruskal เป็น Greedy Technique', 'ทั้งสองอัลกอริทึมให้ผลลัพธ์ MST ที่มีรูปร่างเหมือนกันเสมอในทุกกรณี', 'Prim ขยายต้นไม้จาก Node เริ่มต้น ส่วน Kruskal ขยายจากการเลือก Edge ที่เบาที่สุดในกราฟ', 'Prim ใช้ได้เฉพาะกับ Directed Graph ส่วน Kruskal ใช้ได้กับ Undirected Graph เท่านั้น'], a: 2, why: 'ทั้งคู่เป็น greedy ถ้ามีน้ำหนักซ้ำ MST อาจรูปร่างต่างกันแต่ผลรวมเท่ากัน' },
+  { ch: '9', q: 'ในปัญหา Fractional Knapsack ข้อใดคือเกณฑ์ (Greedy Criterion) ที่นำมาใช้ในการเลือกของเข้ากระเป๋าเป็นลำดับแรก?', c: ['เลือกของที่มีน้ำหนักเบาที่สุดก่อน (Min Weight)', 'เลือกของที่มีอัตราส่วน มูลค่า/น้ำหนัก สูงที่สุดก่อน (Max Value-to-Weight Ratio)', 'เลือกของที่มีมูลค่าสูงที่สุดก่อน (Max Value)', 'เลือกของที่มีขนาดชิ้นใหญ่ที่สุดก่อน (Max Size)'], a: 1, why: 'v/w สูงสุดก่อน แล้วชิ้นสุดท้ายตัดเป็นเศษส่วนให้พอดีกระเป๋า' },
+  { ch: '8', q: 'คุณสมบัติ Overlapping Subproblems ใน Dynamic Programming หมายถึงอะไร?', c: ['ปัญหาสามารถแบ่งเป็นปัญหาย่อยที่ไม่เกี่ยวข้องกันเลย', 'ปัญหาย่อยเดิมๆ เกิดขึ้นซ้ำๆ ในระหว่างการคำนวณ', 'การหาคำตอบต้องสุ่มเลือกปัญหาย่อยขึ้นมาทำทีละส่วน', 'คำตอบของปัญหาใหญ่สามารถหาได้จากคำตอบที่ดีที่สุดของปัญหาย่อยเสมอ'], a: 1, why: 'ตัวเลือกสุดท้ายคือนิยามของ Optimal Substructure ไม่ใช่ Overlapping Subproblems' },
+  { kind: 'floyd', ch: '8', M: [[0, 3, 0, 7], [8, 0, 2, 0], [5, 0, 0, 1], [2, 0, 0, 0]] },
+];
+
+const EXTRA = [
+  // week 7
+  { ch: '7', q: 'Counting Sort เหมาะกับข้อมูลลักษณะใดมากที่สุด?', c: ['จำนวนเต็มที่ค่าอยู่ในช่วงแคบ (range เล็กเมื่อเทียบกับ n)', 'ทศนิยมที่กระจายตัวกว้างมาก', 'สตริงยาวที่ไม่รู้ช่วงของค่า', 'ข้อมูลที่ต้องเรียงแบบ in-place โดยไม่ใช้หน่วยความจำเพิ่ม'], a: 0, why: 'ต้องสร้างอาร์เรย์นับขนาดเท่าช่วงของค่า k ถ้า k ใหญ่จะเปลืองมาก' },
+  { ch: '7', q: 'Time Complexity ของ Counting Sort เมื่อ n คือจำนวนข้อมูล และ k คือช่วงของค่า คือข้อใด?', c: ['O(n + k)', 'O(n log n)', 'O(n²)', 'O(k log n)'], a: 0, why: 'นับความถี่ O(n) สะสมค่า O(k) และวางข้อมูลกลับ O(n)' },
+  { ch: '7', q: 'Hash table ขนาด 7 ใช้ h(k) = k mod 7 และแก้ collision ด้วย linear probing ถ้าใส่ 10 แล้วใส่ 17 ค่า 17 จะไปอยู่ช่องใด?', c: ['4', '3', '0', '5'], a: 0, why: '10 mod 7 = 3 และ 17 mod 7 = 3 ชนกัน linear probing จึงขยับไปช่องถัดไปคือ 4' },
+  { ch: '7', q: 'ข้อใดเป็นวิธีแก้ปัญหา Collision ใน Hash Table?', c: ['Separate chaining และ Open addressing', 'Counting และ Bucket sort', 'Bad-symbol shift และ Good-suffix shift', 'Memoization และ Tabulation'], a: 0, why: 'chaining เก็บเป็นลิสต์ในช่องเดียวกัน open addressing หาช่องว่างถัดไป' },
+  { ch: '7', q: 'คุณสมบัติข้อใดของ B-Tree ถูกต้อง?', c: ['ทุกใบ (leaf) อยู่ในระดับเดียวกัน', 'ทุกโหนดมีลูกได้ไม่เกิน 2 ตัว', 'คีย์ในโหนดไม่ต้องเรียงลำดับ', 'ความสูงของต้นไม้เพิ่มขึ้นทุกครั้งที่แทรกข้อมูล'], a: 0, why: 'B-Tree สมดุลเสมอ ใบทุกใบลึกเท่ากัน และความสูงเพิ่มเฉพาะตอน root ถูก split' },
+  { ch: '7', q: 'เมื่อแทรกคีย์ลงในโหนดของ B-Tree ที่เต็มแล้ว จะเกิดอะไรขึ้น?', c: ['แยกโหนด (split) แล้วดันคีย์ตรงกลางขึ้นไปที่โหนดแม่', 'ลบคีย์ที่เก่าที่สุดทิ้ง', 'สร้างโหนดใหม่เป็นลูกของโหนดนั้นทันที', 'หมุนต้นไม้ (rotation) แบบ AVL'], a: 0, why: 'ถ้าโหนดแม่เต็มด้วยก็ split ต่อขึ้นไป ถ้าถึง root ต้นไม้จะสูงขึ้นหนึ่งชั้น' },
+  { ch: '7', q: 'Boyer-Moore ใช้ตารางอะไรในการตัดสินระยะเลื่อน?', c: ['Bad-symbol shift และ Good-suffix shift', 'Shift table อย่างเดียวเหมือน Horspool', 'Hash table ของ pattern', 'ตาราง DP ขนาด m × n'], a: 0, why: 'เลื่อนด้วยค่าที่มากกว่าระหว่าง d1 (bad-symbol) และ d2 (good-suffix)' },
+  // week 8
+  { ch: '8', q: 'Warshall\'s Algorithm ใช้หาอะไร?', c: ['Transitive closure ของกราฟระบุทิศทาง', 'ระยะทางสั้นที่สุดทุกคู่', 'Minimum Spanning Tree', 'ระยะทางสั้นที่สุดจากจุดเดียว'], a: 0, why: 'Warshall ตอบว่าไปถึงกันได้ไหม (0/1) ส่วน Floyd ตอบระยะทางสั้นที่สุด' },
+  { ch: '8', q: 'Floyd\'s Algorithm สำหรับกราฟ n จุดยอด ใช้เวลาเท่าใด?', c: ['O(n³)', 'O(n²)', 'O(n log n)', 'O(2ⁿ)'], a: 0, why: 'ลูป k, i, j ซ้อนกันสามชั้น' },
+  { ch: '8', q: 'สูตร DP ของ Change-making (coin change) คือข้อใด? (d₁..dₘ คือเหรียญ)', c: ['F(n) = min{ F(n − dⱼ) : dⱼ ≤ n } + 1', 'F(n) = max{ F(n − dⱼ) } + dⱼ', 'F(n) = F(n − 1) + F(n − 2)', 'F(n) = min{ F(n − 1), F(n − 2) }'], a: 0, why: 'ลองใช้เหรียญแต่ละแบบเป็นเหรียญสุดท้าย แล้วเลือกจำนวนเหรียญที่น้อยที่สุด' },
+  { ch: '8', q: 'สูตร DP ของ Robot Coin Collection (เดินได้แค่ขวาหรือลง) คือข้อใด?', c: ['F(i, j) = max(F(i−1, j), F(i, j−1)) + cᵢⱼ', 'F(i, j) = min(F(i−1, j), F(i, j−1)) + cᵢⱼ', 'F(i, j) = F(i−1, j−1) + 1', 'F(i, j) = F(i−1, j) + F(i, j−1)'], a: 0, why: 'มาถึงช่อง (i, j) ได้จากด้านบนหรือด้านซ้าย เลือกทางที่เก็บได้มากกว่าแล้วบวกเหรียญในช่องนี้' },
+  { ch: '8', q: 'สูตร Coin-row ที่ห้ามหยิบเหรียญติดกัน คือข้อใด?', c: ['F(n) = max(cₙ + F(n−2), F(n−1))', 'F(n) = cₙ + F(n−1)', 'F(n) = max(F(n−1), F(n−2))', 'F(n) = min(cₙ + F(n−2), F(n−1))'], a: 0, why: 'หยิบเหรียญที่ n แล้วต้องข้ามเหรียญ n−1 หรือไม่หยิบแล้วใช้ F(n−1)' },
+  // week 9
+  { ch: '9', q: 'Kruskal\'s Algorithm ใช้อะไรตรวจว่าการเพิ่ม edge จะเกิด cycle หรือไม่?', c: ['Union-Find (Disjoint sets)', 'Priority queue ของ vertex', 'ตาราง DP', 'BFS จากทุก vertex ทุกครั้ง'], a: 0, why: 'ถ้าปลายทั้งสองของ edge อยู่ในเซตเดียวกันแล้ว การเพิ่ม edge นี้จะเกิด cycle' },
+  { ch: '9', q: 'Dijkstra\'s Algorithm อาจให้คำตอบผิดเมื่อใด?', c: ['เมื่อกราฟมีเส้นที่น้ำหนักติดลบ', 'เมื่อกราฟเป็นกราฟระบุทิศทาง', 'เมื่อกราฟมี cycle', 'เมื่อกราฟมีมากกว่า 10 จุดยอด'], a: 0, why: 'Dijkstra ถือว่าโหนดที่เลือกแล้วมีระยะสุดท้าย ซึ่งไม่จริงถ้ามีเส้นติดลบ' },
+  { ch: '9', q: 'Huffman algorithm เลือกอะไรในแต่ละขั้น?', c: ['รวมสองต้นที่มีความถี่ต่ำที่สุดเข้าด้วยกัน', 'รวมสองต้นที่มีความถี่สูงที่สุดเข้าด้วยกัน', 'ให้รหัสสั้นที่สุดกับตัวที่ใช้น้อยที่สุด', 'เรียงตัวอักษรตามพจนานุกรมก่อนให้รหัส'], a: 0, why: 'ตัวที่ความถี่ต่ำจึงอยู่ลึก (รหัสยาว) ตัวที่ใช้บ่อยอยู่ตื้น (รหัสสั้น)' },
+  // week 10
+  { ch: '10', q: 'Class P หมายถึงข้อใด?', c: ['Decision problem ที่แก้ได้ด้วย deterministic algorithm ใน polynomial time', 'ปัญหาที่ตรวจคำตอบได้เร็วแต่หาคำตอบไม่ได้', 'ปัญหาที่ไม่มีอัลกอริทึมใดแก้ได้', 'ปัญหาที่ต้องใช้เวลา O(2ⁿ) เสมอ'], a: 0, why: 'P = แก้ได้เร็ว (worst case O(nᵏ))' },
+  { ch: '10', q: 'NP ย่อมาจากอะไร?', c: ['Nondeterministic Polynomial', 'Not Polynomial', 'Non-Probabilistic', 'Next Polynomial'], a: 0, why: 'กับดักที่ออกบ่อย NP ไม่ได้แปลว่า Not Polynomial' },
+  { ch: '10', q: 'Class NP หมายถึงข้อใด?', c: ['Decision problem ที่ตรวจสอบคำตอบที่ให้มาได้ใน polynomial time', 'ปัญหาที่พิสูจน์แล้วว่าแก้ใน polynomial time ไม่ได้', 'ปัญหาที่ยากกว่าทุกปัญหาใน P เสมอ', 'Optimization problem ที่แก้ด้วย greedy ได้'], a: 0, why: 'NP = verify ได้เร็ว ถ้ามีคนบอกคำตอบ (certificate) มา' },
+  { ch: '10', q: 'ข้อใดเป็น Decision Problem?', c: ['กราฟ G มี clique ขนาด k หรือไม่?', 'Clique ที่ใหญ่ที่สุดในกราฟคืออะไร?', 'เส้นทางที่สั้นที่สุดจาก A ไป B คืออะไร?', 'หา route ที่สั้นที่สุดที่ผ่านทุกเมืองแล้วกลับจุดเริ่ม'], a: 0, why: 'decision problem ตอบได้แค่ Yes/No ข้ออื่นเป็น optimization problem' },
+  { ch: '10', q: 'O(n log n) ถือเป็น polynomial time หรือไม่?', c: ['เป็น เพราะ log n ≤ n จึงถูกจำกัดด้วย O(n²)', 'ไม่เป็น เพราะ log n ไม่ใช่ polynomial function', 'ไม่เป็น เพราะโตเร็วกว่า O(n²)', 'เป็นเฉพาะเมื่อ n เป็นเลขคู่'], a: 0, why: 'log n ไม่ใช่ polynomial function ก็จริง แต่ O(log n) และ O(n log n) นับอยู่ใน polynomial time class' },
+  { ch: '10', q: 'กราฟหนึ่งมี HAMPATH จาก A ไป F ข้อใดสรุปได้ถูกต้อง?', c: ['ยังสรุปไม่ได้ว่ามี HAMPATH จาก C ไป E หรือไม่', 'ต้องมี HAMPATH จากทุกคู่ของ node', 'ต้องมี Hamiltonian cycle ด้วย', 'กราฟนี้ต้องเป็น complete graph'], a: 0, why: 'เปลี่ยนจุดเริ่มหรือจุดจบ คำตอบอาจเปลี่ยน สไลด์มีตัวอย่างที่มีจาก A ไป F แต่ไม่มีจาก C ไป E' },
+  { ch: '10', q: 'Running time ใด <b>ไม่ใช่</b> polynomial time?', c: ['O(2ⁿ)', 'O(n log n)', 'O(n³)', 'O(V + E)'], a: 0, why: 'ตัวแปรอยู่ในเลขชี้กำลัง เป็น exponential' },
+  { ch: '10', q: 'ข้อใดเป็นความสัมพันธ์ระหว่าง P กับ NP ที่ <b>พิสูจน์แล้ว</b>?', c: ['P ⊆ NP', 'P = NP', 'P ≠ NP', 'NP ⊆ P'], a: 0, why: 'แก้ได้เร็วก็ตรวจได้เร็ว ส่วน P = NP หรือไม่ยังไม่มีใครพิสูจน์ได้' },
+  { ch: '10', q: 'D₁ ≤ₚ D₂ หมายความว่าอย่างไร?', c: ['D₂ ยากอย่างน้อยเท่ากับ D₁', 'D₁ ยากกว่า D₂', 'D₁ และ D₂ อยู่ใน P ทั้งคู่', 'D₂ แก้ได้เร็วกว่า D₁ เสมอ'], a: 0, why: 'ถ้าแก้ D₂ ได้ ก็แก้ D₁ ได้ (แปลง input ของ D₁ ไปเป็นของ D₂)' },
+  { ch: '10', q: 'ข้อใด <b>ไม่ใช่</b> เงื่อนไขของฟังก์ชัน f ใน polynomial reduction D₁ ≤ₚ D₂?', c: ['f ต้องหาคำตอบของ D₁ ได้เองโดยไม่ใช้ D₂', 'f แปลง Yes-instance ของ D₁ เป็น Yes-instance ของ D₂', 'f แปลง No-instance ของ D₁ เป็น No-instance ของ D₂', 'f ทำงานใน polynomial time'], a: 0, why: 'f แค่แปลง instance ไม่ต้องแก้ปัญหาเอง' },
+  { ch: '10', q: 'ปัญหา Q เป็น NP-Complete เมื่อใด?', c: ['Q อยู่ใน NP และทุกปัญหาใน NP reduce มาเป็น Q ได้ใน polynomial time', 'Q อยู่ใน P', 'ทุกปัญหาใน NP reduce มาเป็น Q ได้ แต่ Q ไม่อยู่ใน NP', 'Q แก้ได้ด้วย greedy'], a: 0, why: 'ต้องครบทั้งสองข้อ ข้อที่สามคือ NP-Hard ที่ไม่ใช่ NPC' },
+  { ch: '10', q: 'NP-Hard ต่างจาก NP-Complete อย่างไร?', c: ['NP-Hard ไม่จำเป็นต้องอยู่ใน NP', 'NP-Hard ง่ายกว่า NP-Complete', 'NP-Hard ต้องเป็น decision problem เสมอ', 'NP-Hard อยู่ใน P ทั้งหมด'], a: 0, why: 'NP-Hard ยากอย่างน้อยเท่า NPC และอาจยากกว่า ไม่จำเป็นต้องอยู่ใน NP' },
+  { ch: '10', q: 'NP-Complete เท่ากับข้อใด?', c: ['NP ∩ NP-Hard', 'P ∪ NP', 'NP − P', 'P ∩ NP-Hard'], a: 0, why: 'อยู่ใน NP และเป็น NP-Hard' },
+  { ch: '10', q: 'ปัญหาใดถูกพิสูจน์ว่าเป็น NP-Complete เป็นปัญหาแรก (Cook-Levin Theorem)?', c: ['SAT', 'TSP', 'CLIQUE', 'HAMPATH'], a: 0, why: 'Stephen Cook ปี 1971 และ Leonid Levin พิสูจน์ได้เองในปี 1973' },
+  { ch: '10', q: 'Richard Karp (1972) มีผลงานใดเกี่ยวกับ NP-Completeness?', c: ['พิสูจน์ปัญหา NP-Complete อีก 21 ปัญหา', 'พิสูจน์ว่า P = NP', 'พิสูจน์ว่า SAT เป็นปัญหา NPC ปัญหาแรก', 'คิดค้น Dijkstra\'s Algorithm'], a: 0, why: 'Karp\'s 21 NP-Complete Problems' },
+  { ch: '10', q: 'ข้อใดถูกต้องเกี่ยวกับ 2-SAT และ 3-SAT?', c: ['2-SAT อยู่ใน P ส่วน 3-SAT เป็น NP-Complete', 'ทั้งคู่เป็น NP-Complete', 'ทั้งคู่อยู่ใน P', '2-SAT เป็น NP-Complete ส่วน 3-SAT อยู่ใน P'], a: 0, why: 'เพิ่ม literal ต่อ clause จาก 2 เป็น 3 ความยากเปลี่ยนจาก P เป็น NPC' },
+  { ch: '10', q: 'ปัญหาใดเป็น NP-Hard แต่ <b>ไม่ใช่</b> NP-Complete?', c: ['Halting Problem', '3-SAT', 'CLIQUE', 'HAMPATH'], a: 0, why: 'Halting ไม่อยู่ใน NP (ไม่มีทางตรวจใน polynomial time)' },
+  { ch: '10', q: 'TSP แบบ optimization (หาเส้นทางสั้นที่สุด) จัดอยู่ใน class ใดตามสไลด์?', c: ['NP-Hard (ไม่ใช่ NP-Complete)', 'P', 'NP-Complete', 'ไม่ใช่ทั้ง NP และ NP-Hard'], a: 0, why: 'เป็น optimization problem ไม่ใช่ decision problem จึงไม่อยู่ใน NP' },
+  { ch: '10', q: 'การพิสูจน์ว่าปัญหาใหม่เป็น NP-Complete ต้อง reduce ในทิศทางใด?', c: ['Known NPC ≤ₚ New Problem', 'New Problem ≤ₚ Known NPC', 'New Problem ≤ₚ ปัญหาใน P', 'Known NPC ≤ₚ ปัญหาใน P'], a: 0, why: 'แสดงว่าปัญหาใหม่ยากอย่างน้อยเท่าปัญหา NPC ที่รู้จัก' },
+  { ch: '10', q: 'ถ้ามีคนให้เซต k vertex มา การตรวจว่าเป็น clique ใช้เวลาเท่าใด?', c: ['O(k²)', 'O(2ⁿ)', 'O(n!)', 'O(1)'], a: 0, why: 'ตรวจทุกคู่ว่ามี edge ซึ่งมี k(k−1)/2 คู่' },
+  { ch: '10', q: 'G มี independent set ขนาด k ก็ต่อเมื่อข้อใด?', c: ['Complement graph Ḡ มี clique ขนาด k', 'G มี clique ขนาด k', 'Ḡ มี independent set ขนาด n − k', 'G มี Hamiltonian path'], a: 0, why: 'ไม่มี edge ใน G แปลว่ามี edge ครบทุกคู่ใน Ḡ จึงได้ CLIQUE ≤ₚ INDEPENDENT SET' },
+  { ch: '10', q: 'PATH problem (มีเส้นทางจาก a ไป b หรือไม่) อยู่ใน class ใด?', c: ['P แก้ด้วย BFS/DFS ใน O(V + E)', 'NP-Complete', 'NP-Hard ที่ไม่อยู่ใน NP', 'ต้องใช้ Dijkstra จึงไม่อยู่ใน P'], a: 0, why: 'สไลด์ย้ำว่าไม่ใช้ Dijkstra เพราะ Dijkstra แก้ shortest path ซึ่งเป็น optimization' },
+  { ch: '10', q: 'ถ้าวันหนึ่งพิสูจน์ได้ว่า P = NP จะหมายความว่าอย่างไร?', c: ['ทุกปัญหาที่ตรวจสอบได้เร็ว ก็แก้ได้เร็วด้วย', 'ทุกปัญหาใน NP จะแก้ไม่ได้', 'ปัญหา NP-Hard จะหายไปทั้งหมด', 'Halting Problem จะแก้ได้'], a: 0, why: 'และระบบเข้ารหัสที่ใช้อยู่จะไม่ปลอดภัย' },
+  { ch: '10', q: 'ในการ reduce 3-SAT → CLIQUE จะลาก edge ระหว่างสอง vertex เมื่อใด?', c: ['อยู่คนละ clause และไม่ใช่ negation ของกัน', 'อยู่ใน clause เดียวกัน', 'เป็น negation ของกัน', 'ลากทุกคู่'], a: 0, why: 'k-clique จะเลือก literal clause ละตัวที่เป็นจริงพร้อมกันได้' },
+  { ch: '10', q: 'ใน CNF คำว่า Literal หมายถึงอะไร?', c: ['ตัวแปรหรือ negation ของตัวแปร', 'กลุ่ม literal ที่เชื่อมด้วย OR', 'สูตรทั้งสูตร', 'ชุดค่าที่ทำให้สูตรเป็นจริง'], a: 0, why: 'ตัวเลือกที่สองคือ clause ตัวเลือกที่สี่คือ satisfying assignment' },
+  { ch: '10', q: 'Certificate (Witness) ในบริบทของ NP คืออะไร?', c: ['คำตอบที่ให้มาเพื่อใช้ตรวจสอบ เช่น ชุดค่าตัวแปรของ SAT', 'ใบรับรองว่าปัญหาอยู่ใน P', 'ฟังก์ชันที่ใช้ reduce', 'จำนวนขั้นตอนของอัลกอริทึม'], a: 0, why: 'ได้ certificate มาแล้วตรวจได้ใน polynomial time' },
+  { ch: '10', q: 'ข้อใดถูกต้องเกี่ยวกับ Tractable?', c: ['ทุกปัญหาใน P เป็น tractable', 'ทุกปัญหาใน NP เป็น intractable', 'Tractable หมายถึงแก้ได้ใน O(2ⁿ)', 'ปัญหา NP-Complete เป็น tractable'], a: 0, why: 'tractable = แก้ได้ใน polynomial time ส่วนปัญหาใน NP อาจเป็นอย่างใดก็ได้' },
+];
+
+// Wording for generated calculation questions, in the instructor's style.
+const CALC_TEXT = {
+  coin: q => `<b>(DP: Max Weight Non-Adjacent Coin Collection)</b> กำหนดแถวของเหรียญจำนวน ${q.c.length} เหรียญ ที่มีมูลค่าดังนี้: <span class="mono">[ ${q.c.join(', ')} ]</span><br>เงื่อนไข: เลือกเก็บเหรียญให้ได้มูลค่ารวม "มากที่สุด" โดย <b>ห้ามเลือกเหรียญที่อยู่ติดกัน</b> จงหามูลค่ารวมที่มากที่สุด`,
+  knap: q => `<b>(DP: 0/1 Knapsack)</b> กระเป๋าจุได้ W = ${q.W} มีของ 4 ชิ้น:<br><span class="mono">${q.items.map((it, i) => `ชิ้น ${i + 1}: w=${it.w}, v=${it.v}`).join('<br>')}</span><br>จงหามูลค่าสูงสุดที่ใส่ได้`,
+  dijk: q => `<b>(Greedy: Dijkstra's Algorithm)</b> กำหนดกราฟระบุทิศทาง จุดยอด ${q.nodes.join(', ')} และเส้นเชื่อมดังนี้:<br><span class="mono">${q.edges.map(e => `${e[0]} -> ${e[1]} (น้ำหนัก ${e[2]})`).join('<br>')}</span><br>เริ่มที่ <b>จุดยอด A</b> จงแสดงเส้นทางและระยะทางจาก A ไปยังจุดยอดที่เหลือทั้งหมด แสดงปลายทางเรียงตามลำดับตัวอักษร`,
+  hors: q => `<b>(Space-Time Trade-offs: Horspool's Shift Table)</b> Pattern คือคำว่า <span class="mono">"${q.p}"</span> (ความยาว ${q.p.length} อักขระ) จงสร้าง Shift Table ของ Horspool's Algorithm`,
+  huff: q => `<b>(Greedy: Huffman Coding)</b> ข้อความประกอบด้วยอักขระ ${q.f.length} ตัว มีความถี่ดังนี้:<br><span class="mono">${q.f.map(f => `'${f.s}': ${f.p}%`).join('<br>')}</span><br>ความยาวรหัสบิตเฉลี่ย (Average Bits per Character) มีค่าเท่าใด?`,
+  floyd: q => `<b>(DP: Floyd's Algorithm, All-Pairs Shortest Path)</b> กราฟระบุทิศทาง 4 จุดยอด มีเมทริกซ์ระยะทางเริ่มต้น D(0) (เลข 0 นอกแนวทแยงคือไม่มีเส้นเชื่อม):<br><span class="mono">${q.M.map(r => '[ ' + r.join('  ') + ' ]').join('<br>')}</span><br>จงคำนวณระยะทางคู่โหนดที่สั้นที่สุด`,
+};
+const CALC_FORMAT = {
+  coin: { hint: 'ตอบเฉพาะตัวเลข เช่น 16', ph: '16', mode: 'numeric' },
+  knap: { hint: 'ตอบเฉพาะตัวเลข เช่น 37', ph: '37', mode: 'numeric' },
+  dijk: { hint: 'เส้นทางพิมพ์ติดกัน เว้นวรรคแล้วพิมพ์เส้นทางต่อไป เช่น A->B:20 A->B->D->C:50 A->D:70', ph: 'A->B:20 A->B->D->C:50', mode: 'text' },
+  hors: { hint: 'ตัวอักษร:ตัวเลข เว้นวรรค 1 วรรค เรียงตามลำดับ เช่น a:1 b:2 c:3 *:6 (* คือตัวอื่นๆ)', ph: 'a:1 b:2 c:3 *:6', mode: 'text' },
+  huff: { hint: 'ตอบเฉพาะตัวเลข ทศนิยม 2 ตำแหน่ง เช่น 1.75 หรือ 2.00', ph: '1.75', mode: 'decimal' },
+  floyd: { hint: 'รูปแบบ [[1 1 1 1] [2 2 2 2] [3 3 3 3] [4 4 4 4]]', ph: '[[0 0 0 0] [0 0 0 0] [0 0 0 0] [0 0 0 0]]', mode: 'text' },
+};
+const CALC_NAME = { coin: 'Coin-row', knap: '0/1 Knapsack', dijk: 'Dijkstra', hors: 'Horspool', huff: 'Huffman', floyd: 'Floyd' };
+</script>
+<script>// Solvers + generators shared by the quiz. Pure functions; also loadable in node for tests.
+const Core = (() => {
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  // ---------- Coin row ----------
+  function coinRow(c) {
+    const F = [0, c[0]];
+    const lines = [
+      { t: 'F(0) = 0,  F(1) = c₁ = ' + c[0], n: 'ฐาน: ไม่มีเหรียญได้ 0 ถ้ามีเหรียญเดียวก็หยิบเหรียญนั้น' },
+    ];
+    for (let i = 2; i <= c.length; i++) {
+      const take = c[i - 1] + F[i - 2], skip = F[i - 1];
+      F[i] = Math.max(take, skip);
+      lines.push({ t: `F(${i}) = max(${c[i - 1]} + ${F[i - 2]}, ${skip}) = ${F[i]}`, n: take >= skip ? `หยิบเหรียญที่ ${i} (ค่า ${c[i - 1]}) แล้วบวก F(${i - 2})` : `ไม่หยิบเหรียญที่ ${i} ใช้ค่า F(${i - 1}) เดิม` });
+    }
+    lines.push({ t: 'ตอบ ' + F[c.length], n: `F(${c.length}) คือมูลค่ารวมมากที่สุดเมื่อพิจารณาครบทุกเหรียญ` });
+    return { answer: String(F[c.length]), lines };
+  }
+
+  // ---------- 0/1 Knapsack ----------
+  function knapsack(items, W) {
+    const n = items.length, V = Array.from({ length: n + 1 }, () => Array(W + 1).fill(0));
+    const lines = [{ t: 'V[0][j] = 0 และ V[i][0] = 0', n: 'แถว 0 คือยังไม่มีของ คอลัมน์ 0 คือกระเป๋าจุ 0' }];
+    for (let i = 1; i <= n; i++) {
+      const { w, v } = items[i - 1];
+      for (let j = 0; j <= W; j++) V[i][j] = j >= w ? Math.max(V[i - 1][j], v + V[i - 1][j - w]) : V[i - 1][j];
+      lines.push({ t: `i=${i} (w=${w}, v=${v}):  ${V[i].join('  ')}`, n: `j < ${w} ลอกแถวบนลงมา ส่วน j ≥ ${w} ใช้ max(V[${i - 1}][j], ${v} + V[${i - 1}][j−${w}])` });
+    }
+    lines.push({ t: `ตอบ V[${n}][${W}] = ${V[n][W]}`, n: 'ช่องขวาล่างของตาราง' });
+    return { answer: String(V[n][W]), lines, V };
+  }
+
+  // ---------- Dijkstra ----------
+  function dijkstra(nodes, edges, src = 'A') {
+    const dist = {}, prev = {}, done = new Set(), cnt = {};
+    nodes.forEach(v => { dist[v] = Infinity; cnt[v] = 0; });
+    dist[src] = 0; cnt[src] = 1;
+    const lines = [{ t: `d(${src}) = 0 ที่เหลือ = ∞`, n: 'ตั้งระยะเริ่มต้นจากต้นทาง' }];
+    while (done.size < nodes.length) {
+      let u = null;
+      nodes.forEach(v => { if (!done.has(v) && dist[v] < Infinity && (u === null || dist[v] < dist[u] || (dist[v] === dist[u] && v < u))) u = v; });
+      if (u === null) break;
+      done.add(u);
+      const ups = [];
+      edges.filter(e => e[0] === u && !done.has(e[1])).forEach(([, v, w]) => {
+        const nd = dist[u] + w;
+        if (nd < dist[v]) { dist[v] = nd; prev[v] = u; cnt[v] = cnt[u]; ups.push(`d(${v}) = ${dist[u]}+${w} = ${nd}`); }
+        else if (nd === dist[v]) { cnt[v] += cnt[u]; }
+      });
+      lines.push({ t: `เลือก ${u} (${dist[u]})` + (ups.length ? `  อัปเดต ${ups.join(', ')}` : '  ไม่มีค่าไหนลดลง'), n: u === src ? 'เริ่มจากต้นทาง แล้วผ่อนคลายทุกเส้นที่ออกจากมัน' : `${u} มีระยะสะสมน้อยที่สุดในบรรดาโหนดที่ยังไม่เลือก` });
+    }
+    const path = v => { const p = [v]; while (prev[p[0]]) p.unshift(prev[p[0]]); return p.join('->'); };
+    const dests = nodes.filter(v => v !== src).sort();
+    const answer = dests.map(v => `${path(v)}:${dist[v]}`).join(' ');
+    lines.push({ t: 'ตอบ ' + answer, n: 'ไล่ย้อนโหนดก่อนหน้าจากปลายทางกลับไปหา A แล้วเรียงตามตัวอักษรปลายทาง' });
+    const unique = dests.every(v => dist[v] < Infinity && cnt[v] === 1);
+    return { answer, lines, unique, dist };
+  }
+
+  // ---------- Horspool ----------
+  function horspool(p) {
+    const m = p.length, letters = [...new Set(p.split(''))].sort(), table = {};
+    letters.forEach(ch => { table[ch] = m; });
+    for (let j = 0; j < m - 1; j++) table[p[j]] = m - 1 - j;
+    const lines = [{ t: `m = ${m} ใช้แค่ ${m - 1} ตัวแรก "${p.slice(0, m - 1)}"`, n: 'ตัวสุดท้ายของ pattern ไม่นับ' }];
+    letters.forEach(ch => {
+      const last = p.slice(0, m - 1).lastIndexOf(ch);
+      lines.push(last < 0 ? { t: `${ch}: ไม่อยู่ใน ${m - 1} ตัวแรก → ${m}`, n: 'ใช้ค่า m' } : { t: `${ch}: ตำแหน่งสุดท้าย j = ${last + 1} → ${m} − ${last + 1} = ${table[ch]}`, n: 'shift = m − j โดย j นับจาก 1 และดูแค่ m−1 ตัวแรก' });
+    });
+    lines.push({ t: `*: ตัวอื่นๆ → ${m}`, n: 'ตัวที่ไม่อยู่ใน pattern เลื่อนได้เต็มความยาว' });
+    const answer = letters.map(ch => `${ch}:${table[ch]}`).join(' ') + ` *:${m}`;
+    lines.push({ t: 'ตอบ ' + answer, n: 'เรียงตามตัวอักษร ปิดท้ายด้วย *' });
+    return { answer, lines, table };
+  }
+
+  // ---------- Huffman ----------
+  function huffman(freqs) {
+    let q = freqs.map(f => ({ w: f.p, syms: [f.s], name: f.s }));
+    const depth = {}; freqs.forEach(f => (depth[f.s] = 0));
+    const lines = [];
+    while (q.length > 1) {
+      q.sort((a, b) => a.w - b.w || a.name.localeCompare(b.name));
+      const a = q.shift(), b = q.shift();
+      [...a.syms, ...b.syms].forEach(s => depth[s]++);
+      const node = { w: a.w + b.w, syms: [...a.syms, ...b.syms], name: a.name + b.name };
+      lines.push({ t: `รวม ${a.name}(${a.w}) + ${b.name}(${b.w}) = ${node.w}`, n: 'หยิบสองค่าที่น้อยที่สุดในตอนนั้นมารวมกัน' });
+      q.push(node);
+    }
+    lines.push({ t: 'จำนวนบิต  ' + freqs.map(f => `${f.s} = ${depth[f.s]}`).join('   '), n: 'ความลึกของใบในต้นไม้ เท่ากับจำนวนบิตของรหัส' });
+    const sum = freqs.reduce((s, f) => s + f.p * depth[f.s], 0);
+    const avg = (sum / 100).toFixed(2);
+    lines.push({ t: 'เฉลี่ย = ' + freqs.map(f => `${(f.p / 100).toFixed(2)}×${depth[f.s]}`).join(' + ') + ` = ${avg}`, n: 'ผลรวมของ ความถี่ × จำนวนบิต' });
+    lines.push({ t: 'ตอบ ' + avg, n: 'ทศนิยม 2 ตำแหน่ง' });
+    return { answer: avg, lines, depth };
+  }
+
+  // ---------- Floyd (0 off-diagonal = no edge, the instructor's convention) ----------
+  function floyd(M) {
+    const n = M.length, INF = Infinity;
+    let D = M.map((r, i) => r.map((x, j) => (i !== j && x === 0 ? INF : x)));
+    const fmt = v => (v === INF ? '∞' : v);
+    const show = A => A.map(r => '[' + r.map(fmt).join(' ') + ']').join(' ');
+    const lines = [{ t: 'D(0) = ' + show(D), n: 'เลข 0 ที่ไม่อยู่บนแนวทแยงแปลว่าไม่มีเส้นเชื่อม ให้เขียนเป็น ∞' }];
+    for (let k = 0; k < n; k++) {
+      const ch = [], N = D.map(r => r.slice());
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+        if (D[i][k] + D[k][j] < D[i][j]) { N[i][j] = D[i][k] + D[k][j]; ch.push(`d${i + 1}${j + 1} = ${fmt(D[i][k])}+${fmt(D[k][j])} = ${N[i][j]}`); }
+      }
+      D = N;
+      lines.push({ t: `D(${k + 1}) = ` + show(D), n: `ให้ผ่านโหนด ${k + 1}: ` + (ch.length ? ch.join(', ') : 'ไม่มีช่องไหนลดลง') });
+    }
+    const ok = D.every(r => r.every(x => x < INF));
+    const answer = '[' + D.map(r => '[' + r.join(' ') + ']').join(' ') + ']';
+    lines.push({ t: 'ตอบ ' + answer, n: 'D(n) คือระยะสั้นที่สุดของทุกคู่' });
+    return { answer, lines, ok };
+  }
+
+  // ---------- Generators ----------
+  const gen = {
+    coin() { return { kind: 'coin', ch: '8', c: Array.from({ length: rnd(10, 14) }, () => rnd(1, 25)) }; },
+    knap() {
+      return { kind: 'knap', ch: '8', W: rnd(5, 8), items: Array.from({ length: 4 }, () => ({ w: rnd(1, 5), v: rnd(4, 30) })) };
+    },
+    dijk() {
+      for (;;) {
+        const nodes = ['A', 'B', 'C', 'D', 'E'], set = new Map(), want = rnd(7, 9);
+        while (set.size < want) {
+          const a = pick(nodes), b = pick(nodes);
+          if (a === b || b === 'A' || set.has(a + b) || set.has(b + a)) continue;
+          set.set(a + b, [a, b, rnd(1, 9)]);
+        }
+        const edges = [...set.values()].sort((x, y) => (x[0] + x[1]).localeCompare(y[0] + y[1]));
+        if (dijkstra(nodes, edges).unique) return { kind: 'dijk', ch: '9', nodes, edges };
+      }
+    },
+    hors() {
+      for (;;) {
+        const m = rnd(8, 12), p = Array.from({ length: m }, () => pick('abcde')).join(''), head = p.slice(0, m - 1);
+        if ([...new Set(p)].every(ch => head.includes(ch)) && new Set(p).size >= 4) return { kind: 'hors', ch: '7', p };
+      }
+    },
+    huff() {
+      const k = pick([4, 5]);
+      for (;;) {
+        const cuts = Array.from({ length: k - 1 }, () => rnd(4, 96)).sort((a, b) => a - b);
+        const ps = cuts.map((c, i) => c - (i ? cuts[i - 1] : 0)).concat(100 - cuts[k - 2]);
+        if (ps.every(p => p >= 4) && new Set(ps).size === k) {
+          ps.sort((a, b) => b - a);
+          return { kind: 'huff', ch: '9', f: ps.map((p, i) => ({ s: 'ABCDE'[i], p })) };
+        }
+      }
+    },
+    floyd() {
+      for (;;) {
+        const M = Array.from({ length: 4 }, (_, i) => Array.from({ length: 4 }, (_, j) => (i === j ? 0 : Math.random() < 0.5 ? rnd(1, 9) : 0)));
+        if (floyd(M).ok) return { kind: 'floyd', ch: '8', M };
+      }
+    },
+  };
+
+  function solve(q) {
+    switch (q.kind) {
+      case 'coin': return coinRow(q.c);
+      case 'knap': return knapsack(q.items, q.W);
+      case 'dijk': return dijkstra(q.nodes, q.edges);
+      case 'hors': return horspool(q.p);
+      case 'huff': return huffman(q.f);
+      case 'floyd': return floyd(q.M);
+    }
+  }
+
+  // ---------- Answer checking (lenient on spacing and case, strict on values) ----------
+  function check(q, input, answer) {
+    const s = (input || '').trim().replace(/\s+/g, ' ');
+    if (!s) return false;
+    switch (q.kind) {
+      case 'coin': case 'knap': return /^\d+$/.test(s) && s === answer;
+      case 'huff': return /^\d+(\.\d+)?$/.test(s) && Math.abs(parseFloat(s) - parseFloat(answer)) < 0.001;
+      case 'floyd': { const a = s.match(/\d+/g) || [], b = answer.match(/\d+/g); return a.length === b.length && a.every((x, i) => +x === +b[i]); }
+      case 'hors': {
+        const toMap = t => Object.fromEntries((t.match(/[a-z*]\s*:\s*\d+/gi) || []).map(x => { const [k, v] = x.split(':'); return [k.trim().toLowerCase(), +v]; }));
+        const A = toMap(s), B = toMap(answer);
+        return Object.keys(A).length === Object.keys(B).length && Object.keys(B).every(k => A[k] === B[k]);
+      }
+      case 'dijk': {
+        const toks = t => t.toUpperCase().replace(/\s*-\s*>\s*/g, '->').replace(/\s*:\s*/g, ':').split(' ').filter(Boolean).sort().join(' ');
+        return toks(s) === toks(answer);
+      }
+    }
+    return false;
+  }
+
+  return { rnd, pick, shuffle, coinRow, knapsack, dijkstra, horspool, huffman, floyd, gen, solve, check };
+})();
+if (typeof module !== 'undefined') module.exports = Core;
+</script>
+<script>// Frame generators for chapters 7-9. Each frame: data for the picture, cap (HTML caption), w (optional written-answer line), n (note).
+const A7 = (() => {
+  const sub = n => String(n).split('').map(d => '₀₁₂₃₄₅₆₇₈₉'[d]).join('');
+
+  /* ---------- week 7 ---------- */
+  function distCount(A, l, u) {
+    const k = u - l + 1, F = [];
+    let cnt = Array(k).fill(0), S = Array(A.length).fill(null), D = null;
+    F.push({ A, cnt: cnt.slice(), S: S.slice(), cap: `ค่าอยู่ในช่วง [${l}, ${u}] จึงมีช่องนับ ${k} ช่อง เริ่มจากศูนย์ทั้งหมด`, w: `ช่วงค่า l = ${l}, u = ${u} สร้างตารางความถี่ ${k} ช่อง` });
+    A.forEach((v, i) => { cnt[v - l]++; F.push({ A, ai: i, cnt: cnt.slice(), hc: v - l, S: S.slice(), cap: `รอบ 1 นับ: A[${i}] = <b>${v}</b> บวกช่อง ${v} เป็น ${cnt[v - l]}` }); });
+    F[F.length - 1].w = `ความถี่: ${cnt.map((c, j) => `${l + j}→${c}`).join(', ')}`;
+    D = cnt.slice(); for (let j = 1; j < k; j++) D[j] += D[j - 1];
+    F.push({ A, cnt: D.slice(), dist: true, S: S.slice(), cap: `รอบ 2 สะสมจากซ้าย ได้ D = [${D.join(', ')}] คือจำนวนตัวที่ ≤ ค่านั้น`, w: `สะสม D = [${D.join(', ')}]`, n: 'D[v] บอกตำแหน่งสุดท้ายของค่า v ใน S' });
+    for (let i = A.length - 1; i >= 0; i--) {
+      const v = A[i], pos = D[v - l] - 1; S[pos] = v; D[v - l]--;
+      F.push({ A, ai: i, cnt: D.slice(), dist: true, hc: v - l, S: S.slice(), hs: pos, cap: `รอบ 3 ไล่จากขวา: A[${i}] = <b>${v}</b> วางที่ S[${pos}] แล้วลด D[${v}] เป็น ${D[v - l]}`, w: `A[${i}] = ${v} → S[${pos}], D[${v}] = ${D[v - l]}` });
+    }
+    F.push({ A, cnt: D.slice(), dist: true, S: S.slice(), done: true, cap: `<b>เรียงเสร็จ S = ${S.join(' ')}</b> ไม่ต้องเทียบค่ากันเลย ใช้เวลา O(n + k)`, w: `S = [${S.join(', ')}] ใช้เวลา O(n + k)` });
+    return F;
+  }
+
+  function shiftTable(p) {
+    const m = p.length, t = {};
+    for (let j = 0; j < m - 1; j++) t[p[j]] = m - 1 - j;
+    return t;
+  }
+  function horspoolFrames(text, pat) {
+    const m = pat.length, n = text.length, t = shiftTable(pat), F = [];
+    let i = m - 1, comps = 0;
+    while (i <= n - 1) {
+      let k = 0; const cmp = [];
+      while (k < m && pat[m - 1 - k] === text[i - k]) { cmp.push([i - k, 1]); k++; comps++; }
+      if (k === m) { F.push({ pos: i - m + 1, cmp, found: true, cap: `<b>ตรงครบ ${m} ตัว เจอที่ตำแหน่ง ${i - m + 1}</b> เทียบไปทั้งหมด ${comps} ครั้ง`, w: `ตำแหน่ง ${i - m + 1}: ตรงครบ ${m} ตัว เจอ pattern` }); return F; }
+      cmp.push([i - k, 0]); comps++;
+      const c = text[i], s = t[c] ?? m;
+      F.push({ pos: i - m + 1, cmp, c: i, cap: `${k ? `ตรง ${k} ตัวแล้วไม่ตรง ` : 'ตัวท้ายไม่ตรง '}ดูตัวใต้ตัวท้าย pattern คือ <b>${c === '_' ? '_' : c}</b> → t(${c}) = <b>${s}</b> เลื่อน ${s} ช่อง`, w: `ตำแหน่ง ${i - m + 1}: ตัวใต้ตัวท้ายคือ ${c}, t(${c}) = ${s} → เลื่อน ${s}` });
+      i += s;
+    }
+    F.push({ pos: i - m + 1, cmp: [], cap: '<b>pattern เลยท้าย text แล้ว ไม่เจอ</b>', w: 'ไม่เจอ pattern' });
+    return F;
+  }
+
+  function bmD2(p) {
+    const m = p.length, d2 = {};
+    for (let k = 1; k < m; k++) {
+      const suf = p.slice(m - k), prev = p[m - k - 1];
+      let found = -1;
+      for (let j = m - k - 1; j >= 0; j--) if (p.slice(j, j + k) === suf && (j === 0 || p[j - 1] !== prev)) { found = j; break; }
+      if (found >= 0) d2[k] = m - k - found;
+      else { let l = k - 1; while (l > 0 && p.slice(0, l) !== suf.slice(k - l)) l--; d2[k] = m - l; }
+    }
+    return d2;
+  }
+  function bmFrames(text, pat) {
+    const m = pat.length, n = text.length, t1 = shiftTable(pat), d2 = bmD2(pat), F = [];
+    let i = m - 1;
+    while (i <= n - 1) {
+      let k = 0; const cmp = [];
+      while (k < m && pat[m - 1 - k] === text[i - k]) { cmp.push([i - k, 1]); k++; }
+      if (k === m) { F.push({ pos: i - m + 1, cmp, found: true, cap: `<b>ตรงครบ เจอ ${pat} ที่ตำแหน่ง ${i - m + 1}</b>`, w: `ตำแหน่ง ${i - m + 1}: ตรงครบ เจอ pattern` }); return F; }
+      const c = text[i - k]; cmp.push([i - k, 0]);
+      const tc = t1[c] ?? m, d1 = Math.max(tc - k, 1);
+      const d = k ? Math.max(d1, d2[k]) : d1;
+      const why = k ? `k = ${k}, ตัวที่ไม่ตรงคือ <b>${c}</b>: d₁ = max(t₁(${c}) − ${k}, 1) = max(${tc} − ${k}, 1) = ${d1}, d₂(${k}) = ${d2[k]} → เลื่อน <b>max = ${d}</b>` : `k = 0 ตัวที่ไม่ตรงคือ <b>${c}</b>: d₁ = t₁(${c}) = ${tc} → เลื่อน <b>${d}</b>`;
+      F.push({ pos: i - m + 1, cmp, cap: why, w: `ตำแหน่ง ${i - m + 1}: ${why.replace(/<[^>]+>/g, '')}` });
+      i += d;
+    }
+    F.push({ pos: i - m + 1, cmp: [], cap: '<b>ไม่เจอ</b>' });
+    return F;
+  }
+
+  const letterSum = w => [...w].reduce((s, c) => s + c.charCodeAt(0) - 64, 0);
+  function hashFrames(words, mode, M = 13) {
+    const F = [];
+    if (mode === 'open') {
+      const T = Array.from({ length: M }, () => []);
+      F.push({ T: T.map(x => x.slice()), cap: `ตาราง ${M} ช่อง แต่ละช่องเป็น linked list (separate chaining)` });
+      for (const w of words) {
+        const s = letterSum(w), k = s % M; T[k].push(w);
+        F.push({ T: T.map(x => x.slice()), slot: k, word: w, cap: `h(${w}) = ${s} mod ${M} = <b>${k}</b>` + (T[k].length > 1 ? ` ชนกับ ${T[k].slice(0, -1).join(', ')} จึง<b>ต่อท้ายลิสต์</b>` : ''), w: `h(${w}) = ${s} mod ${M} = ${k}` + (T[k].length > 1 ? ` (ชน ต่อลิสต์ช่อง ${k})` : '') });
+      }
+      F.push({ T: T.map(x => x.slice()), cap: `ใส่ครบ ${words.length} คำ load factor <b>α = n/m = ${words.length}/${M} ≈ ${(words.length / M).toFixed(2)}</b>`, w: `α = ${words.length}/${M}` });
+    } else {
+      const T = Array(M).fill(null);
+      F.push({ T: T.slice(), cap: `ตาราง ${M} ช่อง ทุก key อยู่ในตารางเอง (open addressing แบบ linear probing)` });
+      for (const w of words) {
+        const s = letterSum(w); let k = s % M; const tried = [];
+        while (T[k] !== null) { tried.push(k); k = (k + 1) % M; }
+        T[k] = w;
+        F.push({ T: T.slice(), slot: k, bad: tried, word: w, cap: `h(${w}) = ${s} mod ${M} = <b>${s % M}</b>` + (tried.length ? ` ช่อง ${tried.join(', ')} ไม่ว่าง จึง<b>ไล่ไปช่องถัดไป</b> ได้ช่อง ${k}` : ''), w: `h(${w}) = ${s} mod ${M} = ${s % M}` + (tried.length ? ` ชน → ช่อง ${k}` : '') });
+      }
+    }
+    return F;
+  }
+
+  /* B-tree, Levitin variant: keys in leaves, max 3 keys per node (order 4) */
+  let uid = 0;
+  const leaf = keys => ({ id: ++uid, leaf: true, keys });
+  const inner = (keys, kids) => ({ id: ++uid, leaf: false, keys, kids });
+  const clone = nd => (nd.leaf ? { id: nd.id, leaf: true, keys: nd.keys.slice() } : { id: nd.id, leaf: false, keys: nd.keys.slice(), kids: nd.kids.map(clone) });
+  function btreeStart() {
+    uid = 0;
+    return inner([20, 51], [
+      inner([11, 15], [leaf([4, 7, 10]), leaf([11, 14]), leaf([15, 16, 19])]),
+      inner([25, 34, 40], [leaf([20, 24]), leaf([25, 28]), leaf([34, 38]), leaf([40, 43, 46])]),
+      inner([60], [leaf([51, 55]), leaf([60, 68, 80])]),
+    ]);
+  }
+  function btreeInsert(root0, key, MAXK = 3) {
+    let root = clone(root0); const F = [];
+    const path = []; let nd = root;
+    while (!nd.leaf) { let i = 0; while (i < nd.keys.length && key >= nd.keys[i]) i++; path.push([nd, i]); nd = nd.kids[i]; }
+    F.push({ root: clone(root), hl: [...path.map(p => p[0].id), nd.id], cap: `ค้นจาก root ลงไปหาใบที่ ${key} ควรอยู่ (เทียบกับ key ใน node แล้วเลือกลูก)` });
+    nd.keys.push(key); nd.keys.sort((a, b) => a - b);
+    F.push({ root: clone(root), hl: [nd.id], cap: `ใส่ <b>${key}</b> ลงใบ ได้ [${nd.keys.join(', ')}]` + (nd.keys.length > MAXK ? ` มี ${nd.keys.length} key <b>เกิน ${MAXK}</b> ต้องแยก` : ' ไม่เกิน จบ'), w: `ใส่ ${key} ลงใบ → [${nd.keys.join(', ')}]` });
+    let cur = nd;
+    while (cur.keys.length > MAXK) {
+      const parentEntry = path.pop();
+      let up, left, right;
+      if (cur.leaf) { left = leaf(cur.keys.slice(0, 2)); right = leaf(cur.keys.slice(2)); up = right.keys[0]; }
+      else { left = inner(cur.keys.slice(0, 2), cur.kids.slice(0, 3)); right = inner(cur.keys.slice(3), cur.kids.slice(3)); up = cur.keys[2]; }
+      if (!parentEntry) { root = inner([up], [left, right]); F.push({ root: clone(root), hl: [root.id, left.id, right.id], cap: `แยก root ได้ [${left.keys.join(', ')}] | [${right.keys.join(', ')}] และสร้าง root ใหม่ [${up}] <b>ต้นไม้สูงขึ้น 1 ชั้น</b>`, w: `แยก root → root ใหม่ [${up}]` }); break; }
+      const [par, idx] = parentEntry;
+      par.kids.splice(idx, 1, left, right); par.keys.splice(idx, 0, up);
+      F.push({ root: clone(root), hl: [par.id, left.id, right.id], cap: `แยกเป็น [${left.keys.join(', ')}] | [${right.keys.join(', ')}] แล้ว<b>ดัน ${up} ขึ้น</b> ไปที่ parent ได้ [${par.keys.join(', ')}]` + (par.keys.length > MAXK ? ' parent เกินด้วย แยกต่อ' : ''), w: `แยก [${left.keys.join(', ')}] | [${right.keys.join(', ')}] ดัน ${up} ขึ้น parent → [${par.keys.join(', ')}]` });
+      cur = par;
+    }
+    return { root, frames: F };
+  }
+
+  /* ---------- week 8 ---------- */
+  function fibTree(n, memo) {
+    const seen = new Set(); let id = 0;
+    const go = k => {
+      const node = { id: id++, k, kids: [] };
+      if (memo && seen.has(k)) { node.lookup = true; return node; }
+      if (k >= 2) { node.kids = [go(k - 1), go(k - 2)]; }
+      seen.add(k);
+      return node;
+    };
+    return go(n);
+  }
+
+  function coinRowFrames(c) {
+    const n = c.length, F = [0, c[0]], fr = [];
+    fr.push({ F: [0, c[0]], i: 1, cap: `F(0) = 0 และ F(1) = c₁ = <b>${c[0]}</b>`, w: `F(0) = 0, F(1) = ${c[0]}` });
+    for (let i = 2; i <= n; i++) {
+      const take = c[i - 1] + F[i - 2], skip = F[i - 1]; F[i] = Math.max(take, skip);
+      fr.push({ F: F.slice(), i, take: take >= skip, cap: `F(${i}) = max(c${sub(i)} + F(${i - 2}), F(${i - 1})) = max(${c[i - 1]} + ${F[i - 2]}, ${skip}) = <b>${F[i]}</b>`, w: `F(${i}) = max(${c[i - 1]} + ${F[i - 2]}, ${skip}) = ${F[i]}` });
+    }
+    const pick = []; for (let i = n; i >= 1;) { if (i === 1 || F[i] !== F[i - 1]) { pick.push(i); i -= 2; } else i--; }
+    pick.reverse();
+    fr.push({ F: F.slice(), pick, done: true, cap: `<b>ตอบ F(${n}) = ${F[n]}</b> ย้อนรอยได้เหรียญที่ ${pick.join(', ')} (${pick.map(i => c[i - 1]).join(' + ')})`, w: `ตอบ ${F[n]} โดยเลือกเหรียญที่ ${pick.join(', ')}` });
+    return fr;
+  }
+
+  function changeFrames(d, n) {
+    const F = [0], via = [null], fr = [{ F: [0], i: 0, cap: 'F(0) = 0 เพราะจำนวน 0 ไม่ต้องใช้เหรียญ', w: 'F(0) = 0' }];
+    for (let i = 1; i <= n; i++) {
+      const opts = d.filter(x => x <= i).map(x => [x, F[i - x] + 1]);
+      const best = opts.reduce((a, b) => (b[1] < a[1] ? b : a));
+      F[i] = best[1]; via[i] = best[0];
+      fr.push({ F: F.slice(), i, from: opts.map(o => i - o[0]), cap: `F(${i}) = min(${opts.map(([x]) => `F(${i - x})`).join(', ')}) + 1 = min(${opts.map(([x]) => F[i - x]).join(', ')}) + 1 = <b>${F[i]}</b>`, w: `F(${i}) = min(${opts.map(([x]) => F[i - x]).join(', ')}) + 1 = ${F[i]}` });
+    }
+    const coins = []; for (let i = n; i > 0; i -= via[i]) coins.push(via[i]);
+    fr.push({ F: F.slice(), done: true, cap: `<b>ตอบ F(${n}) = ${F[n]} เหรียญ</b> คือ ${coins.join(' + ')}`, w: `ตอบ ${F[n]} เหรียญ (${coins.join(' + ')})` });
+    return fr;
+  }
+
+  function collectFrames(C) {
+    const R = C.length, Cn = C[0].length, F = C.map(r => r.map(() => null)), fr = [];
+    for (let i = 0; i < R; i++) {
+      for (let j = 0; j < Cn; j++) F[i][j] = Math.max(i ? F[i - 1][j] : 0, j ? F[i][j - 1] : 0) + C[i][j];
+      fr.push({ F: F.map(r => r.slice()), row: i, cap: `แถว ${i + 1}: แต่ละช่อง F(i, j) = max(ช่องบน, ช่องซ้าย) + เหรียญในช่อง ได้ <b>${F[i].join(' ')}</b>`, w: `แถว ${i + 1}: ${F[i].join(' ')}` });
+    }
+    const path = [[R - 1, Cn - 1]]; let i = R - 1, j = Cn - 1;
+    while (i || j) { if (i && (!j || F[i - 1][j] >= F[i][j - 1])) i--; else j--; path.push([i, j]); }
+    fr.push({ F: F.map(r => r.slice()), path, done: true, cap: `<b>ตอบ F(${R}, ${Cn}) = ${F[R - 1][Cn - 1]} เหรียญ</b> ย้อนจากมุมขวาล่างไปทางช่องที่ค่ามากกว่าจะได้เส้นทาง`, w: `ตอบ ${F[R - 1][Cn - 1]} เหรียญ` });
+    return fr;
+  }
+
+  function knapFrames(items, W) {
+    const n = items.length, V = Array.from({ length: n + 1 }, () => Array(W + 1).fill(0)), fr = [];
+    fr.push({ V: V.map(r => r.slice()), row: 0, cap: 'แถว 0 และคอลัมน์ 0 เป็นศูนย์ทั้งหมด (ยังไม่มีของ หรือกระเป๋าจุ 0)', w: 'V[0][j] = 0, V[i][0] = 0' });
+    for (let i = 1; i <= n; i++) {
+      const { w, v } = items[i - 1];
+      for (let j = 0; j <= W; j++) V[i][j] = j >= w ? Math.max(V[i - 1][j], v + V[i - 1][j - w]) : V[i - 1][j];
+      const j = W;
+      fr.push({ V: V.map(r => r.slice()), row: i, cap: `ชิ้นที่ ${i} (w = ${w}, v = ${v}): j < ${w} ลอกแถวบน ส่วน j ≥ ${w} ใช้ max(บน, ${v} + V[${i - 1}][j − ${w}]) เช่น V[${i}][${j}] = max(${V[i - 1][j]}, ${v} + ${j >= w ? V[i - 1][j - w] : '-'}) = <b>${V[i][j]}</b>`, w: `i = ${i}: ${V[i].join(' ')}` });
+    }
+    const take = []; let j = W;
+    for (let i = n; i >= 1; i--) if (V[i][j] !== V[i - 1][j]) { take.push(i); j -= items[i - 1].w; }
+    take.reverse();
+    fr.push({ V: V.map(r => r.slice()), take, done: true, cap: `<b>ตอบ V[${n}][${W}] = ${V[n][W]}</b> ย้อนรอย: ค่าเปลี่ยนจากแถวบนแปลว่าหยิบชิ้นนั้น ได้ชิ้นที่ ${take.join(', ')}`, w: `ตอบ ${V[n][W]} หยิบชิ้นที่ ${take.join(', ')}` });
+    return fr;
+  }
+
+  function closureFrames(V, E, kind) {
+    const n = V.length, INF = Infinity, ix = Object.fromEntries(V.map((v, i) => [v, i]));
+    let M = V.map((u, i) => V.map((w, j) => (kind === 'w' ? 0 : i === j ? 0 : INF)));
+    E.forEach(([a, b, w]) => { M[ix[a]][ix[b]] = kind === 'w' ? 1 : w; });
+    const fmt = x => (x === INF ? '∞' : x);
+    const fr = [{ M: M.map(r => r.slice()), k: -1, ch: [], cap: kind === 'w' ? 'R⁽⁰⁾ คือ adjacency matrix: 1 ถ้ามีลูกศรตรงจาก i ไป j' : 'D⁽⁰⁾ คือ weight matrix: ไม่มีเส้นตรง = ∞', w: (kind === 'w' ? 'R(0) = ' : 'D(0) = ') + M.map(r => '[' + r.map(fmt).join(' ') + ']').join(' ') }];
+    for (let k = 0; k < n; k++) {
+      const N = M.map(r => r.slice()), ch = [];
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+        if (kind === 'w') { if (!M[i][j] && M[i][k] && M[k][j]) { N[i][j] = 1; ch.push([i, j]); } }
+        else if (M[i][k] + M[k][j] < M[i][j]) { N[i][j] = M[i][k] + M[k][j]; ch.push([i, j, M[i][k], M[k][j]]); }
+      }
+      M = N;
+      const list = ch.map(([i, j, a, b]) => kind === 'w' ? `${V[i]}→${V[j]}` : `d(${V[i]},${V[j]}) = ${a} + ${b} = ${M[i][j]}`);
+      fr.push({ M: M.map(r => r.slice()), k, ch, cap: `k = ${V[k]}: ให้ผ่าน ${V[k]} ได้ ` + (ch.length ? (kind === 'w' ? `ไปถึงกันเพิ่ม <b>${list.join(', ')}</b>` : `ระยะลดลง <b>${list.join(', ')}</b>`) : 'ไม่มีช่องไหนเปลี่ยน'), w: `${kind === 'w' ? 'R' : 'D'}(${k + 1}): ` + (ch.length ? list.join(', ') : 'ไม่เปลี่ยน') });
+    }
+    fr[fr.length - 1].w += '  ผลสุดท้าย ' + M.map(r => '[' + r.map(fmt).join(' ') + ']').join(' ');
+    return fr;
+  }
+
+  function lcsFrames(X, Y) {
+    const m = X.length, n = Y.length, L = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0)), fr = [];
+    fr.push({ L: L.map(r => r.slice()), row: 0, cap: 'แถว 0 และคอลัมน์ 0 เป็นศูนย์ (สตริงว่าง)' });
+    for (let i = 1; i <= m; i++) {
+      const mt = [];
+      for (let j = 1; j <= n; j++) { if (X[i - 1] === Y[j - 1]) { L[i][j] = L[i - 1][j - 1] + 1; mt.push(j); } else L[i][j] = Math.max(L[i - 1][j], L[i][j - 1]); }
+      fr.push({ L: L.map(r => r.slice()), row: i, mt, cap: `แถว ${X[i - 1]}: ช่องที่ตัวอักษรตรงกัน (${mt.length ? mt.map(j => Y[j - 1] + sub(j)).join(', ') : 'ไม่มี'}) ใช้ <b>ทแยงบนซ้าย + 1</b> ช่องอื่นใช้ max(บน, ซ้าย)` });
+    }
+    fr.push({ L: L.map(r => r.slice()), done: true, cap: `<b>ความยาว LCS = L[${m}][${n}] = ${L[m][n]}</b>` });
+    return fr;
+  }
+
+  /* ---------- week 9 ---------- */
+  const ek = (u, v) => [u, v].sort().join('');
+  function primFrames(G, s) {
+    const V = Object.keys(G.pos), inT = [s], tree = [], fr = [];
+    let total = 0;
+    fr.push({ inT: inT.slice(), tree: [], cap: `เริ่มที่ <b>${s}</b> ต้นไม้มี vertex เดียว`, w: `เริ่มที่ ${s}` });
+    while (inT.length < V.length) {
+      const cand = G.E.filter(([u, v]) => inT.includes(u) !== inT.includes(v));
+      const best = cand.reduce((a, b) => (b[2] < a[2] ? b : a));
+      const nv = inT.includes(best[0]) ? best[1] : best[0];
+      inT.push(nv); tree.push(ek(best[0], best[1])); total += best[2];
+      fr.push({ inT: inT.slice(), tree: tree.slice(), cand: cand.map(e => ek(e[0], e[1])), now: ek(best[0], best[1]), cap: `เส้นที่ข้ามจากต้นไม้ออกไป: ${cand.map(e => `${e[0]}${e[1]} ${e[2]}`).join(', ')} เลือกเบาสุด <b>${best[0]}${best[1]} (${best[2]})</b> เพิ่ม ${nv}`, w: `เลือก ${best[0]}${best[1]} (${best[2]}) เพิ่ม ${nv}` });
+    }
+    fr.push({ inT, tree, done: true, cap: `<b>ครบ ${V.length} vertex น้ำหนักรวม = ${total}</b>`, w: `MST น้ำหนักรวม ${total}` });
+    return fr;
+  }
+  function kruskalFrames(G) {
+    const V = Object.keys(G.pos), order = G.E.slice().sort((a, b) => a[2] - b[2] || (a[0] + a[1]).localeCompare(b[0] + b[1]));
+    const par = Object.fromEntries(V.map(v => [v, v])), find = x => (par[x] === x ? x : (par[x] = find(par[x])));
+    const status = {}, tree = [], fr = [];
+    let total = 0;
+    fr.push({ status: {}, tree: [], order, cap: `เรียง edge จากเบาไปหนัก: ${order.map(e => `${e[0]}${e[1]} ${e[2]}`).join(', ')}`, w: 'เรียง edge: ' + order.map(e => `${e[0]}${e[1]}(${e[2]})`).join(', ') });
+    for (const [u, v, w] of order) {
+      if (tree.length === V.length - 1) break;
+      const a = find(u), b = find(v), k = ek(u, v);
+      if (a !== b) { par[a] = b; status[k] = 'ok'; tree.push(k); total += w; fr.push({ status: { ...status }, tree: tree.slice(), order, now: k, cap: `<b>${u}${v} (${w}) รับ</b> ${u} กับ ${v} อยู่คนละกลุ่ม ไม่เกิด cycle`, w: `${u}${v} (${w}) รับ` }); }
+      else { status[k] = 'rej'; fr.push({ status: { ...status }, tree: tree.slice(), order, now: k, cap: `<b>${u}${v} (${w}) ทิ้ง</b> ${u} กับ ${v} เชื่อมกันอยู่แล้ว ถ้าใส่จะเกิด cycle`, w: `${u}${v} (${w}) ทิ้ง เกิด cycle` }); }
+    }
+    fr.push({ status, tree, order, done: true, cap: `<b>ได้ ${V.length - 1} edge น้ำหนักรวม = ${total}</b>`, w: `MST น้ำหนักรวม ${total}` });
+    return fr;
+  }
+  function dijkstraFrames(G, s) {
+    const V = Object.keys(G.pos), dist = Object.fromEntries(V.map(v => [v, Infinity])), prev = {}, done = [], fr = [];
+    dist[s] = 0;
+    const nb = u => G.E.filter(e => e[0] === u || (!G.directed && e[1] === u)).map(e => (e[0] === u ? [e[1], e[2]] : [e[0], e[2]]));
+    while (done.length < V.length) {
+      const u = V.filter(v => !done.includes(v)).reduce((a, b) => (dist[b] < dist[a] ? b : a));
+      if (dist[u] === Infinity) break;
+      done.push(u);
+      const ups = [];
+      nb(u).forEach(([v, w]) => { if (!done.includes(v) && dist[u] + w < dist[v]) { dist[v] = dist[u] + w; prev[v] = u; ups.push(`${v} = ${dist[u]} + ${w} = ${dist[v]}`); } });
+      fr.push({ dist: { ...dist }, done: done.slice(), prev: { ...prev }, now: u, cap: `เลือก <b>${u}</b> (ระยะ ${dist[u]} น้อยสุดที่ยังไม่ปิด)` + (ups.length ? ` อัปเดต <b>${ups.join(', ')}</b>` : ' ไม่มีระยะไหนลดลง'), w: `เลือก ${u}(${dist[u]})` + (ups.length ? ` อัปเดต ${ups.join(', ')}` : '') });
+    }
+    const path = v => { const p = [v]; while (prev[p[0]]) p.unshift(prev[p[0]]); return p.join('-'); };
+    fr.push({ dist: { ...dist }, done: done.slice(), prev: { ...prev }, fin: true, cap: '<b>ระยะสั้นสุดจาก ' + s + '</b> ' + V.filter(v => v !== s).map(v => `${v} = ${dist[v]}`).join(', '), w: 'สรุป ' + V.filter(v => v !== s).map(v => `${path(v)} : ${dist[v]}`).join(', ') });
+    return fr;
+  }
+  function activityFrames(acts) {
+    const A = acts.map((a, i) => ({ s: a[0], f: a[1], i })).sort((a, b) => a.f - b.f), fr = [], pick = [];
+    let last = -Infinity;
+    fr.push({ A, pick: [], cap: 'เรียงกิจกรรมตาม<b>เวลาสิ้นสุด</b>จากน้อยไปมาก', w: 'เรียงตามเวลาสิ้นสุด: ' + A.map(a => `(${a.s},${a.f})`).join(' ') });
+    A.forEach((a, k) => {
+      const ok = a.s >= last, prevEnd = last; if (ok) { pick.push(k); last = a.f; }
+      fr.push({ A, pick: pick.slice(), now: k, rej: !ok, cap: ok ? (prevEnd === -Infinity ? `<b>(${a.s}, ${a.f}) เลือก</b> เป็นกิจกรรมที่จบเร็วที่สุด` : `<b>(${a.s}, ${a.f}) เลือก</b> เริ่ม ${a.s} ≥ เวลาจบล่าสุด ${prevEnd} ไม่ทับกัน`) : `<b>(${a.s}, ${a.f}) ข้าม</b> เริ่ม ${a.s} ก่อนกิจกรรมที่เลือกไว้จบ (${last})`, w: `(${a.s},${a.f}) ${ok ? 'เลือก' : 'ข้าม'}` });
+    });
+    fr.push({ A, pick, done: true, cap: `<b>ได้ ${pick.length} กิจกรรม</b> ${pick.map(k => `(${A[k].s}, ${A[k].f})`).join(', ')}`, w: `ได้ ${pick.length} กิจกรรม` });
+    return fr;
+  }
+  function fracFrames(items, W) {
+    const A = items.map((it, i) => ({ ...it, i, r: it.v / it.w })).sort((a, b) => b.r - a.r), fr = [];
+    let cap = W, val = 0; const take = [];
+    fr.push({ A, take: [], val: 0, cap: `คำนวณ v/w: ${A.map(a => `${a.v}/${a.w} = ${a.r}`).join(', ')} แล้วเรียงจากมากไปน้อย`, w: 'v/w: ' + A.map(a => `${a.v}/${a.w} = ${a.r}`).join(', ') });
+    for (const a of A) {
+      if (cap <= 0) break;
+      const x = Math.min(1, cap / a.w), got = a.v * x; cap -= a.w * x; val += got; take.push(x);
+      fr.push({ A, take: take.slice(), val, cap: x === 1 ? `ใส่ชิ้น (${a.v}, ${a.w}) <b>ทั้งชิ้น</b> ได้ ${a.v} เหลือที่ ${cap}` : `ที่เหลือ ${a.w * x} ใส่ชิ้น (${a.v}, ${a.w}) ได้ <b>${a.w * x}/${a.w}</b> ได้ ${got}`, w: x === 1 ? `ใส่ (${a.v},${a.w}) ทั้งชิ้น ได้ ${a.v}` : `ใส่ (${a.v},${a.w}) ${a.w * x}/${a.w} ได้ ${got}` });
+    }
+    fr.push({ A, take, val, done: true, cap: `<b>มูลค่ารวม = ${val}</b>`, w: `มูลค่ารวม ${val}` });
+    return fr;
+  }
+  function huffmanFrames(freqs) {
+    let id = 0;
+    let q = freqs.map(([s, f]) => ({ id: id++, s, w: f, leaf: true }));
+    const r2 = x => Math.round(x * 100) / 100, fr = [];
+    fr.push({ q: q.slice(), cap: 'เริ่มจากใบเดี่ยวๆ ตามความถี่ แล้วเรียงจากน้อยไปมาก', w: 'ความถี่: ' + freqs.map(([s, f]) => `${s} ${f}`).join(', ') });
+    while (q.length > 1) {
+      q.sort((a, b) => a.w - b.w || a.id - b.id);
+      const [a, b] = q.splice(0, 2);
+      const nd = { id: id++, w: r2(a.w + b.w), kids: [a, b], s: a.s + b.s };
+      q.push(nd);
+      const nm = x => (x.leaf ? x.s : '{' + x.s.split('').join(',') + '}');
+      fr.push({ q: q.slice(), now: nd.id, cap: `หยิบสองค่าที่น้อยที่สุด <b>${nm(a)} (${a.w}) + ${nm(b)} (${b.w}) = ${nd.w}</b> รวมเป็นต้นใหม่`, w: `รวม ${nm(a)}(${a.w}) + ${nm(b)}(${b.w}) = ${nd.w}` });
+    }
+    const codes = {}; const walk = (nd, c) => { if (nd.leaf) codes[nd.s] = c || '0'; else { walk(nd.kids[0], c + '0'); walk(nd.kids[1], c + '1'); } };
+    walk(q[0], '');
+    const avg = r2(freqs.reduce((s, [x, f]) => s + f * codes[x].length, 0));
+    fr.push({ q: q.slice(), tree: q[0], codes, done: true, cap: `ซ้าย = 0 ขวา = 1 ได้รหัส ${freqs.map(([s]) => `${s} = ${codes[s]}`).join(', ')} <b>เฉลี่ย ${avg} บิต</b>`, w: `รหัส ${freqs.map(([s]) => `${s}=${codes[s]}`).join(' ')} เฉลี่ย = ${freqs.map(([s, f]) => `${f}×${codes[s].length}`).join(' + ')} = ${avg}` });
+    return fr;
+  }
+
+  return { distCount, shiftTable, horspoolFrames, bmD2, bmFrames, hashFrames, letterSum, btreeStart, btreeInsert, fibTree, coinRowFrames, changeFrames, collectFrames, knapFrames, closureFrames, lcsFrames, primFrames, kruskalFrames, dijkstraFrames, activityFrames, fracFrames, huffmanFrames };
+})();
+if (typeof module !== 'undefined') module.exports = A7;
+</script>
+<script>
+(() => {
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('algofinal:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('algofinal:' + k, JSON.stringify(v)); } catch (e) {} },
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const main = $('#main'), dockEl = $('#dock'), dockIn = $('#dock-in'), sheet = $('#sheet'), sheetIn = $('#sheet-in');
+const setDock = html => { dockIn.innerHTML = html || ''; dockEl.hidden = !html; };
+const closeSheet = () => sheet.classList.remove('open', 'good', 'bad');
+
+/* ---------- worked written answers ---------- */
+const WORK = {
+  sat: { q: 'กำหนด φ = x ∧ (x ∨ y ∨ z̄) ∧ (x̄ ∨ ȳ) และ certificate x = T, y = F, z = F จงแสดงว่า SAT อยู่ใน NP โดยการตรวจสอบ certificate นี้', lines: [
+    { t: 'SAT เป็น decision problem: มีการกำหนดค่าตัวแปรที่ทำให้ φ เป็นจริงหรือไม่', n: 'เปิดด้วยการบอกว่าปัญหาตอบ Yes/No' },
+    { t: 'x = T, y = F, z = F  ดังนั้น x̄ = F, ȳ = T, z̄ = T', n: 'หาค่า negation ไว้ก่อน', c: 1 },
+    { t: 'C₁: x = T  ✓', c: 1 },
+    { t: 'C₂: x ∨ y ∨ z̄ = T ∨ F ∨ T = T  ✓', n: 'OR เป็นจริงถ้ามีตัวใดตัวหนึ่งเป็น T', c: 1 },
+    { t: 'C₃: x̄ ∨ ȳ = F ∨ T = T  ✓', c: 1 },
+    { t: 'ทุก clause เป็น T จึงได้ φ = T ตอบ Yes (satisfiable)', n: 'CNF เชื่อม clause ด้วย AND จึงต้องจริงทุก clause' },
+    { t: 'การตรวจแทนค่าทีละ clause ใช้เวลา O(n) ซึ่งเป็น polynomial ดังนั้น SAT ∈ NP', n: 'ประโยคปิด: verify ได้ใน polynomial time' },
+    { t: 'ถ้าหาคำตอบเองต้องลองทุกชุด 2ⁿ = 2³ = 8 ชุด ซึ่งเป็น exponential', n: 'แสดงความต่างของ find กับ verify' },
+  ] },
+  reduce: { q: 'จงอธิบายความหมายของ Polynomial Reduction (D₁ ≤ₚ D₂) และบอกว่าใช้พิสูจน์ NP-Complete อย่างไร', lines: [
+    { t: 'D₁ ≤ₚ D₂ คือมีฟังก์ชัน f แปลง instance x ของ D₁ ไปเป็น instance f(x) ของ D₂' },
+    { t: 'x เป็น Yes-instance ของ D₁ ก็ต่อเมื่อ f(x) เป็น Yes-instance ของ D₂ (No ไปเป็น No)', n: 'สองเงื่อนไขแรกรวมกันได้เป็น "ก็ต่อเมื่อ"' },
+    { t: 'f ต้องทำงานใน polynomial time' },
+    { t: 'ความหมาย: ถ้าแก้ D₂ ได้ก็แก้ D₁ ได้ ดังนั้น D₂ ยากอย่างน้อยเท่า D₁' },
+    { t: 'พิสูจน์ปัญหาใหม่ Q ว่าเป็น NPC: แสดง Q ∈ NP แล้วแสดง Known NPC ≤ₚ Q', n: 'ปัญหาใหม่อยู่ด้านขวาเสมอ' },
+  ] },
+  classes: { q: 'จงอธิบายความหมายของ P, NP, NP-Complete และ NP-Hard พร้อมความสัมพันธ์ระหว่างกัน', lines: [
+    { t: 'P: decision problem ที่แก้ได้ด้วย deterministic algorithm ใน polynomial time O(nᵏ) เช่น Sorting, PATH (BFS O(V+E))' },
+    { t: 'NP: decision problem ที่ตรวจสอบคำตอบ (certificate) ได้ใน polynomial time เช่น SAT, CLIQUE', n: 'NP = Nondeterministic Polynomial' },
+    { t: 'NP-Hard: ปัญหา Q ที่ทุกปัญหาใน NP reduce มาได้ (L ≤ₚ Q) ไม่จำเป็นต้องอยู่ใน NP เช่น Halting, TSP แบบ optimization' },
+    { t: 'NP-Complete: Q ∈ NP และ Q เป็น NP-Hard เช่น SAT, 3-SAT, CLIQUE, HAMPATH' },
+    { t: 'P ⊆ NP และ NP-Complete = NP ∩ NP-Hard', c: 1 },
+    { t: 'ยังไม่มีใครพิสูจน์ได้ว่า P = NP หรือ P ≠ NP แต่ส่วนใหญ่เชื่อว่า P ≠ NP' },
+    { t: 'วาดภาพ: วง P อยู่ใน NP และ NP-Hard ซ้อนกับ NP ตรงส่วนที่เป็น NP-Complete', n: 'ใช้รูปเดียวกับแผนภาพด้านบน' },
+  ] },
+  clique: { q: 'กำหนด φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ x₃) จงสร้างกราฟตามวิธี reduce 3-SAT → CLIQUE และหา clique ขนาด k = 2 พร้อมบอก assignment', lines: [
+    { t: 'k = จำนวน clause = 2' },
+    { t: 'vertex: C₁ = {x₁, ¬x₂, x₃}, C₂ = {¬x₁, x₂, x₃} รวม 6 vertex', n: 'หนึ่ง vertex ต่อหนึ่ง literal ในแต่ละ clause' },
+    { t: 'ลาก edge เมื่ออยู่คนละ clause และไม่ใช่ negation ของกัน' },
+    { t: 'คู่ข้าม clause มี 3 × 3 = 9 คู่ ตัดคู่ x₁ กับ ¬x₁ และคู่ ¬x₂ กับ x₂ ออก เหลือ 7 edge', n: 'คู่ที่ขัดกันเป็นจริงพร้อมกันไม่ได้' },
+    { t: 'เลือก x₃ (C₁) กับ x₃ (C₂) มี edge เชื่อม จึงเป็น 2-clique' },
+    { t: 'ตั้ง x₃ = T ทำให้ทั้งสอง clause เป็นจริง φ จึง satisfiable', n: 'k-clique ↔ satisfying assignment' },
+    { t: 'สร้างกราฟได้ใน polynomial time จึงได้ 3-SAT ≤ₚ CLIQUE และ CLIQUE ∈ NP (ตรวจ O(k²)) ดังนั้น CLIQUE เป็น NP-Complete' },
+  ] },
+  indep: { q: 'จงแสดงขั้นตอนพิสูจน์ว่า INDEPENDENT SET เป็น NP-Complete', lines: [
+    { t: 'ขั้น 1: INDEPENDENT SET ∈ NP ให้ชุด k vertex มา ตรวจทุกคู่ว่าไม่มี edge ใช้เวลา O(k²)' },
+    { t: 'ขั้น 2: เลือกปัญหา NPC ที่รู้จักแล้ว คือ CLIQUE' },
+    { t: 'ขั้น 3: จาก ⟨G, k⟩ สร้าง complement Ḡ (คู่ที่มี edge ให้ลบ คู่ที่ไม่มีให้เติม) ใช้เวลา O(V²)', n: 'นี่คือฟังก์ชัน f ของ reduction' },
+    { t: 'G มี clique ขนาด k ก็ต่อเมื่อ Ḡ มี independent set ขนาด k', n: 'เชื่อมกันครบทุกคู่ใน G เท่ากับไม่เชื่อมกันเลยใน Ḡ' },
+    { t: 'ได้ CLIQUE ≤ₚ INDEPENDENT SET ดังนั้น INDEPENDENT SET เป็น NP-Complete' },
+  ] },
+  classify: { q: 'จงจำแนกปัญหาต่อไปนี้ว่าอยู่ใน class ใด พร้อมเหตุผล: Sorting, PATH, 2-SAT, SAT, 3-SAT, CLIQUE, HAMPATH, TSP (หาเส้นทางสั้นที่สุด), Halting Problem', lines: [
+    { t: 'Sorting: P เพราะแก้ได้ O(n log n)' },
+    { t: 'PATH: P เพราะใช้ BFS/DFS ได้ O(V + E)' },
+    { t: '2-SAT: P แก้ได้ O(n)' },
+    { t: 'SAT: NP-Complete ปัญหาแรกตาม Cook-Levin (1971)' },
+    { t: '3-SAT, CLIQUE, HAMPATH: NP-Complete ตรวจ certificate ได้เร็ว และมี reduction จาก NPC ที่รู้จัก' },
+    { t: 'TSP (optimization): NP-Hard ไม่ใช่ NPC เพราะไม่ใช่ decision problem จึงไม่อยู่ใน NP' },
+    { t: 'Halting Problem: NP-Hard ไม่อยู่ใน NP' },
+  ] },
+};
+
+function mountWork(host, data, opts = {}) {
+  const lines = data.lines;
+  host.classList.add('work');
+  host.innerHTML = (data.q ? `<div class="q"><small>ตัวอย่างข้อเขียน</small>${esc(data.q)}</div>` : '') +
+    `<div class="paper"><ol></ol><div class="ctl"><button class="btn small primary nx">เขียนบรรทัดแรก</button><button class="btn small ghost all">แสดงทั้งหมด</button><button class="btn small ghost rs" hidden>เริ่มใหม่</button><span class="count"></span></div></div>`;
+  const ol = $('ol', host), nx = $('.nx', host), all = $('.all', host), rs = $('.rs', host), cnt = $('.count', host);
+  let shown = 0;
+  const add = i => {
+    const l = lines[i], li = document.createElement('li');
+    li.innerHTML = `<div class="t${l.c || opts.code ? ' code' : ''}">${esc(l.t)}</div>` + (l.n ? `<div class="n">${esc(l.n)}</div>` : '');
+    ol.appendChild(li);
+  };
+  const sync = () => {
+    cnt.textContent = `${shown}/${lines.length}`;
+    nx.textContent = shown ? 'บรรทัดถัดไป' : 'เขียนบรรทัดแรก';
+    nx.disabled = all.disabled = shown >= lines.length;
+    rs.hidden = !shown;
+  };
+  nx.onclick = () => { if (shown < lines.length) add(shown++); sync(); };
+  all.onclick = () => { while (shown < lines.length) add(shown++); sync(); };
+  rs.onclick = () => { ol.innerHTML = ''; shown = 0; sync(); };
+  sync();
+}
+
+/* ---------- visuals for P/NP cards ---------- */
+const VIZ = {
+  growth(el) {
+    const fns = [['n', n => n, 0], ['n log n', n => n * Math.log2(n), 0], ['n²', n => n ** 2, 0], ['n³', n => n ** 3, 0], ['2ⁿ', n => 2 ** n, 1], ['n!', n => { let f = 1; for (let i = 2; i <= n; i++) f *= i; return f; }, 1]];
+    const fmt = v => v < 1e6 ? Math.round(v).toLocaleString('en-US') : (() => { const e = Math.floor(Math.log10(v)); return (v / 10 ** e).toFixed(1) + ' × 10' + String(e).split('').map(d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]).join(''); })();
+    el.innerHTML = `<div class="slider"><span>n =</span><b id="gn">20</b><input id="gr" type="range" min="2" max="30" value="20" aria-label="ขนาด input n"></div><div class="grow">${fns.map(([l, , x]) => `<div class="r${x ? ' x' : ''}"><span>${l}</span><div class="bar2"></div><span class="v"></span></div>`).join('')}</div>${legend([[L_ACC, 'Polynomial time'], [L_BAD, 'Exponential และ factorial']])}<div class="cap"><span class="ct" id="gcap"></span></div>`;
+    const draw = () => {
+      const n = +$('#gr', el).value; $('#gn', el).textContent = n;
+      const max = Math.log10(fns[5][1](30));
+      $$('.r', el).forEach((r, i) => { const v = fns[i][1](n); $('.bar2', r).style.transform = `scaleX(${Math.max(.02, Math.log10(Math.max(v, 1)) / max)})`; $('.v', r).textContent = fmt(v); });
+      $('#gcap', el).innerHTML = `n = ${n}: n³ ใช้ <b>${fmt(n ** 3)}</b> ขั้น แต่ 2ⁿ ใช้ <b>${fmt(2 ** n)}</b> ขั้น (แท่งวัดแบบ log scale)`;
+    };
+    $('#gr', el).oninput = draw; draw();
+  },
+  decide(el) {
+    const items = [['มีเส้นทางจาก A ไป B หรือไม่?', 1], ['เส้นทางที่สั้นที่สุดจาก A ไป B คืออะไร?', 0], ['กราฟ G มี clique ขนาด k หรือไม่?', 1], ['Clique ที่ใหญ่ที่สุดในกราฟคืออะไร?', 0], ['สูตร Boolean นี้ satisfiable หรือไม่?', 1], ['หา route สั้นที่สุดที่ผ่านทุกเมือง', 0]];
+    el.innerHTML = `<div class="flip">${items.map(([t], i) => `<button class="flipc" data-i="${i}"><span>${t}</span><small>แตะเพื่อดูประเภท</small></button>`).join('')}</div><div class="cap" id="dcap">แตะแต่ละคำถามว่าเป็น decision หรือ optimization</div>`;
+    $$('.flipc', el).forEach(b => b.onclick = () => { const d = items[b.dataset.i][1]; b.classList.add(d ? 'dec' : 'opt'); $('small', b).textContent = d ? 'Decision: ตอบ Yes / No' : 'Optimization: ถามหาค่าที่ดีที่สุด'; });
+  },
+  bfs(el) {
+    const P = { A: [60, 120], B: [190, 50], C: [190, 190], D: [330, 50], E: [330, 190], F: [460, 120] };
+    const E = [['A', 'B'], ['A', 'C'], ['B', 'D'], ['B', 'E'], ['C', 'E'], ['D', 'F'], ['E', 'F']];
+    const layers = [['A'], ['B', 'C'], ['D', 'E'], ['F']];
+    let step = 0;
+    el.innerHTML = `<svg viewBox="0 0 520 240" role="img" aria-label="กราฟสำหรับ BFS"></svg><div class="row"><button class="btn small primary" id="bstep">ขยาย BFS ทีละชั้น</button><button class="btn small ghost" id="breset">เริ่มใหม่</button></div><div class="cap" id="bcap"></div>`;
+    const draw = () => {
+      const seen = new Set(layers.slice(0, step + 1).flat()), front = new Set(layers[step]);
+      let s = '';
+      E.forEach(([a, b]) => { const on = seen.has(a) && seen.has(b); s += `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="${on ? 'var(--accent)' : 'var(--muted)'}" stroke-opacity="${on ? 1 : .35}" stroke-width="${on ? 3 : 1.6}"/>`; });
+      Object.entries(P).forEach(([k, [x, y]]) => { const on = seen.has(k), f = front.has(k); s += `<circle cx="${x}" cy="${y}" r="24" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${f ? 'var(--ink)' : on ? 'var(--accent)' : 'var(--muted)'}" stroke-width="${f ? 3 : 1.6}"/><text x="${x}" y="${y + 6}" text-anchor="middle" font-size="17" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'}">${k}</text>`; });
+      $('svg', el).innerHTML = s;
+      $('#bcap', el).innerHTML = step === layers.length - 1 ? '<b>เจอ F แล้ว ตอบ Yes</b> ทุก node และ edge ถูกดูอย่างมากครั้งเดียว จึงใช้เวลา O(V + E)' : `PATH จาก A ไป F มีไหม? ชั้นที่ ${step}: ${layers[step].join(', ')}`;
+      $('#bstep', el).disabled = step === layers.length - 1;
+    };
+    $('#bstep', el).onclick = () => { step++; draw(); };
+    $('#breset', el).onclick = () => { step = 0; draw(); };
+    draw();
+  },
+  sat(el) {
+    const v = { x: 1, y: 0, z: 0 }, T = b => (b ? 'T' : 'F');
+    const ev = (x, y, z) => [x, x || y || !z, !x || !y];
+    const combos = []; for (let m = 7; m >= 0; m--) combos.push([(m >> 2) & 1, (m >> 1) & 1, m & 1]);
+    el.innerHTML = `<div class="cnf" style="font-size:17px;padding-top:0">φ = x ∧ (x ∨ y ∨ z̄) ∧ (x̄ ∨ ȳ)</div><div class="toggles" id="stg"></div><div class="clauses" id="scl"></div><div class="cap" id="sv"></div><div class="combos" id="sall">${combos.map(([x, y, z], i) => `<button class="combo" data-i="${i}">${T(x)}${T(y)}${T(z)}<small>x y z</small></button>`).join('')}</div><div class="row"><button class="btn small primary" id="srun">ลองครบทั้ง 2³ = 8 ชุด</button></div>`;
+    const draw = () => {
+      $('#stg', el).innerHTML = ['x', 'y', 'z'].map(k => `<button class="tg" data-k="${k}" data-v="${v[k]}">${k} = <b>${T(v[k])}</b></button>`).join('');
+      $$('.tg', el).forEach(b => b.onclick = () => { v[b.dataset.k] ^= 1; draw(); });
+      const { x, y, z } = v, r = ev(x, y, z);
+      $('#scl', el).innerHTML = [['C₁: x', T(x), r[0]], ['C₂: x ∨ y ∨ z̄', `${T(x)} ∨ ${T(y)} ∨ ${T(!z)}`, r[1]], ['C₃: x̄ ∨ ȳ', `${T(!x)} ∨ ${T(!y)}`, r[2]]].map(([a, b, ok]) => `<div><span>${a} = ${b}</span><span class="${ok ? 'yes' : 'no'}">${ok ? 'T ✓' : 'F ✗'}</span></div>`).join('');
+      $('#sv', el).innerHTML = r.every(Boolean) ? '<b class="yes">ทุก clause เป็นจริง φ = T ตอบ Yes</b> ตรวจเสร็จในการไล่ครั้งเดียว' : '<b class="no">มี clause ที่เป็นเท็จ</b> ชุดค่านี้ใช้ไม่ได้ ลองชุดอื่น';
+    };
+    $$('.combo', el).forEach(b => b.onclick = () => { const [x, y, z] = combos[b.dataset.i]; Object.assign(v, { x, y, z }); draw(); });
+    $('#srun', el).onclick = () => combos.forEach(([x, y, z], i) => setTimeout(() => {
+      const b = $$('.combo', el)[i], ok = ev(x, y, z).every(Boolean);
+      b.classList.toggle('ok', ok); b.classList.toggle('ko', !ok); $('small', b).textContent = ok ? 'satisfiable' : 'ไม่ผ่าน';
+    }, i * 90));
+    draw();
+  },
+  tract(el) {
+    el.innerHTML = `<div class="duo"><div><h4 class="yes">Tractable (แก้ได้ใน polynomial time)</h4><ul class="mono"><li>O(n²) Bubble sort</li><li>O(n³) Matrix multiplication</li><li>O(n log n) Merge sort</li><li>O(V + E) BFS / DFS</li></ul></div><div><h4 class="no">Intractable</h4><ul class="mono"><li>O(2ⁿ) Brute-force SAT</li><li>O(n!) Brute-force TSP</li><li>O(nⁿ)</li></ul></div></div><div class="duo" style="margin-top:10px"><div><h4>ถ้า P = NP</h4>ตรวจได้เร็วก็แก้ได้เร็ว ระบบเข้ารหัสปัจจุบันไม่ปลอดภัย</div><div><h4>ถ้า P ≠ NP</h4>มีปัญหาที่ตรวจได้เร็วแต่แก้ไม่ได้เร็ว ต้องใช้ approximation หรือ heuristic</div></div>`;
+  },
+  reduce(el) {
+    const steps = ['instance x ของ D₁', 'f(x) ทำงานใน polynomial time', 'instance f(x) ของ D₂', 'คำตอบ Yes / No เดียวกัน'];
+    let k = 0;
+    el.innerHTML = `<div class="flow" id="rf"></div><div class="row"><button class="btn small primary" id="rn">ขั้นถัดไป</button></div><div class="cap" id="rc"></div>`;
+    const cap = ['เริ่มจาก input ของปัญหาที่อยากแก้ (D₁)', 'ฟังก์ชัน f แปลง input อย่างเดียว ไม่ได้แก้ปัญหา', 'ได้ input ของ D₂ ที่เรามีวิธีแก้อยู่แล้ว', 'Yes ของ D₁ ตรงกับ Yes ของ D₂ และ No ตรงกับ No ดังนั้นแก้ D₂ ได้ก็แก้ D₁ ได้'];
+    const draw = () => {
+      $('#rf', el).innerHTML = steps.map((s, i) => `<span class="${i === k ? 'hot' : ''}">${s}</span>${i < steps.length - 1 ? '<em>→</em>' : ''}`).join('');
+      $('#rc', el).textContent = cap[k];
+      $('#rn', el).textContent = k === steps.length - 1 ? 'เริ่มใหม่' : 'ขั้นถัดไป';
+    };
+    $('#rn', el).onclick = () => { k = (k + 1) % steps.length; draw(); };
+    draw();
+  },
+  euler(el) {
+    let mode = 'ne', sel = 'NPC';
+    const D = {
+      P: '<b>P</b> แก้ได้เร็วด้วย deterministic algorithm เช่น Sorting, Searching, Shortest Path, MST, PATH',
+      NP: '<b>NP</b> ตรวจคำตอบได้เร็ว รวมทุกปัญหาใน P ไว้ด้วย เช่น SAT, CLIQUE, HAMPATH',
+      NPC: '<b>NP-Complete</b> อยู่ใน NP และทุกปัญหาใน NP reduce มาได้ เช่น SAT, 3-SAT, CLIQUE, INDEPENDENT SET, VERTEX COVER, HAMPATH, GRAPH COLORING, SUBSET-SUM',
+      NPH: '<b>NP-Hard</b> ยากอย่างน้อยเท่าทุกปัญหาใน NP ไม่จำเป็นต้องอยู่ใน NP เช่น Halting Problem, TSP แบบ optimization และปัญหา NPC ทุกข้อ',
+      EQ: '<b>P = NP</b> ทุกปัญหาที่ตรวจได้เร็วก็แก้ได้เร็ว สไลด์เขียนรวมเป็น P = NP = NP-Complete ซ้อนกับ NP-Hard',
+    };
+    el.innerHTML = `<div class="chips" id="em"><button class="chip" aria-pressed="true" data-m="ne">P ≠ NP</button><button class="chip" aria-pressed="false" data-m="eq">P = NP</button></div><svg viewBox="0 0 560 300" role="img" aria-label="Euler diagram"></svg><div class="chips" id="ep"></div><div class="cap" id="ed"></div>`;
+    const draw = () => {
+      const f = k => (sel === k ? 'var(--accent)' : 'var(--bg)'), o = k => (sel === k ? .9 : .9), tc = k => (sel === k ? 'var(--on-accent)' : 'var(--ink)');
+      let s = '<defs><clipPath id="cpNP"><ellipse cx="215" cy="150" rx="165" ry="115"/></clipPath></defs>';
+      s += `<ellipse cx="385" cy="150" rx="160" ry="130" fill="${f('NPH')}" fill-opacity="${o('NPH')}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>`;
+      if (mode === 'ne') {
+        s += `<ellipse cx="215" cy="150" rx="165" ry="115" fill="${f('NP')}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>
+        <ellipse cx="385" cy="150" rx="160" ry="130" clip-path="url(#cpNP)" fill="${sel === 'NPC' ? 'var(--accent)' : 'var(--accent-soft)'}"/>
+        <ellipse cx="215" cy="150" rx="165" ry="115" fill="none" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>
+        <circle cx="140" cy="155" r="58" fill="${sel === 'P' ? 'var(--accent)' : sel === 'NP' ? 'var(--accent)' : 'var(--panel)'}" stroke="${sel === 'NP' ? 'var(--on-accent)' : 'var(--panel-ink)'}" stroke-opacity=".6" stroke-width="1.5"/>
+        <text x="140" y="162" text-anchor="middle" font-size="22" font-weight="700" style="fill:${sel === 'P' || sel === 'NP' ? 'var(--on-accent)' : 'var(--ink)'}">P</text>
+        <text x="95" y="72" font-size="18" font-weight="700" style="fill:${tc('NP')}">NP</text>
+        <text x="300" y="146" text-anchor="middle" font-size="15" font-weight="700" style="fill:${tc('NPC')}">NP-</text><text x="300" y="166" text-anchor="middle" font-size="15" font-weight="700" style="fill:${tc('NPC')}">Complete</text>
+        <text x="462" y="82" text-anchor="middle" font-size="18" font-weight="700" style="fill:${tc('NPH')}">NP-Hard</text>`;
+      } else {
+        s += `<ellipse cx="215" cy="150" rx="165" ry="115" fill="${f('EQ')}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>
+        <text x="170" y="146" text-anchor="middle" font-size="20" font-weight="700" style="fill:${tc('EQ')}">P = NP</text><text x="170" y="172" text-anchor="middle" font-size="15" style="fill:${tc('EQ')}">= NP-Complete</text>
+        <text x="462" y="82" text-anchor="middle" font-size="18" font-weight="700" style="fill:${tc('NPH')}">NP-Hard</text>`;
+      }
+      $('svg', el).innerHTML = s;
+      const keys = mode === 'ne' ? [['P', 'P'], ['NP', 'NP'], ['NPC', 'NP-Complete'], ['NPH', 'NP-Hard']] : [['EQ', 'P = NP'], ['NPH', 'NP-Hard']];
+      $('#ep', el).innerHTML = keys.map(([k, l]) => `<button class="chip" aria-pressed="${sel === k}" data-k="${k}">${l}</button>`).join('');
+      $$('#ep .chip', el).forEach(b => b.onclick = () => { sel = b.dataset.k; draw(); });
+      $('#ed', el).innerHTML = D[sel];
+    };
+    $$('#em .chip', el).forEach(b => b.onclick = () => { mode = b.dataset.m; sel = mode === 'ne' ? 'NPC' : 'EQ'; $$('#em .chip', el).forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+    draw();
+  },
+  cook(el) {
+    const parts = { lit: [0, 2, 4, 6, 8, 10], cl: ['c1', 'c2', 'c3'] };
+    el.innerHTML = `<div class="tl"><div><b>1971</b><span>Stephen Cook พิสูจน์ว่า SAT เป็น NP-Complete</span></div><div><b>1972</b><span>Richard Karp พิสูจน์ NP-Complete เพิ่มอีก 21 ปัญหา</span></div><div><b>1973</b><span>Leonid Levin พิสูจน์ผลเดียวกับ Cook อย่างอิสระ</span></div></div>
+    <div class="cnf" id="cnf"><span data-g="c1"><span data-g="lit">x</span></span> ∧ <span data-g="c2">(<span data-g="lit">x</span> ∨ <span data-g="lit">y</span> ∨ <span data-g="lit">z̄</span>)</span> ∧ <span data-g="c3">(<span data-g="lit">x̄</span> ∨ <span data-g="lit">ȳ</span>)</span></div>
+    <div class="chips" id="cc"><button class="chip" data-k="lit">Literal</button><button class="chip" data-k="cl">Clause</button><button class="chip" data-k="as">Satisfying assignment</button><button class="chip" data-k="ce">Certificate</button></div><div class="cap" id="ccap">แตะคำศัพท์เพื่อดูว่าหมายถึงส่วนไหนของสูตร</div>`;
+    const cap = { lit: '<b>Literal</b> ตัวแปรหรือ negation ของตัวแปร เช่น x, x̄, y, ȳ', cl: '<b>Clause</b> กลุ่ม literal ที่เชื่อมด้วย OR แล้ว clause เชื่อมกันด้วย AND (นี่คือ CNF)', as: '<b>Satisfying assignment</b> ค่าตัวแปรที่ทำให้สูตรเป็น True เช่น x = T, y = F, z = F', ce: '<b>Certificate / Witness</b> คำตอบที่มีคนให้มาเพื่อตรวจ ในที่นี้คือชุดค่าตัวแปร x = T, y = F, z = F' };
+    $$('#cc .chip', el).forEach(b => b.onclick = () => {
+      const k = b.dataset.k; $$('#cc .chip', el).forEach(x => x.setAttribute('aria-pressed', x === b));
+      $$('#cnf span', el).forEach(s => s.classList.toggle('hl', k === 'lit' ? s.dataset.g === 'lit' : k === 'cl' ? s.dataset.g.startsWith('c') : false));
+      $('#ccap', el).innerHTML = cap[k];
+    });
+  },
+  clique(el) {
+    const V = [
+      { c: 1, v: 1, neg: 0, l: 'x₁', x: 110, y: 50 }, { c: 1, v: 2, neg: 1, l: '¬x₂', x: 280, y: 50 }, { c: 1, v: 3, neg: 0, l: 'x₃', x: 450, y: 50 },
+      { c: 2, v: 1, neg: 1, l: '¬x₁', x: 110, y: 200 }, { c: 2, v: 2, neg: 0, l: 'x₂', x: 280, y: 200 }, { c: 2, v: 3, neg: 0, l: 'x₃', x: 450, y: 200 },
+    ];
+    const E = []; [0, 1, 2].forEach(a => [3, 4, 5].forEach(b => { if (!(V[a].v === V[b].v && V[a].neg !== V[b].neg)) E.push([a, b]); }));
+    const sel = { 1: null, 2: null };
+    el.innerHTML = `<div class="cnf" style="font-size:16px;padding-top:0">(x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ x₃)</div><svg viewBox="0 0 560 250" role="img" aria-label="กราฟจาก 3-SAT"></svg><div class="cap" id="qd"></div>`;
+    const draw = () => {
+      const a = sel[1], b = sel[2], linked = a != null && b != null && E.some(e => e[0] === a && e[1] === b);
+      let s = '<text x="10" y="56" font-size="13" style="fill:var(--panel-ink)">C₁</text><text x="10" y="206" font-size="13" style="fill:var(--panel-ink)">C₂</text>';
+      E.forEach(([p, q]) => { const on = linked && p === a && q === b; s += `<line x1="${V[p].x}" y1="${V[p].y}" x2="${V[q].x}" y2="${V[q].y}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .3}" stroke-width="${on ? 4 : 1.6}"/>`; });
+      V.forEach((v, i) => { const on = sel[v.c] === i; s += `<g class="vx" data-i="${i}" role="button" tabindex="0" aria-label="${v.l} ใน clause ${v.c}"><circle cx="${v.x}" cy="${v.y}" r="27" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .5}" stroke-width="1.6"/><text x="${v.x}" y="${v.y + 6}" text-anchor="middle" font-size="17" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'};pointer-events:none">${v.l}</text></g>`; });
+      $('svg', el).innerHTML = s;
+      $$('.vx', el).forEach(g => { const go = () => { const i = +g.dataset.i, v = V[i]; sel[v.c] = sel[v.c] === i ? null : i; draw(); }; g.onclick = go; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }; });
+      const d = $('#qd', el);
+      if (a == null || b == null) d.innerHTML = `มี ${E.length} edge แตะ vertex หนึ่งตัวใน C₁ และหนึ่งตัวใน C₂ เพื่อหา 2-clique`;
+      else if (linked) { const set = {}; [V[a], V[b]].forEach(v => (set['x' + '₀₁₂₃'[v.v]] = v.neg ? 'F' : 'T')); d.innerHTML = `<b class="yes">${V[a].l} กับ ${V[b].l} เป็น 2-clique</b> ตั้ง ${Object.entries(set).map(([k, val]) => `${k} = ${val}`).join(', ')} แล้วทั้งสอง clause เป็นจริง`; }
+      else d.innerHTML = `<b class="no">${V[a].l} กับ ${V[b].l} ไม่มี edge</b> เพราะเป็น negation ของกัน จึงเป็นจริงพร้อมกันไม่ได้`;
+    };
+    draw();
+  },
+  indep(el) {
+    const P = { A: [280, 30], B: [460, 105], C: [460, 215], D: [280, 290], E: [100, 215], F: [100, 105] };
+    const ks = Object.keys(P), G = new Set(['AB', 'BC', 'CD', 'DE', 'EF', 'AF', 'BD', 'BF', 'DF']), S = new Set(['A', 'C', 'E']);
+    let comp = false;
+    el.innerHTML = `<div class="chips"><button class="chip" aria-pressed="true" data-c="0">กราฟ G</button><button class="chip" aria-pressed="false" data-c="1">Complement Ḡ</button></div><svg viewBox="0 0 560 320" role="img" aria-label="กราฟ G และ complement"></svg><div class="cap" id="ic"></div>`;
+    const draw = () => {
+      let s = '';
+      for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) {
+        const a = ks[i], b = ks[j], has = G.has(a + b) || G.has(b + a);
+        if (has !== comp) { const hot = S.has(a) && S.has(b); s += `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="${hot ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${hot ? 1 : .3}" stroke-width="${hot ? 4 : 1.6}"/>`; }
+      }
+      ks.forEach(k => { const on = S.has(k); s += `<circle cx="${P[k][0]}" cy="${P[k][1]}" r="22" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .5}" stroke-width="1.6"/><text x="${P[k][0]}" y="${P[k][1] + 6}" text-anchor="middle" font-size="16" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'}">${k}</text>`; });
+      $('svg', el).innerHTML = s;
+      $('#ic', el).innerHTML = comp ? '<b>ใน Ḡ เส้นระหว่าง A, C, E ครบทุกคู่</b> {A, C, E} กลายเป็น clique ขนาด 3' : '<b>{A, C, E} ไม่มี edge เชื่อมกันเลย</b> จึงเป็น independent set ขนาด 3 ใน G';
+    };
+    $$('.chip', el).forEach(b => b.onclick = () => { comp = b.dataset.c === '1'; $$('.chip', el).forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+    draw();
+  },
+  hamtsp(el) {
+    el.innerHTML = `<div class="tbl"><table><tr><th></th><th>Hamiltonian Path</th><th>TSP</th></tr><tr><td>ประเภท</td><td>Decision</td><td>Optimization</td></tr><tr><td>ถาม</td><td>มี path ผ่านทุก node ครั้งเดียวไหม</td><td>route สั้นที่สุดที่ผ่านทุกเมืองแล้วกลับจุดเริ่ม</td></tr><tr><td>ตอบ</td><td>Yes / No</td><td>เส้นทาง + ระยะทาง</td></tr><tr><td>Class</td><td><b>NP-Complete</b></td><td><b>NP-Hard</b></td></tr></table></div>
+    <div class="tbl" style="margin-top:14px"><table><tr><th>NP-Complete ที่ควรรู้จัก</th><th>คืออะไร</th></tr><tr><td>SAT / 3-SAT</td><td>Boolean satisfiability</td></tr><tr><td>CLIQUE</td><td>complete subgraph ขนาด k</td></tr><tr><td>INDEPENDENT SET</td><td>vertex ที่ไม่เชื่อมกันขนาด k</td></tr><tr><td>VERTEX COVER</td><td>vertex ที่ครอบคลุมทุก edge</td></tr><tr><td>HAMILTONIAN PATH / CYCLE</td><td>เส้นทางผ่านทุก node</td></tr><tr><td>GRAPH COLORING</td><td>ระบายสีด้วยสีน้อยที่สุด</td></tr><tr><td>SUBSET-SUM / PARTITION</td><td>แบ่งกลุ่มตัวเลข</td></tr><tr><td>MINESWEEPER</td><td>เกมกู้ระเบิดแบบทั่วไป</td></tr></table></div>`;
+  },
+};
+
+/* ---------- shared drawing helpers ---------- */
+const legend = items => `<div class="legend">${items.map(([c, l, sh]) => `<span><i class="${sh || ''}" style="--c:${c}"></i>${l}</span>`).join('')}</div>`;
+const L_ACC = 'var(--accent)', L_INK = 'var(--ink)', L_GOOD = 'var(--good)', L_BAD = 'var(--bad)', L_BASE = 'var(--panel-ink)';
+
+function stepper(el, frames, render, opts = {}) {
+  el.insertAdjacentHTML('beforeend', `<div class="stage"></div>${opts.legend || ''}<div class="cap step"><span class="ico"></span><span class="ct"></span></div><div class="stepbar"><button class="btn small sb-back" aria-label="ขั้นก่อนหน้า">←</button><button class="btn small primary sb-next">ถัดไป</button><span class="count"></span></div>`);
+  const st = el.querySelector('.stage'), ct = el.querySelector('.ct'), ico = el.querySelector('.ico'), bk = el.querySelector('.sb-back'), fw = el.querySelector('.sb-next'), cn = el.querySelector('.count');
+  let i = 0;
+  const draw = () => {
+    const f = frames[i];
+    st.innerHTML = render(f, i) || '';
+    const fin = f.done === true || f.found === true || f.fin === true;
+    ct.innerHTML = f.cap; ico.textContent = fin ? '✓' : i + 1;
+    ico.classList.toggle('fin', fin);
+    cn.textContent = `${i + 1}/${frames.length}`; bk.disabled = i === 0;
+    fw.textContent = i === frames.length - 1 ? 'เริ่มใหม่' : 'ถัดไป';
+    if (opts.after) opts.after(st, f);
+  };
+  bk.onclick = () => { i--; draw(); };
+  fw.onclick = () => { i = i === frames.length - 1 ? 0 : i + 1; draw(); };
+  draw();
+  return { set(fs) { frames = fs; i = 0; draw(); } };
+}
+const fromFrames = (q, frames, pre = []) => ({ q, lines: [...pre, ...frames.filter(f => f.w).map(f => ({ t: f.w, n: f.n }))] });
+
+function graphSVG(G, st = {}) {
+  const r = 22, [W, H] = G.vb, col = { tree: 'var(--accent)', now: 'var(--ink)', rej: 'var(--bad)', cand: 'var(--ink)', base: 'var(--panel-ink)' };
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${G.label || 'กราฟ'}"><defs>${Object.entries(col).map(([k, c]) => `<marker id="mk-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${c}"/></marker>`).join('')}</defs>`;
+  G.E.forEach(([u, v, w]) => {
+    const k = st.edge ? st.edge(u, v) || 'base' : 'base';
+    let [x1, y1] = G.pos[u], [x2, y2] = G.pos[v];
+    if (G.directed) { const d = Math.hypot(x2 - x1, y2 - y1); x1 += (x2 - x1) / d * r; y1 += (y2 - y1) / d * r; x2 -= (x2 - x1) / d * (r + 2); y2 -= (y2 - y1) / d * (r + 2); }
+    const sw = k === 'tree' || k === 'now' ? 4 : k === 'rej' ? 2.5 : k === 'cand' ? 2.2 : 1.8, op = k === 'base' ? .4 : 1;
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col[k]}" stroke-width="${sw}" stroke-opacity="${op}"${k === 'rej' || k === 'cand' ? ' stroke-dasharray="7 6"' : ''}${G.directed ? ` marker-end="url(#mk-${k})"` : ''}/>`;
+    if (w != null) { const mx = (G.pos[u][0] + G.pos[v][0]) / 2, my = (G.pos[u][1] + G.pos[v][1]) / 2; s += `<circle cx="${mx}" cy="${my}" r="13" fill="var(--panel)"/><text x="${mx}" y="${my + 5}" text-anchor="middle" font-size="14" font-weight="600" style="fill:${k === 'base' ? 'var(--panel-ink)' : col[k]}">${w}</text>`; }
+  });
+  Object.entries(G.pos).forEach(([v, [x, y]]) => {
+    const k = st.node ? st.node(v) || 'base' : 'base';
+    const fill = k === 'in' ? 'var(--accent)' : 'var(--bg)', stroke = k === 'now' ? 'var(--ink)' : k === 'in' ? 'var(--accent)' : 'var(--panel-ink)';
+    s += `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${k === 'now' ? 3.5 : 1.6}" stroke-opacity="${k === 'base' ? .55 : 1}"/><text x="${x}" y="${y + 6}" text-anchor="middle" font-size="17" font-weight="700" style="fill:${k === 'in' ? 'var(--on-accent)' : 'var(--ink)'}">${v}</text>`;
+    const lab = st.label ? st.label(v) : null;
+    if (lab != null) { const dy = (G.labPos && G.labPos[v] === 'up') ? -36 : 44; s += `<text x="${x}" y="${y + dy}" text-anchor="middle" font-size="15" font-weight="700" style="fill:var(--accent);font-family:var(--mono)">${lab}</text>`; }
+  });
+  return s + '</svg>';
+}
+function matrixHTML(M, V, o = {}) {
+  const fmt = x => (x === Infinity ? '∞' : x);
+  return `<table class="mx"><tr><th></th>${V.map((v, j) => `<th class="${o.k === j ? 'kh' : ''}">${v}</th>`).join('')}</tr>${M.map((r, i) => `<tr><th class="${o.k === i ? 'kh' : ''}">${V[i]}</th>${r.map((x, j) => {
+    const ch = (o.ch || []).some(c => c[0] === i && c[1] === j), k = o.k === i || o.k === j;
+    return `<td class="${ch ? 'ch' : k ? 'k' : ''}">${fmt(x)}</td>`;
+  }).join('')}</tr>`).join('')}</table>`;
+}
+const cell = (v, cls = '', top = '') => `<span class="cl ${cls}">${top !== '' ? `<small>${top}</small>` : ''}${v}</span>`;
+
+/* ---------- week 7 visuals ---------- */
+Object.assign(VIZ, {
+  tradeoff(el) {
+    const items = [['Counting sort', 1], ['Horspool', 1], ['Boyer-Moore', 1], ['Hashing', 0], ['B-Tree', 0]];
+    el.innerHTML = `<div class="flip three">${items.map(([t], i) => `<button class="flipc" data-i="${i}"><span>${t}</span><small>แตะเพื่อดูกลุ่ม</small></button>`).join('')}</div>${legend([[L_ACC, 'Input enhancement: เตรียมข้อมูลจาก input ไว้ก่อน'], [L_INK, 'Prestructuring: จัดโครงสร้างไว้ให้เข้าถึงเร็ว']])}`;
+    el.querySelectorAll('.flipc').forEach(b => b.onclick = () => { const d = items[b.dataset.i][1]; b.classList.add(d ? 'grpA' : 'grpB'); b.querySelector('small').textContent = d ? 'Input enhancement' : 'Prestructuring'; });
+  },
+  counting(el) {
+    const A = [13, 11, 12, 13, 12, 12], l = 11;
+    stepper(el, A7.distCount(A, 11, 13), f => `<div class="rows">
+      <div class="rw"><span class="rl">A</span><div class="cells">${f.A.map((v, i) => cell(v, f.ai === i ? 'ring' : '', i)).join('')}</div></div>
+      <div class="rw"><span class="rl">${f.dist ? 'D' : 'นับ'}</span><div class="cells">${f.cnt.map((v, j) => cell(v, f.hc === j ? 'hi' : '', l + j)).join('')}</div></div>
+      <div class="rw"><span class="rl">S</span><div class="cells">${f.S.map((v, i) => cell(v ?? '', f.hs === i ? 'hi' : v != null ? 'ok' : 'empty', i)).join('')}</div></div></div>`,
+      { legend: legend([[L_INK, 'ตัวที่กำลังอ่าน', 'ring'], [L_ACC, 'ช่องที่เพิ่งเปลี่ยน'], [L_GOOD, 'วางใน S แล้ว']]) });
+  },
+  horspool(el) {
+    const pat = 'BARBER', text = 'JIM_SAW_ME_IN_A_BARBERSHOP', t = A7.shiftTable(pat);
+    el.innerHTML = `<div class="sub">shift table ของ ${pat} (m = 6)</div><div class="cells">${[...'ABER'].map(c => cell(t[c], 'hi', c)).join('')}${cell(6, '', 'ตัวอื่น')}</div><div class="sub" style="margin-top:18px">ค้นใน text</div>`;
+    stepper(el, A7.horspoolFrames(text, pat), f => alignRows(text, pat, f), { legend: legend([[L_GOOD, 'ตรง'], [L_BAD, 'ไม่ตรง'], [L_INK, 'ตัวที่ใช้เปิดตาราง', 'ring']]), after: scrollToPat });
+  },
+  boyer(el) {
+    const pat = 'BAOBAB', text = 'BESS_KNEW_ABOUT_BAOBABS', t1 = A7.shiftTable(pat), d2 = A7.bmD2(pat);
+    el.innerHTML = `<div class="duo2"><div><div class="sub">t₁ (bad-symbol)</div><div class="cells">${Object.keys(t1).sort().map(c => cell(t1[c], 'hi', c)).join('')}${cell(6, '', 'อื่น')}</div></div><div><div class="sub">d₂ (good-suffix)</div><div class="cells">${Object.keys(d2).map(k => cell(d2[k], 'hi', 'k=' + k)).join('')}</div></div></div><div class="sub" style="margin-top:18px">ค้นใน text</div>`;
+    stepper(el, A7.bmFrames(text, pat), f => alignRows(text, pat, f, true), { legend: legend([[L_GOOD, 'ตรง (k ตัว)'], [L_BAD, 'ตัวที่ไม่ตรง c']]), after: scrollToPat });
+  },
+  hashing(el) {
+    const words = 'A FOOL AND HIS MONEY ARE SOON PARTED'.split(' ');
+    el.innerHTML = `<div class="chips"><button class="chip" aria-pressed="true" data-m="open">Separate chaining</button><button class="chip" aria-pressed="false" data-m="closed">Linear probing</button></div>`;
+    const render = f => `<div class="scrollx"><div class="hgrid">${f.T.map((x, k) => `<div class="hcol"><span class="hix${f.slot === k ? ' on' : ''}">${k}</span>${(Array.isArray(x) ? x : x ? [x] : []).map(w => `<span class="hw${w === f.word ? ' hi' : ''}">${w}</span>`).join('')}${(f.bad || []).includes(k) ? '<span class="hw bad">ชน</span>' : ''}</div>`).join('')}</div></div>`;
+    const sp = stepper(el, A7.hashFrames(words, 'open'), render, { legend: legend([[L_ACC, 'key ที่เพิ่งใส่'], [L_BAD, 'ช่องที่ชน']]) });
+    el.querySelectorAll('.chip').forEach(b => b.onclick = () => { el.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b)); sp.set(A7.hashFrames(words, b.dataset.m)); });
+  },
+  btree(el) {
+    let t = A7.btreeStart(); const fr = [{ root: t, hl: [], cap: 'B-tree order 4 จากสไลด์ ข้อมูลอยู่ที่ใบ แต่ละ node มีได้ไม่เกิน 3 key' }];
+    for (const k of [65, 5, 6, 8, 9]) { const r = A7.btreeInsert(t, k); t = r.root; r.frames[0].cap = `<b>ใส่ ${k}</b> ` + r.frames[0].cap; fr.push(...r.frames); }
+    fr[fr.length - 1].done = true;
+    stepper(el, fr, f => `<div class="scrollx">${treeSVG(f.root, f.hl)}</div>`, { legend: legend([[L_ACC, 'node ที่เกี่ยวข้องในขั้นนี้']]), after: st => { const sx = st.querySelector('.scrollx'), hx = +st.querySelector('svg').dataset.hx; if (sx && hx >= 0) sx.scrollLeft = Math.max(0, hx - sx.clientWidth / 2); } });
+  },
+});
+function alignRows(text, pat, f, bm) {
+  const ok = new Map(f.cmp.map(([i, o]) => [i, o]));
+  const row1 = [...text].map((c, i) => cell(c, ok.has(i) ? (ok.get(i) ? 'ok' : 'bad') : f.c === i ? 'ring' : '', i)).join('');
+  const row2 = Array(f.pos).fill('<span class="cl gap"></span>').join('') + [...pat].map((c, j) => { const ti = f.pos + j; return cell(c, ok.has(ti) ? (ok.get(ti) ? 'ok' : 'bad') : 'pat'); }).join('');
+  return `<div class="scrollx sm"><div class="cells nowrap">${row1}</div><div class="cells nowrap">${row2}</div></div>`;
+}
+function scrollToPat(st, f) { const sx = st.querySelector('.scrollx'); if (sx) sx.scrollLeft = Math.max(0, f.pos * 32 - 40); }
+function treeSVG(root, hl = []) {
+  const lay = [], kw = 30, gap = 14; let x = 10, maxD = 0;
+  const place = (nd, d) => {
+    const w = nd.keys.length * kw + 8; maxD = Math.max(maxD, d);
+    if (nd.leaf) { const o = { nd, d, x, w }; x += w + gap; lay.push(o); return o; }
+    const kids = nd.kids.map(k => place(k, d + 1));
+    const cx = (kids[0].x + kids[kids.length - 1].x + kids[kids.length - 1].w) / 2;
+    const o = { nd, d, x: cx - w / 2, w, kids }; lay.push(o); return o;
+  };
+  place(root, 0);
+  const W = Math.max(x, 320), H = maxD * 78 + 50, y = d => 10 + d * 78;
+  const hls = lay.filter(o => hl.includes(o.nd.id)), hx = hls.length ? (Math.min(...hls.map(o => o.x)) + Math.max(...hls.map(o => o.x + o.w))) / 2 : -1;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" data-hx="${hx}" style="width:${W}px;max-width:none">`;
+  lay.forEach(o => (o.kids || []).forEach(k => { s += `<line x1="${o.x + o.w / 2}" y1="${y(o.d) + 32}" x2="${k.x + k.w / 2}" y2="${y(k.d)}" stroke="var(--panel-ink)" stroke-opacity=".5" stroke-width="1.5"/>`; }));
+  lay.forEach(o => {
+    const on = hl.includes(o.nd.id);
+    s += `<rect x="${o.x}" y="${y(o.d)}" width="${o.w}" height="32" rx="8" fill="${on ? 'var(--accent)' : 'var(--bg)'}" stroke="${on ? 'var(--accent)' : 'var(--panel-ink)'}" stroke-opacity="${on ? 1 : .5}"/>`;
+    o.nd.keys.forEach((k, i) => { s += `<text x="${o.x + 4 + i * kw + kw / 2}" y="${y(o.d) + 21}" text-anchor="middle" font-size="14" font-weight="600" style="fill:${on ? 'var(--on-accent)' : 'var(--ink)'};font-family:var(--mono)">${k}</text>`; });
+  });
+  return s + '</svg>';
+}
+
+/* ---------- week 8 visuals ---------- */
+Object.assign(VIZ, {
+  fib(el) {
+    el.innerHTML = `<div class="chips"><button class="chip" aria-pressed="true" data-m="0">Recursion ตรงๆ</button><button class="chip" aria-pressed="false" data-m="1">Memoization</button></div><div class="stage"></div>${legend([[L_ACC, 'คำนวณจริง'], [L_BAD, 'คำนวณซ้ำ'], [L_BASE, 'ดึงค่าที่จำไว้', 'ringd']])}<div class="cap"><span class="ct"></span></div>`;
+    const draw = memo => {
+      const root = A7.fibTree(5, memo), lay = []; let x = 0;
+      const place = (nd, d) => { if (!nd.kids.length) { const o = { nd, d, x: x++ }; lay.push(o); return o; } const ks = nd.kids.map(k => place(k, d + 1)); const o = { nd, d, x: (ks[0].x + ks[ks.length - 1].x) / 2, ks }; lay.push(o); return o; };
+      place(root, 0);
+      const W = 560, sx = (W - 60) / Math.max(1, x - 1), px = o => 30 + o.x * sx, py = o => 28 + o.d * 62;
+      const seenK = new Set(), rep = new Set();
+      const dfs = nd => { if (seenK.has(nd.k) && !nd.lookup) rep.add(nd.id); seenK.add(nd.k); nd.kids.forEach(dfs); };
+      dfs(root);
+      let s = `<svg viewBox="0 0 ${W} ${py({ d: 5 }) + 10}">`;
+      lay.forEach(o => (o.ks || []).forEach(k => { s += `<line x1="${px(o)}" y1="${py(o)}" x2="${px(k)}" y2="${py(k)}" stroke="var(--panel-ink)" stroke-opacity=".45" stroke-width="1.5"/>`; }));
+      lay.forEach(o => {
+        const n = o.nd, kind = n.lookup ? 'lk' : rep.has(n.id) ? 'rep' : 'ok';
+        s += `<circle cx="${px(o)}" cy="${py(o)}" r="19" fill="${kind === 'ok' ? 'var(--accent)' : kind === 'rep' ? 'var(--bad)' : 'var(--bg)'}" stroke="${kind === 'lk' ? 'var(--panel-ink)' : 'none'}" stroke-dasharray="4 3" stroke-width="1.6"/><text x="${px(o)}" y="${py(o) + 5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:${kind === 'lk' ? 'var(--ink)' : '#fff'};font-family:var(--mono)">f${n.k}</text>`;
+      });
+      el.querySelector('.stage').innerHTML = s + '</svg>';
+      el.querySelector('.ct').innerHTML = memo ? `เรียกฟังก์ชัน <b>${lay.length} ครั้ง</b> แต่ละ f(k) คำนวณครั้งเดียว ครั้งต่อไปดึงจากตาราง <b>O(n)</b>` : `เรียกฟังก์ชัน <b>${lay.length} ครั้ง</b> สีแดงคือคำนวณ f(k) ที่เคยคำนวณแล้วซ้ำอีก โตแบบ <b>O(2ⁿ)</b>`;
+    };
+    el.querySelectorAll('.chip').forEach(b => b.onclick = () => { el.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(b.dataset.m === '1'); });
+    draw(false);
+  },
+  coinrow(el) {
+    const c = [5, 1, 2, 10, 6, 2];
+    stepper(el, A7.coinRowFrames(c), f => `<div class="rows"><div class="rw"><span class="rl">c</span><div class="cells">${cell('', 'gap', 0)}${c.map((v, k) => cell(v, f.pick && f.pick.includes(k + 1) ? 'hi' : f.i === k + 1 ? 'ring' : '', k + 1)).join('')}</div></div>
+      <div class="rw"><span class="rl">F</span><div class="cells">${Array.from({ length: c.length + 1 }, (_, k) => cell(f.F[k] ?? '', k === f.i ? 'hi' : f.i && !f.done && (k === f.i - 1 || k === f.i - 2) ? 'src' : f.F[k] != null ? 'ok' : 'empty', k)).join('')}</div></div></div>`,
+      { legend: legend([[L_ACC, 'ค่าที่เพิ่งคำนวณ / เหรียญที่เลือก'], [L_INK, 'ค่าที่ใช้คำนวณ', 'ring']]) });
+  },
+  change(el) {
+    const d = [1, 3, 4], n = 6;
+    el.innerHTML = `<div class="sub">เหรียญ d = {${d.join(', ')}} จำนวน n = ${n}</div>`;
+    stepper(el, A7.changeFrames(d, n), f => `<div class="rows"><div class="rw"><span class="rl">F</span><div class="cells">${Array.from({ length: n + 1 }, (_, k) => cell(f.F[k] ?? '', k === f.i ? 'hi' : (f.from || []).includes(k) && !f.done ? 'src' : f.F[k] != null ? 'ok' : 'empty', k)).join('')}</div></div></div>`,
+      { legend: legend([[L_ACC, 'F ที่เพิ่งคำนวณ'], [L_INK, 'F(n − dⱼ) ที่นำมาเทียบ', 'ring']]) });
+  },
+  collect(el) {
+    const C = [[0, 0, 0, 0, 1, 0], [0, 1, 0, 1, 0, 0], [0, 0, 0, 1, 0, 1], [0, 0, 1, 0, 0, 1], [1, 0, 0, 0, 1, 0]];
+    stepper(el, A7.collectFrames(C), f => `<table class="grid">${C.map((r, i) => `<tr>${r.map((v, j) => { const onP = f.path && f.path.some(p => p[0] === i && p[1] === j); return `<td class="${onP ? 'path' : f.row === i && !f.done ? 'row' : ''}">${v ? '<i class="coin"></i>' : ''}<b>${f.F[i][j] ?? ''}</b></td>`; }).join('')}</tr>`).join('')}</table>`,
+      { legend: legend([[L_ACC, 'เส้นทางที่ดีที่สุด'], ['var(--accent-soft)', 'แถวที่กำลังเติม'], ['#E8A33D', 'เหรียญ', 'dot']]) });
+  },
+  knap(el) {
+    const items = [{ w: 2, v: 12 }, { w: 1, v: 10 }, { w: 3, v: 20 }, { w: 2, v: 15 }], W = 5;
+    el.innerHTML = `<div class="sub">กระเป๋าจุ W = ${W}</div><div class="cells">${items.map((it, i) => cell(`${it.w}, ${it.v}`, 'wide', 'ชิ้น ' + (i + 1))).join('')}</div>`;
+    stepper(el, A7.knapFrames(items, W), f => {
+      const tk = new Set(); if (f.take) { let j = W; for (let i = items.length; i >= 1; i--) { tk.add(i + ',' + j); if (f.take.includes(i)) j -= items[i - 1].w; } tk.add('0,' + j); }
+      return `<div class="scrollx"><table class="mx kn"><tr><th>i \\ j</th>${Array.from({ length: W + 1 }, (_, j) => `<th>${j}</th>`).join('')}</tr>${f.V.map((r, i) => `<tr><th>${i}${i ? `<small> w${i}=${items[i - 1].w} v${i}=${items[i - 1].v}</small>` : ''}</th>${r.map((x, j) => `<td class="${tk.has(i + ',' + j) ? (f.take.includes(i) ? 'ch' : 'k') : i === f.row && !f.done ? 'k' : ''}">${i <= f.row || f.done ? x : ''}</td>`).join('')}</tr>`).join('')}</table></div>`;
+    }, { legend: legend([['var(--accent-soft)', 'แถวที่กำลังเติม / เส้นย้อนรอย'], [L_ACC, 'ช่องที่หยิบของชิ้นนั้น']]) });
+  },
+  warshall(el) { closureViz(el, 'w'); },
+  floyd(el) { closureViz(el, 'f'); },
+  lcs(el) {
+    const X = 'ABCBDAB', Y = 'BDCABA';
+    stepper(el, A7.lcsFrames(X, Y), f => `<div class="scrollx"><table class="mx"><tr><th></th><th>ε</th>${[...Y].map(c => `<th>${c}</th>`).join('')}</tr>${f.L.map((r, i) => `<tr><th>${i ? X[i - 1] : 'ε'}</th>${r.map((x, j) => `<td class="${i === f.row && (f.mt || []).includes(j) ? 'ch' : i === f.row ? 'k' : f.done && i === X.length && j === Y.length ? 'ch' : ''}">${i <= f.row || f.done ? x : ''}</td>`).join('')}</tr>`).join('')}</table></div>`,
+      { legend: legend([[L_ACC, 'ตัวอักษรตรงกัน: ทแยง + 1'], ['var(--accent-soft)', 'แถวที่กำลังเติม']]) });
+  },
+});
+const CL_V = ['a', 'b', 'c', 'd'];
+const CL_G = {
+  w: { vb: [360, 290], directed: true, pos: { a: [70, 55], b: [290, 55], c: [70, 235], d: [290, 235] }, E: [['a', 'b', null], ['b', 'd', null], ['d', 'a', null], ['d', 'c', null]] },
+  f: { vb: [360, 290], directed: true, pos: { a: [70, 55], b: [290, 55], c: [70, 235], d: [290, 235] }, E: [['a', 'c', 3], ['b', 'a', 2], ['c', 'b', 7], ['c', 'd', 1], ['d', 'a', 6]] },
+};
+function closureViz(el, kind) {
+  const G = CL_G[kind];
+  stepper(el, A7.closureFrames(CL_V, G.E, kind), f => `<div class="split"><div>${graphSVG(G, { node: v => (f.k >= 0 && CL_V[f.k] === v ? 'in' : 'base') })}</div><div class="scrollx">${matrixHTML(f.M, CL_V, { k: f.k, ch: f.ch })}</div></div>`,
+    { legend: legend([[L_ACC, 'vertex k ที่อนุญาตให้ผ่าน / ช่องที่เปลี่ยน'], ['var(--accent-soft)', 'แถวและคอลัมน์ k']]) });
+}
+
+/* ---------- week 9 visuals ---------- */
+const MSTG = { vb: [600, 330], pos: { a: [60, 165], b: [190, 60], c: [410, 60], d: [540, 165], e: [300, 285], f: [300, 165] }, E: [['a', 'b', 3], ['a', 'e', 6], ['a', 'f', 5], ['b', 'c', 1], ['b', 'f', 4], ['c', 'f', 4], ['c', 'd', 6], ['d', 'f', 5], ['d', 'e', 8], ['e', 'f', 2]] };
+const DJG = { vb: [560, 270], pos: { a: [50, 190], b: [170, 75], c: [400, 75], d: [290, 190], e: [510, 190] }, labPos: { b: 'up', c: 'up' }, E: [['a', 'b', 3], ['a', 'd', 7], ['b', 'c', 4], ['b', 'd', 2], ['c', 'd', 5], ['c', 'e', 6], ['d', 'e', 4]] };
+const ekey = (u, v) => [u, v].sort().join('');
+Object.assign(VIZ, {
+  greedycoin(el) {
+    el.innerHTML = `<div class="sub">ทอนเงิน 6 ด้วยเหรียญ {1, 3, 4}</div><div class="chips"><button class="chip" aria-pressed="true" data-m="g">Greedy</button><button class="chip" aria-pressed="false" data-m="o">คำตอบที่ดีที่สุด (DP)</button></div><div class="coins"></div><div class="cap"><span class="ct"></span></div>`;
+    const draw = g => {
+      const cs = g ? [4, 1, 1] : [3, 3];
+      el.querySelector('.coins').innerHTML = cs.map(c => `<span class="cn ${g ? 'g' : 'o'}">${c}</span>`).join('');
+      el.querySelector('.ct').innerHTML = g ? 'Greedy หยิบเหรียญใหญ่สุดที่ไม่เกินก่อน ได้ 4 + 1 + 1 = <b>3 เหรียญ</b> ซึ่งไม่ใช่คำตอบที่ดีที่สุด' : '3 + 3 ใช้แค่ <b>2 เหรียญ</b> greedy มองแค่ขั้นปัจจุบันจึงพลาด';
+    };
+    el.querySelectorAll('.chip').forEach(b => b.onclick = () => { el.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(b.dataset.m === 'g'); });
+    draw(true);
+  },
+  prim(el) {
+    stepper(el, A7.primFrames(MSTG, 'a'), f => graphSVG(MSTG, { node: v => (f.inT.includes(v) ? 'in' : 'base'), edge: (u, v) => { const k = ekey(u, v); return k === f.now ? 'now' : f.tree.includes(k) ? 'tree' : (f.cand || []).includes(k) ? 'cand' : 'base'; } }),
+      { legend: legend([[L_ACC, 'อยู่ในต้นไม้แล้ว'], [L_INK, 'เส้นที่เลือกขั้นนี้', 'line'], [L_INK, 'เส้นที่ข้ามออกจากต้นไม้ (ตัวเลือก)', 'dash']]) });
+  },
+  kruskal(el) {
+    stepper(el, A7.kruskalFrames(MSTG), f => `<div class="elist">${f.order.map(([u, v, w]) => { const k = ekey(u, v); return `<span class="${f.status[k] || ''}${f.now === k ? ' now' : ''}">${u}${v} <b>${w}</b></span>`; }).join('')}</div>` + graphSVG(MSTG, { node: v => (f.tree.some(k => k.includes(v)) ? 'in' : 'base'), edge: (u, v) => { const k = ekey(u, v); return f.now === k && f.status[k] === 'rej' ? 'rej' : f.now === k ? 'now' : f.tree.includes(k) ? 'tree' : 'base'; } }),
+      { legend: legend([[L_ACC, 'รับเข้า MST', 'line'], [L_BAD, 'ทิ้ง เพราะเกิด cycle', 'dash'], [L_INK, 'เส้นที่พิจารณาขั้นนี้', 'line']]) });
+  },
+  dijkstra(el) {
+    stepper(el, A7.dijkstraFrames(DJG, 'a'), f => graphSVG(DJG, { node: v => (v === f.now && !f.fin ? 'now' : f.done.includes(v) ? 'in' : 'base'), label: v => (f.dist[v] === Infinity ? '∞' : f.dist[v]), edge: (u, v) => (f.prev[v] === u || f.prev[u] === v ? 'tree' : 'base') }) +
+      `<div class="cells">${Object.keys(DJG.pos).map(v => cell(f.dist[v] === Infinity ? '∞' : f.dist[v], f.done.includes(v) ? 'ok' : v === f.now ? 'hi' : '', v)).join('')}</div>`,
+      { legend: legend([[L_ACC, 'ปิดแล้ว (ระยะสุดท้าย)'], [L_INK, 'เลือกในขั้นนี้', 'ring'], [L_ACC, 'เส้นทางสั้นสุดที่รู้ตอนนี้', 'line']]) });
+  },
+  activity(el) {
+    const acts = [[1, 4], [3, 5], [0, 6], [5, 7], [3, 8], [5, 9], [6, 10], [8, 11]], T = 12;
+    stepper(el, A7.activityFrames(acts), f => {
+      const W = 560, x = t => 30 + t * (W - 50) / T, rh = 30;
+      let s = `<svg viewBox="0 0 ${W} ${f.A.length * rh + 40}">`;
+      for (let t = 0; t <= T; t++) s += `<line x1="${x(t)}" y1="8" x2="${x(t)}" y2="${f.A.length * rh + 12}" stroke="var(--panel-ink)" stroke-opacity=".12"/><text x="${x(t)}" y="${f.A.length * rh + 32}" text-anchor="middle" font-size="12" style="fill:var(--panel-ink);font-family:var(--mono)">${t}</text>`;
+      f.A.forEach((a, k) => {
+        const on = f.pick.includes(k), seen = f.now != null && k <= f.now, cur = f.now === k;
+        const fill = on ? 'var(--accent)' : seen ? 'var(--bad)' : 'var(--panel-ink)', op = on ? 1 : seen ? .35 : .25;
+        s += `<rect x="${x(a.s)}" y="${12 + k * rh}" width="${x(a.f) - x(a.s)}" height="${rh - 10}" rx="6" fill="${fill}" fill-opacity="${op}" stroke="${cur ? 'var(--ink)' : 'none'}" stroke-width="2.5"/><text x="${x(a.f) + 6}" y="${12 + k * rh + 15}" font-size="12" style="fill:var(--ink);font-family:var(--mono)">(${a.s},${a.f})</text>`;
+      });
+      return s + '</svg>';
+    }, { legend: legend([[L_ACC, 'เลือก'], [L_BAD, 'ข้าม (ทับเวลา)'], [L_INK, 'กำลังพิจารณา', 'ring']]) });
+  },
+  frac(el) {
+    const items = [{ v: 60, w: 10 }, { v: 100, w: 20 }, { v: 120, w: 30 }], W = 50, shades = [1, .7, .45];
+    stepper(el, A7.fracFrames(items, W), f => {
+      let acc = 0;
+      const segs = f.A.map((a, k) => { const t = f.take[k] || 0, wd = a.w * t / W * 100; const s = t ? `<span class="seg" style="width:${wd}%;opacity:${shades[k]}">${t === 1 ? `${a.v}` : `${a.v * t}`}</span>` : ''; acc += wd; return s; }).join('');
+      return `<div class="cells">${f.A.map((a, k) => cell(`${a.v}/${a.w}`, f.take[k] ? 'hi' : '', `v/w = ${a.r}`)).join('')}</div><div class="cap50"><div class="bar50">${segs}</div><div class="axis50"><span>0</span><span>W = ${W}</span></div></div>`;
+    }, { legend: legend([[L_ACC, 'ส่วนที่ใส่ในกระเป๋า (ตัวเลขคือมูลค่าที่ได้)']]) });
+  },
+  huffman(el) {
+    const F = [['A', 0.35], ['B', 0.1], ['C', 0.2], ['D', 0.2], ['_', 0.15]];
+    stepper(el, A7.huffmanFrames(F), f => f.tree ? huffSVG(f.tree, f.codes) : `<div class="hq">${f.q.slice().sort((a, b) => a.w - b.w).map(t => `<span class="${t.id === f.now ? 'now' : ''}"><b>${t.leaf ? t.s : '{' + t.s.split('').join(',') + '}'}</b>${t.w}</span>`).join('')}</div>`,
+      { legend: legend([[L_ACC, 'ต้นที่เพิ่งรวม']]) });
+  },
+});
+function huffSVG(root, codes) {
+  const lay = []; let x = 0;
+  const place = (nd, d) => { if (nd.leaf) { const o = { nd, d, x: x++ }; lay.push(o); return o; } const ks = nd.kids.map(k => place(k, d + 1)); const o = { nd, d, x: (ks[0].x + ks[1].x) / 2, ks }; lay.push(o); return o; };
+  place(root, 0);
+  const W = 560, depth = Math.max(...lay.map(o => o.d)), px = o => 50 + o.x * (W - 100) / (x - 1), py = o => 30 + o.d * 70;
+  let s = `<svg viewBox="0 0 ${W} ${depth * 70 + 90}">`;
+  lay.forEach(o => (o.ks || []).forEach((k, i) => { s += `<line x1="${px(o)}" y1="${py(o)}" x2="${px(k)}" y2="${py(k)}" stroke="var(--accent)" stroke-width="2"/><text x="${(px(o) + px(k)) / 2 + (i ? 10 : -10)}" y="${(py(o) + py(k)) / 2}" text-anchor="middle" font-size="14" font-weight="700" style="fill:var(--accent);font-family:var(--mono)">${i}</text>`; }));
+  lay.forEach(o => {
+    const n = o.nd;
+    s += `<circle cx="${px(o)}" cy="${py(o)}" r="20" fill="${n.leaf ? 'var(--accent)' : 'var(--bg)'}" stroke="var(--accent)" stroke-width="1.6"/><text x="${px(o)}" y="${py(o) + 5}" text-anchor="middle" font-size="${n.leaf ? 15 : 12}" font-weight="700" style="fill:${n.leaf ? 'var(--on-accent)' : 'var(--ink)'}">${n.leaf ? n.s : n.w}</text>`;
+    if (n.leaf) s += `<text x="${px(o)}" y="${py(o) + 42}" text-anchor="middle" font-size="14" font-weight="700" style="fill:var(--ink);font-family:var(--mono)">${codes[n.s]}</text>`;
+  });
+  return s + '</svg>';
+}
+
+/* ---------- worked answers built from the same frames ---------- */
+Object.assign(WORK, {
+  counting: fromFrames('จงเรียง A = [13, 11, 12, 13, 12, 12] ด้วย distribution counting แสดงตารางความถี่ ค่าสะสม และการวาง', A7.distCount([13, 11, 12, 13, 12, 12], 11, 13)),
+  horspool: fromFrames('จงสร้าง shift table ของ BARBER แล้วค้นหาใน JIM_SAW_ME_IN_A_BARBERSHOP ด้วย Horspool', A7.horspoolFrames('JIM_SAW_ME_IN_A_BARBERSHOP', 'BARBER'), [{ t: 'm = 6 ดู 5 ตัวแรก BARBE: t(B) = 2, t(A) = 4, t(R) = 3, t(E) = 1, ตัวอื่น = 6', n: 'B ตัวขวาสุดใน 5 ตัวแรกอยู่ห่างตัวท้าย 2 ช่อง' }]),
+  boyer: fromFrames('จงค้นหา BAOBAB ใน BESS_KNEW_ABOUT_BAOBABS ด้วย Boyer-Moore', A7.bmFrames('BESS_KNEW_ABOUT_BAOBABS', 'BAOBAB'), [{ t: 't₁: A = 1, B = 2, O = 3, ตัวอื่น = 6' }, { t: 'd₂: k=1 → 2, k=2 → 5, k=3 → 5, k=4 → 5, k=5 → 5' }]),
+  hashing: fromFrames('จงใส่คำ A FOOL AND HIS MONEY ARE SOON PARTED ลงตาราง 13 ช่องด้วย linear probing เมื่อ h(K) = ผลรวมลำดับตัวอักษร mod 13', A7.hashFrames('A FOOL AND HIS MONEY ARE SOON PARTED'.split(' '), 'closed')),
+  btree: fromFrames('จงใส่ 65 และ 5 ลงใน B-tree order 4 ตามรูปในสไลด์', [...A7.btreeInsert(A7.btreeStart(), 65).frames, ...(() => { let t = A7.btreeInsert(A7.btreeStart(), 65).root; return A7.btreeInsert(t, 5).frames; })()]),
+  coinrow: fromFrames('Coin-row: เหรียญ 5, 1, 2, 10, 6, 2 ห้ามหยิบติดกัน จงหามูลค่ารวมสูงสุดและเหรียญที่เลือก', A7.coinRowFrames([5, 1, 2, 10, 6, 2])),
+  change: fromFrames('Change-making: เหรียญ {1, 3, 4} จงหาจำนวนเหรียญน้อยที่สุดที่รวมได้ 6', A7.changeFrames([1, 3, 4], 6)),
+  collect: fromFrames('Robot coin collection บนกระดาน 5 × 6 ในสไลด์ จงเติมตาราง F', A7.collectFrames([[0, 0, 0, 0, 1, 0], [0, 1, 0, 1, 0, 0], [0, 0, 0, 1, 0, 1], [0, 0, 1, 0, 0, 1], [1, 0, 0, 0, 1, 0]])),
+  knap: fromFrames('0/1 Knapsack: W = 5 ของ (w, v) = (2, 12), (1, 10), (3, 20), (2, 15) จงเติมตาราง V และหาของที่เลือก', A7.knapFrames([{ w: 2, v: 12 }, { w: 1, v: 10 }, { w: 3, v: 20 }, { w: 2, v: 15 }], 5)),
+  warshall: fromFrames('จงหา transitive closure ของกราฟ a→b, b→d, d→a, d→c ด้วย Warshall', A7.closureFrames(CL_V, CL_G.w.E, 'w')),
+  floyd: fromFrames('จงหา shortest path ทุกคู่ของกราฟ a→c 3, b→a 2, c→b 7, c→d 1, d→a 6 ด้วย Floyd', A7.closureFrames(CL_V, CL_G.f.E, 'f')),
+  prim: fromFrames('จงหา MST ของกราฟในสไลด์ด้วย Prim เริ่มที่ a', A7.primFrames(MSTG, 'a')),
+  kruskal: fromFrames('จงหา MST ของกราฟเดียวกันด้วย Kruskal', A7.kruskalFrames(MSTG)),
+  dijkstra: fromFrames('จงหาระยะสั้นสุดจาก a ไปทุก vertex ด้วย Dijkstra', A7.dijkstraFrames(DJG, 'a')),
+  activity: fromFrames('Activity selection: (1,4) (3,5) (0,6) (5,7) (3,8) (5,9) (6,10) (8,11) จงเลือกกิจกรรมให้ได้มากที่สุด', A7.activityFrames([[1, 4], [3, 5], [0, 6], [5, 7], [3, 8], [5, 9], [6, 10], [8, 11]])),
+  frac: fromFrames('Fractional knapsack: W = 50 ของ (v, w) = (60, 10), (100, 20), (120, 30)', A7.fracFrames([{ v: 60, w: 10 }, { v: 100, w: 20 }, { v: 120, w: 30 }], 50)),
+  huffman: fromFrames('จงสร้าง Huffman code ของ A 0.35, B 0.1, C 0.2, D 0.2, _ 0.15 และหาความยาวเฉลี่ย', A7.huffmanFrames([['A', 0.35], ['B', 0.1], ['C', 0.2], ['D', 0.2], ['_', 0.15]])),
+});
+
+/* ---------- cards ---------- */
+const CARDS7 = [
+  { t: 'Space and time trade-offs', s: 'Input enhancement กับ Prestructuring', key: 'ยอมใช้หน่วยความจำเพิ่ม เพื่อให้อัลกอริทึมทำงานเร็วขึ้น', body: 'มีสองแบบ <b>Input enhancement</b> คือเตรียมข้อมูลจาก input เก็บไว้ก่อนแล้วใช้ตอนทำงาน เช่น counting sort, Horspool และ Boyer-Moore ส่วน <b>Prestructuring</b> คือจัดโครงสร้างข้อมูลไว้ล่วงหน้าให้เข้าถึงเร็ว เช่น hashing และ B-tree ถ้าข้อมูลใหญ่มากก็อาจใช้หน่วยความจำเกิน', viz: 'tradeoff' },
+  { t: 'Counting sort', s: 'Distribution counting O(n + k)', key: 'Distribution counting นับความถี่ สะสม แล้ววางแต่ละค่าลงตำแหน่งของมัน ใช้เวลา <span class="mono">O(n + k)</span>', body: 'เหมาะกับจำนวนเต็มที่ค่าอยู่ในช่วงแคบ [l, u] เพราะต้องมีช่องนับเท่ากับ k = u − l + 1 ทำสามรอบ นับความถี่ บวกสะสมจากซ้าย แล้วไล่ A จากขวาไปซ้ายวาง v ที่ S[D[v] − 1] อีกแบบคือ comparison counting นับว่ามีกี่ตัวน้อยกว่า ใช้ O(n²)', viz: 'counting', work: ['counting'] },
+  { t: 'Horspool', s: 'shift table', key: 't(c) = ระยะจาก c ตัวขวาสุดใน m − 1 ตัวแรก ถึงตัวท้ายของ pattern ถ้าไม่มี t(c) = m', body: 'เทียบ pattern จากขวาไปซ้าย พอไม่ตรงหรือตรงครบ ให้ดูตัวใน text ที่อยู่ใต้ตัวท้ายของ pattern แล้วเลื่อนตาม t ของตัวนั้น ตารางสร้างจาก pattern ก่อนเริ่มค้น จึงนับเป็น input enhancement', viz: 'horspool', work: ['horspool'] },
+  { t: 'Boyer-Moore', s: 'bad-symbol กับ good-suffix', key: 'เลื่อน <span class="mono">d = max(d₁, d₂)</span> โดย <span class="mono">d₁ = max(t₁(c) − k, 1)</span>', body: 'k คือจำนวนตัวที่ตรงแล้วนับจากท้าย c คือตัวใน text ที่ไม่ตรง t₁ คือตารางเดียวกับ Horspool ถ้า k = 0 ใช้แค่ d₁ ส่วน d₂(k) มาจากตาราง good-suffix ซึ่งบอกว่าส่วนท้ายยาว k ที่ตรงแล้วไปซ้ำที่ไหนใน pattern', viz: 'boyer', work: ['boyer'] },
+  { t: 'Hashing', s: 'hash function และ collision', key: 'Hashing กระจาย key ลงตาราง m ช่องด้วย hash function เช่น <span class="mono">h(K) = K mod m</span>', body: 'key สองตัวได้ช่องเดียวกันเรียกว่า collision แก้ได้สองแบบ <b>Separate chaining</b> (open hashing) ต่อเป็นลิสต์ในช่องเดิม และ <b>Open addressing</b> (closed hashing) เช่น linear probing ที่ไล่หาช่องว่างถัดไป load factor α = n/m บอกว่าตารางแน่นแค่ไหน ตัวอย่างในสไลด์ใช้ h = ผลรวมลำดับตัวอักษร (A = 1 ถึง Z = 26) mod 13', viz: 'hashing', work: ['hashing'] },
+  { t: 'B-Tree', s: 'คุณสมบัติและการแทรก', key: 'B-tree order m ใบทุกใบอยู่ระดับเดียวกัน และ node ภายในมีลูก <span class="mono">⌈m/2⌉</span> ถึง m ตัว', body: 'root มีลูก 2 ถึง m ตัว (หรือเป็นใบ) ต้นไม้จึงเตี้ย ค้นหาและแทรกใช้ Θ(log n) แบบในสไลด์เก็บข้อมูลที่ใบ key ใน node ข้างบนคือ key ตัวแรกของลูกทางขวา ตัวอย่างนี้ m = 4 แต่ละ node มีไม่เกิน 3 key แทรกแล้วเกินให้แยกครึ่ง แล้วดัน key ตัวแรกของครึ่งขวาขึ้นไปที่ parent', viz: 'btree', work: ['btree'] },
+];
+const CARDS8 = [
+  { t: 'Dynamic Programming', s: 'overlapping subproblems', key: 'DP เก็บคำตอบของปัญหาย่อยที่เกิดซ้ำไว้ในตาราง แต่ละปัญหาย่อยจึงคำนวณครั้งเดียว', body: 'ใช้ได้เมื่อมี <b>overlapping subproblems</b> (ปัญหาย่อยเดิมเกิดซ้ำ) และ <b>optimal substructure</b> (คำตอบที่ดีที่สุดสร้างจากคำตอบที่ดีที่สุดของปัญหาย่อย) ทำได้สองแบบ top-down คือ recursion กับ memoization ที่คำนวณเฉพาะที่ถูกเรียก และ bottom-up คือ tabulation เติมตารางทุกช่องตามลำดับ ขั้นสุดท้ายคือ traceback ย้อนจากช่องคำตอบเพื่อดูว่าเลือกอะไร', viz: 'fib' },
+  { t: 'Coin-row', s: 'ห้ามหยิบเหรียญติดกัน', key: '<span class="mono">F(n) = max(cₙ + F(n − 2), F(n − 1))</span> โดย F(0) = 0, F(1) = c₁', body: 'เหรียญที่ n จะหยิบ (แล้วต้องข้ามเหรียญ n − 1) หรือไม่หยิบก็ได้ เลือกทางที่ได้มากกว่า ใช้เวลา O(n)', viz: 'coinrow', work: ['coinrow'] },
+  { t: 'Change-making', s: 'ทอนเหรียญให้น้อยที่สุด', key: '<span class="mono">F(n) = min{ F(n − dⱼ) : dⱼ ≤ n } + 1</span> โดย F(0) = 0', body: 'ลองให้เหรียญแต่ละชนิดเป็นเหรียญสุดท้าย แล้วเลือกแบบที่ใช้เหรียญน้อยที่สุด ใช้เวลา O(nm) เมื่อมีเหรียญ m ชนิด', viz: 'change', work: ['change'] },
+  { t: 'Robot coin collection', s: 'เดินได้แค่ขวาหรือลง', key: '<span class="mono">F(i, j) = max(F(i − 1, j), F(i, j − 1)) + cᵢⱼ</span>', body: 'หุ่นยนต์มาถึงช่อง (i, j) ได้จากช่องบนหรือช่องซ้ายเท่านั้น เลือกทางที่เก็บได้มากกว่าแล้วบวกเหรียญในช่องนี้ (cᵢⱼ = 1 ถ้ามีเหรียญ) ใช้เวลา O(nm)', viz: 'collect', work: ['collect'] },
+  { t: '0/1 Knapsack', s: 'ตาราง V[i][j]', key: '<span class="mono">V[i][j] = max(V[i−1][j], vᵢ + V[i−1][j − wᵢ])</span> เมื่อ j ≥ wᵢ ไม่งั้น V[i−1][j]', body: 'V[i][j] คือมูลค่าสูงสุดเมื่อใช้ของ i ชิ้นแรกกับกระเป๋าจุ j ตารางขนาด (n + 1) × (W + 1) ใช้เวลา O(nW) ของต้องหยิบทั้งชิ้นหรือไม่หยิบเลย', viz: 'knap', work: ['knap'] },
+  { t: 'Warshall', s: 'transitive closure', key: '<span class="mono">r⁽ᵏ⁾ᵢⱼ = r⁽ᵏ⁻¹⁾ᵢⱼ หรือ (r⁽ᵏ⁻¹⁾ᵢₖ และ r⁽ᵏ⁻¹⁾ₖⱼ)</span>', body: 'ตอบว่าไปถึงกันได้ไหม (0 หรือ 1) รอบที่ k อนุญาตให้ใช้ vertex k เป็นทางผ่าน ถ้า i ไป k ได้และ k ไป j ได้ ก็ได้ว่า i ไป j ได้ ใช้เวลา O(n³)', viz: 'warshall', work: ['warshall'] },
+  { t: 'Floyd', s: 'all-pairs shortest path', key: '<span class="mono">d⁽ᵏ⁾ᵢⱼ = min(d⁽ᵏ⁻¹⁾ᵢⱼ, d⁽ᵏ⁻¹⁾ᵢₖ + d⁽ᵏ⁻¹⁾ₖⱼ)</span>', body: 'หาระยะสั้นที่สุดของทุกคู่ โครงเดียวกับ Warshall แต่เก็บระยะทาง และใช้ min กับ + แทน "หรือ" กับ "และ" ใช้เวลา O(n³)', viz: 'floyd', work: ['floyd'] },
+  { t: 'LCS', s: 'Longest Common Subsequence', key: 'ถ้า xᵢ = yⱼ แล้ว <span class="mono">L[i, j] = L[i−1, j−1] + 1</span> ไม่งั้น <span class="mono">max(L[i−1, j], L[i, j−1])</span>', body: 'หาลำดับย่อยร่วมที่ยาวที่สุดของสองสตริง ตัวอย่าง X = ABCBDAB และ Y = BDCABA', viz: 'lcs' },
+];
+const CARDS9 = [
+  { t: 'Greedy technique', s: 'local optimum', key: 'แต่ละขั้นเลือกตัวเลือกที่ดีที่สุดตอนนั้น และเลือกแล้วไม่ย้อนกลับ', body: 'ตัวเลือกต้อง feasible (ไม่ผิดเงื่อนไข) locally optimal และ irrevocable ได้คำตอบที่ดีที่สุดเสมอใน Prim, Kruskal, Dijkstra, Huffman, Fractional knapsack และ Activity selection แต่ไม่การันตีใน 0/1 knapsack, TSP และการทอนเหรียญบางชุด', viz: 'greedycoin' },
+  { t: 'Prim', s: 'MST ขยายจาก vertex', key: 'เริ่มจาก vertex หนึ่ง แล้วเพิ่ม edge ที่เบาที่สุดที่เชื่อมต้นไม้กับ vertex นอกต้นไม้ ทีละเส้น', body: 'ทำจนครบทุก vertex ได้ minimum spanning tree ใช้ priority queue (min-heap) ได้ O(E log V)', viz: 'prim', work: ['prim'] },
+  { t: 'Kruskal', s: 'MST จาก edge ที่เบาที่สุด', key: 'เรียง edge จากเบาไปหนัก แล้วหยิบทีละเส้นถ้าไม่ทำให้เกิด cycle', body: 'ใช้ union-find ตรวจว่าปลายทั้งสองอยู่กลุ่มเดียวกันหรือยัง ได้ครบ V − 1 edge ก็จบ ใช้เวลา O(E log E) ส่วนใหญ่มาจากการเรียง Prim ขยายจาก vertex เริ่มต้น ส่วน Kruskal เลือก edge ที่เบาที่สุดจากทั้งกราฟ', viz: 'kruskal', work: ['kruskal'] },
+  { t: 'Dijkstra', s: 'single-source shortest path', key: 'ทุกขั้นเลือก vertex ที่ระยะสะสมน้อยที่สุดที่ยังไม่ปิด แล้วอัปเดตระยะของเพื่อนบ้าน', body: 'หาระยะสั้นที่สุดจากจุดเริ่มจุดเดียว ใช้ได้เมื่อน้ำหนักไม่ติดลบ ใช้ min-heap ได้ O(E log V)', viz: 'dijkstra', work: ['dijkstra'] },
+  { t: 'Activity selection', s: 'เรียงตามเวลาสิ้นสุด', key: 'เรียงตามเวลาสิ้นสุด แล้วเลือกกิจกรรมที่เริ่มหลังกิจกรรมล่าสุดที่เลือกจบ', body: 'กิจกรรมที่จบเร็วที่สุดเหลือเวลาให้กิจกรรมอื่นมากที่สุด จึงได้จำนวนกิจกรรมที่ไม่ทับกันมากที่สุด ใช้เวลา O(n log n) จากการเรียง', viz: 'activity', work: ['activity'] },
+  { t: 'Fractional knapsack', s: 'เรียงตาม v/w', key: 'เรียงของตาม v/w จากมากไปน้อย ใส่ทั้งชิ้นจนกว่าจะไม่พอ แล้วตัดชิ้นสุดท้ายเป็นเศษส่วน', body: 'ของแบ่งได้ greedy จึงได้คำตอบที่ดีที่สุด ต่างจาก 0/1 knapsack ที่ต้องใช้ DP', viz: 'frac', work: ['frac'] },
+  { t: 'Huffman coding', s: 'รหัสความยาวผันแปร', key: 'รวมสองต้นที่มีความถี่น้อยที่สุดซ้ำๆ จนเหลือต้นเดียว แล้วให้ซ้าย = 0 ขวา = 1', body: 'ได้รหัสความยาวผันแปรแบบ prefix-free ตัวที่ใช้บ่อยได้รหัสสั้น ความยาวเฉลี่ย = Σ ความถี่ × จำนวนบิต', viz: 'huffman', work: ['huffman'] },
+];
+
+
+/* ---------- chapters ---------- */
+const PNP_CARDS = [
+  { t: 'Polynomial time', s: 'O(nᵏ) กับสิ่งที่ไม่ใช่', key: 'Polynomial time คือ running time ในรูป <span class="mono">O(nᵏ)</span> เมื่อ k เป็นค่าคงที่', body: 'Polynomial ใช้แค่ +, −, × และยกกำลังด้วยจำนวนเต็มไม่ติดลบ ถ้าตัวแปรไปอยู่ในเลขชี้กำลังอย่าง 2ⁿ หรือเป็น n! ก็ไม่ใช่แล้ว ส่วน O(log n) และ O(n log n) นับเป็น polynomial time เพราะ log n ≤ n ลองเลื่อน n ดูว่าแต่ละแบบโตเร็วแค่ไหน', viz: 'growth' },
+  { t: 'Decision problems', s: 'คำตอบมีแค่ Yes หรือ No', key: 'Decision problem คือปัญหาที่ตอบได้แค่ <b>Yes</b> หรือ <b>No</b>', body: 'ทฤษฎีทั้งบทนี้นิยามบน decision problem ปัญหาที่ถามหาค่าที่ดีที่สุด เช่น เส้นทางที่สั้นที่สุด เรียกว่า optimization problem', viz: 'decide' },
+  { t: 'Class P', s: 'แก้ได้เร็ว', key: 'P คือ decision problem ที่แก้ได้ด้วย <b>deterministic algorithm</b> ใน polynomial time', body: 'ตัวอย่าง Sorting, Searching, Shortest Path, MST และ PATH ซึ่งถามว่ามีเส้นทางจาก a ไป b ไหม PATH ใช้ BFS หรือ DFS ได้ใน O(V + E) ไม่ต้องใช้ Dijkstra เพราะไม่ได้ถามระยะสั้นที่สุด', viz: 'bfs' },
+  { t: 'Class NP', s: 'ตรวจคำตอบได้เร็ว', key: 'NP คือ decision problem ที่ <b>ตรวจคำตอบ</b> ที่ให้มาได้ใน polynomial time', body: 'NP ย่อจาก Nondeterministic Polynomial มองเป็นสองขั้น คือเดาคำตอบ (guess) แล้วตรวจ (verify) ให้เสร็จใน O(nᵏ) ลองตรวจ SAT ข้างล่าง ตรวจทีละ clause ใช้ O(n) แต่ถ้าต้องหาเองต้องลองถึง 2ⁿ ชุด', viz: 'sat', work: ['sat'] },
+  { t: 'P ⊆ NP', s: 'tractable และคำถามล้านดอลลาร์', key: 'ทุกปัญหาใน P อยู่ใน NP เพราะแก้ได้เร็วก็ตรวจได้เร็ว', body: 'P = NP หรือไม่ยังไม่มีใครพิสูจน์ได้ เป็นหนึ่งใน 7 Millennium Prize Problems ของ Clay Mathematics Institute รางวัล $1,000,000 ปัญหาใน P เป็น tractable ทั้งหมด ส่วนปัญหาใน NP อาจเป็น tractable หรือ intractable ก็ได้', viz: 'tract' },
+  { t: 'Polynomial reduction', s: 'D₁ ≤ₚ D₂', key: '<span class="mono">D₁ ≤ₚ D₂</span> คือแปลง input ของ D₁ เป็น input ของ D₂ ได้ใน polynomial time โดยคำตอบ Yes/No ไม่เปลี่ยน', body: 'ถ้าแก้ D₂ ได้ก็แก้ D₁ ได้ D₂ จึงยากอย่างน้อยเท่า D₁ ฟังก์ชัน f ต้อง (1) ส่ง Yes-instance ไปเป็น Yes-instance (2) ส่ง No ไปเป็น No (3) ทำงานใน polynomial time', viz: 'reduce', work: ['reduce'] },
+  { t: 'NP-Complete และ NP-Hard', s: 'NP ∩ NP-Hard', key: '<span class="mono">NP-Complete = NP ∩ NP-Hard</span>', body: 'Q เป็น <b>NP-Hard</b> เมื่อทุกปัญหาใน NP reduce มาหา Q ได้ใน polynomial time ถ้า Q อยู่ใน NP ด้วยจึงเป็น <b>NP-Complete</b> คือปัญหาที่ยากที่สุดใน NP แก้ข้อใดได้เร็วก็แก้ได้ทุกข้อ NP-Hard บางข้ออยู่นอก NP เช่น Halting Problem และ TSP แบบ optimization', viz: 'euler', work: ['classes'] },
+  { t: 'Cook-Levin และ SAT', s: 'NPC ปัญหาแรก, CNF, 2-SAT กับ 3-SAT', key: 'SAT เป็นปัญหา NP-Complete ปัญหาแรกที่ถูกพิสูจน์ (Cook-Levin Theorem)', body: 'สูตร SAT เขียนแบบ CNF คือหลาย clause เชื่อมด้วย AND และภายใน clause เชื่อมด้วย OR ถ้าทุก clause มีไม่เกิน 2 literals (2-SAT) แก้ได้ใน P แต่ถ้ามี 3 literals พอดี (3-SAT) เป็น NP-Complete', viz: 'cook' },
+  { t: 'พิสูจน์ NP-Complete', s: '3 ขั้น และ 3-SAT ≤ₚ CLIQUE', key: 'พิสูจน์ว่าปัญหาใหม่อยู่ใน NP แล้ว reduce ปัญหา NPC ที่รู้จักมาหามัน', body: 'สามขั้น: (1) ตรวจคำตอบได้ใน polynomial time (2) เลือก NPC ที่รู้จัก เช่น 3-SAT, CLIQUE, VERTEX COVER, HAMPATH (3) แสดง <span class="mono">Known NPC ≤ₚ New</span> ตัวอย่างคือ 3-SAT ≤ₚ CLIQUE สร้าง vertex ต่อ literal ลาก edge เมื่ออยู่คนละ clause และไม่ใช่ negation กัน k-clique มีอยู่ก็ต่อเมื่อสูตร satisfiable (CLIQUE ตรวจได้ O(k²))', viz: 'clique', work: ['clique'] },
+  { t: 'Independent Set, HAMPATH, TSP', s: 'ปัญหา NPC อื่นๆ', key: 'G มี independent set ขนาด k ก็ต่อเมื่อ complement <span class="mono">Ḡ</span> มี clique ขนาด k', body: 'จึงได้ CLIQUE ≤ₚ INDEPENDENT SET HAMPATH ถามว่ามีเส้นทางผ่านทุก node ครั้งเดียวจาก a ไป b ไหม ตรวจได้ O(V) หาเองต้อง O(n!) และ 3-SAT ≤ₚ HAMPATH จึงเป็น NP-Complete ส่วน TSP แบบหาเส้นทางสั้นที่สุดเป็น optimization จึงเป็น NP-Hard', viz: 'indep', viz2: 'hamtsp', work: ['indep', 'classify'] },
+];
+const CHAPTERS = [
+  { id: '7', name: 'Sorting, String & Hash', blurb: 'Space and time trade-offs: Counting sort, Horspool, Boyer-Moore, Hashing และ B-Tree', cards: CARDS7 },
+  { id: '8', name: 'Dynamic Programming', blurb: 'เก็บคำตอบปัญหาย่อยไว้ใช้ซ้ำ: Coin-row, Change-making, Robot coin collection, Knapsack, Warshall, Floyd และ LCS', cards: CARDS8 },
+  { id: '9', name: 'Greedy', blurb: 'เลือกสิ่งที่ดีที่สุดตอนนี้: Prim, Kruskal, Dijkstra, Activity selection, Fractional knapsack และ Huffman', cards: CARDS9 },
+  { id: '10', name: 'P vs NP', blurb: 'แบ่งปัญหาตามความยาก ปัญหาไหนแก้ได้เร็ว ปัญหาไหนแค่ตรวจคำตอบได้เร็ว', cards: PNP_CARDS },
+];
+const HERO_ART = {
+  '10': `<svg viewBox="0 0 360 230" aria-hidden="true"><ellipse class="draw" cx="140" cy="115" rx="118" ry="88" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2"/><ellipse class="draw d2" cx="250" cy="115" rx="100" ry="100" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2"/><circle class="draw d3" cx="88" cy="120" r="40" fill="rgba(255,255,255,.14)" stroke="#fff" stroke-width="2"/><g class="fadein" fill="#fff" font-family="IBM Plex Sans Thai, sans-serif" font-weight="700"><text x="88" y="127" text-anchor="middle" font-size="20">P</text><text x="62" y="52" font-size="16">NP</text><text x="200" y="112" text-anchor="middle" font-size="12">NP-</text><text x="200" y="128" text-anchor="middle" font-size="12">Complete</text><text x="300" y="38" text-anchor="middle" font-size="15">NP-Hard</text></g></svg>`,
+  '7': `<svg viewBox="0 0 360 230" aria-hidden="true"><g font-family="JetBrains Mono, monospace" font-size="20" fill="#fff">${'GREEDY'.split('').map((c, i) => `<rect class="draw" x="${30 + i * 50}" y="60" width="44" height="44" rx="8" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2"/><text class="fadein" x="${52 + i * 50}" y="89" text-anchor="middle">${c}</text>`).join('')}${'TREE'.split('').map((c, i) => `<rect class="draw d2" x="${130 + i * 50}" y="130" width="44" height="44" rx="8" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="2"/><text class="fadein" x="${152 + i * 50}" y="159" text-anchor="middle">${c}</text>`).join('')}</g></svg>`,
+  '8': `<svg viewBox="0 0 360 230" aria-hidden="true"><g font-family="JetBrains Mono, monospace" font-size="15" fill="#fff">${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4, 5].map(c => `<rect class="draw${r > 1 ? ' d2' : ''}" x="${30 + c * 50}" y="${20 + r * 50}" width="44" height="44" rx="8" fill="rgba(255,255,255,${(r + c) % 3 === 0 ? .2 : .07})" stroke="#fff" stroke-width="1.6"/>`).join('')).join('')}</g></svg>`,
+  '9': `<svg viewBox="0 0 360 230" aria-hidden="true"><g stroke="#fff" stroke-width="2"><line class="draw" x1="50" y1="60" x2="160" y2="40"/><line class="draw" x1="160" y1="40" x2="300" y2="80"/><line class="draw d2" x1="50" y1="60" x2="120" y2="180"/><line class="draw d2" x1="120" y1="180" x2="250" y2="190"/><line class="draw d3" x1="250" y1="190" x2="300" y2="80"/></g>${[[50, 60], [160, 40], [300, 80], [120, 180], [250, 190]].map(([x, y]) => `<circle class="draw d3" cx="${x}" cy="${y}" r="14" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="2"/>`).join('')}</svg>`,
+};
+
+let state = { mode: store.get('mode', 'learn'), ch: store.get('ch', '10'), card: null };
+const seen = () => store.get('seen-' + state.ch, []);
+
+function renderTabs() {
+  const tabs = $('#tabs');
+  tabs.hidden = !(state.mode === 'learn' && state.card == null);
+  tabs.innerHTML = CHAPTERS.map(c => `<button class="tab" role="tab" aria-selected="${c.id === state.ch}" data-ch="${c.id}"><i>${c.id}</i>${c.name}</button>`).join('');
+  $$('.tab', tabs).forEach(b => b.onclick = () => { state.ch = b.dataset.ch; store.set('ch', state.ch); renderTabs(); renderCover(); });
+}
+
+function renderCover() {
+  closeSheet();
+  const c = CHAPTERS.find(x => x.id === state.ch);
+  const cards = c.cards || [], done = seen(), next = cards.findIndex((_, i) => !done.includes(i));
+  const pct = cards.length ? done.length / cards.length : 0;
+  main.innerHTML = `<section class="hero"><div><div class="meta">บทที่ ${c.id}</div><h1>${esc(c.name)}</h1><p>${esc(c.blurb)}</p>${cards.length ? `<div class="prog-line"><div class="track"><div class="fill" style="transform:scaleX(${pct})"></div></div>${done.length}/${cards.length} การ์ด</div><button class="btn light" id="start">${done.length === 0 ? 'เริ่มเรียน' : next < 0 ? 'ทบทวนอีกครั้ง' : 'เรียนต่อ'} →</button>` : `<button class="btn light" id="toquiz">ฝึกควิซบทนี้ →</button>`}</div>${HERO_ART[c.id]}</section>` +
+    (cards.length ? `<ol class="cards">${cards.map((k, i) => `<li><button class="cardrow${done.includes(i) ? ' done' : ''}${i === next ? ' next' : ''}" data-i="${i}"><span class="dot">${done.includes(i) ? '✓' : i + 1}</span><span><span class="t">${esc(k.t)}</span><br><span class="s">${esc(k.s)}</span></span><span class="go">›</span></button></li>`).join('')}</ol>`
+      : `<div class="soon"><h2>การ์ดบทนี้กำลังทำ</h2><ol>${c.topics.map(t => `<li>${esc(t)}</li>`).join('')}</ol><p style="color:var(--muted);font-size:15px">ระหว่างนี้อ่านบทเรียนเดิมได้ที่ <a href="https://bvnixx649.github.io/algo-playground/" target="_blank" rel="noopener">Algo Playground</a></p></div>`);
+  if (cards.length) {
+    $('#start').onclick = () => openCard(next < 0 ? 0 : next);
+    $$('.cardrow', main).forEach(b => b.onclick = () => openCard(+b.dataset.i));
+  } else $('#toquiz').onclick = () => { quizCfg.ch = c.id; setMode('quiz'); };
+  setDock('');
+}
+
+function openCard(i, dir = 1) {
+  const c = CHAPTERS.find(x => x.id === state.ch), cards = c.cards;
+  state.card = i; renderTabs();
+  const k = cards[i], done = seen();
+  if (!done.includes(i)) store.set('seen-' + state.ch, [...done, i]);
+  main.innerHTML = `<div class="player-top"><button class="iconbtn" id="close" aria-label="กลับไปหน้าบท">✕</button><div class="segs" style="grid-template-columns:repeat(${cards.length},1fr)">${cards.map((_, j) => `<i class="${j <= i ? 'on' : ''}"></i>`).join('')}</div><span class="pcount">${i + 1}/${cards.length}</span></div>
+  <article class="card${dir < 0 ? ' back' : ''}"><h2>${esc(k.t)}</h2><p class="key">${k.key}</p><p class="body">${k.body}</p><div class="panel" id="viz"></div>${k.viz2 ? '<div class="panel" id="viz2"></div>' : ''}${(k.work || []).map(w => `<div data-work="${w}"></div>`).join('')}</article>`;
+  VIZ[k.viz]($('#viz'));
+  if (k.viz2) VIZ[k.viz2]($('#viz2'));
+  $$('[data-work]', main).forEach(el => mountWork(el, WORK[el.dataset.work]));
+  $('#close').onclick = () => { state.card = null; renderTabs(); renderCover(); window.scrollTo({ top: 0 }); };
+  const last = i === cards.length - 1;
+  setDock(`<button class="btn back" id="prev" aria-label="การ์ดก่อนหน้า"${i === 0 ? ' disabled' : ''}>←</button><button class="btn primary" id="next">${last ? 'จบบท' : 'ต่อไป'}</button>`);
+  $('#prev').onclick = () => openCard(i - 1, -1);
+  $('#next').onclick = () => { if (last) { state.card = null; renderTabs(); renderCover(); } else openCard(i + 1); };
+  window.scrollTo({ top: 0 });
+}
+
+/* ---------- quiz ---------- */
+const quizCfg = { ch: 'all', type: 'mix' };
+let run = null;
+
+function mcq(item, shuffle) {
+  const ord = shuffle ? Core.shuffle(item.c.map((_, i) => i)) : item.c.map((_, i) => i);
+  return { type: 'mcq', ch: item.ch, q: item.q, c: ord.map(i => item.c[i]), a: ord.indexOf(item.a), why: item.why, pts: 1 };
+}
+function calc(spec) {
+  const r = Core.solve(spec);
+  return { type: 'calc', ch: spec.ch, spec, q: CALC_TEXT[spec.kind](spec).replace(/<span class="mono">/g, '<span class="data">'), fmt: CALC_FORMAT[spec.kind], answer: r.answer, lines: r.lines, keyNote: spec.keyNote, pts: 4 };
+}
+function buildPast() { return PAST.map(it => (it.kind ? calc(it) : mcq(it, false))); }
+function buildRandom() {
+  const okCh = it => quizCfg.ch === 'all' || it.ch === quizCfg.ch;
+  const pool = [...PAST.filter(i => !i.kind), ...EXTRA].filter(okCh);
+  const kinds = Object.keys(Core.gen).filter(k => okCh({ ch: Core.gen[k]().ch }));
+  let m = [], c = [];
+  const type = quizCfg.type === 'calc' && !kinds.length ? 'mcq' : quizCfg.type;
+  if (type !== 'calc') m = Core.shuffle(pool).slice(0, type === 'mcq' ? 20 : 15).map(it => mcq(it, true));
+  if (type !== 'mcq' && kinds.length) {
+    const n = type === 'calc' ? 6 : 5, ks = [];
+    while (ks.length < n) ks.push(...Core.shuffle(kinds));
+    c = ks.slice(0, n).map(k => calc(Core.gen[k]()));
+  }
+  const all = Core.shuffle(m);
+  c.forEach((q, i) => all.splice(Math.min(all.length, Math.round((i + 1) * all.length / (c.length + 1)) + i), 0, q));
+  return all;
+}
+
+function ring(frac, size, stroke, color, track) {
+  const r = (size - stroke) / 2, C = 2 * Math.PI * r;
+  return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${track}" stroke-width="${stroke}"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}" style="transition:stroke-dashoffset 900ms var(--ease)"/></svg>`;
+}
+
+function renderQuizHome() {
+  closeSheet(); run = null;
+  const best = store.get('best-past', null);
+  const chs = [['all', 'ทุกบท'], ['7', 'บท 7'], ['8', 'บท 8 DP'], ['9', 'บท 9 Greedy'], ['10', 'บท 10 P/NP']];
+  const types = [['mix', 'ผสม'], ['mcq', 'ปรนัย'], ['calc', 'คำนวณ']];
+  main.innerHTML = `<section class="qhero"><div><h1>ควิซที่ผ่านมา</h1><p>25 ข้อ 40 คะแนน ข้อเดิมทุกตัวอักษร ตรวจทีละข้อพร้อมเหตุผลและวิธีทำ</p><button class="btn light" id="start-past">เริ่มทำ →</button></div><div class="ring">${ring(best == null ? 0 : best / 40, 112, 10, '#fff', 'rgba(255,255,255,.25)')}<div><b>${best == null ? '-' : best}</b><small>ดีที่สุด /40</small></div></div></section>
+  <section class="builder"><h2>ชุดสุ่มใหม่</h2><p>ปรนัยสุ่มจากคลัง ข้อคำนวณสร้างโจทย์ใหม่ทุกครั้ง ทำซ้ำได้ไม่จำกัด</p>
+    <div class="kinds">${Object.values(CALC_NAME).map(n => `<span>${n}</span>`).join('')}</div>
+    <div class="grp"><div class="lbl">บท</div><div class="chips" id="f-ch">${chs.map(([k, l]) => `<button class="chip" aria-pressed="${quizCfg.ch === k}" data-k="${k}">${l}</button>`).join('')}</div></div>
+    <div class="grp"><div class="lbl">ชนิดข้อ</div><div class="chips" id="f-ty">${types.map(([k, l]) => `<button class="chip" aria-pressed="${quizCfg.type === k}" data-k="${k}">${l}</button>`).join('')}</div></div>
+    <button class="btn primary wide" id="start-rand">สุ่มชุดใหม่</button></section>`;
+  $$('#f-ch .chip').forEach(b => b.onclick = () => { quizCfg.ch = b.dataset.k; $$('#f-ch .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $$('#f-ty .chip').forEach(b => b.onclick = () => { quizCfg.type = b.dataset.k; $$('#f-ty .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $('#start-past').onclick = () => startRun('past');
+  $('#start-rand').onclick = () => startRun('rand');
+  setDock('');
+}
+
+function startRun(kind) {
+  const qs = kind === 'past' ? buildPast() : buildRandom();
+  run = { kind, qs, i: 0, ans: {}, res: {}, review: false };
+  renderQ(); window.scrollTo({ top: 0 });
+}
+const runPts = () => run.qs.reduce((s, q, i) => s + (run.res[i] ? q.pts : 0), 0);
+
+function renderQ() {
+  closeSheet();
+  const i = run.i, q = run.qs[i], checked = i in run.res;
+  main.innerHTML = `<div class="qtop"><button class="iconbtn" id="qx" aria-label="ออกจากควิซ">✕</button><div class="qbar">${run.qs.map((_, j) => `<i class="${j in run.res ? (run.res[j] ? 'g' : 'b') : ''}"></i>`).join('')}</div><span class="qpts">${runPts()} คะแนน</span></div>
+  <article class="qcard"><div class="qno">ข้อ ${i + 1} <span>/ ${run.qs.length}  ${q.pts} คะแนน</span></div><div class="qtext">${q.q}</div>${q.type === 'mcq'
+    ? `<div class="tiles${checked ? ' locked' : ''}" role="radiogroup">${q.c.map((c, j) => `<label class="tile"><input type="radio" name="q" value="${j}"><span class="k">${'ABCD'[j]}</span><span>${c}</span><span class="mk"></span></label>`).join('')}</div>`
+    : `<div class="ans"><div class="hint">${esc(q.fmt.hint)}</div><input id="qin" type="text" inputmode="${q.fmt.mode}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="${esc(q.fmt.ph)}"></div>`}</article>`;
+  $('#qx').onclick = () => { if (run.review) showResult(); else renderQuizHome(); };
+  if (q.type === 'mcq') {
+    $$('.tile', main).forEach((t, j) => { $('input', t).onchange = () => { if (i in run.res) return; run.ans[i] = j; $$('.tile', main).forEach((x, k) => x.classList.toggle('sel', k === j)); $('#check').disabled = false; }; });
+  } else {
+    const inp = $('#qin');
+    inp.value = run.ans[i] || '';
+    inp.oninput = () => { run.ans[i] = inp.value; $('#check').disabled = !inp.value.trim(); };
+    inp.onkeydown = e => { if (e.key === 'Enter' && inp.value.trim() && !(i in run.res)) check(); };
+  }
+  if (checked) { paintChecked(); showSheet(); setDock(''); }
+  else { setDock(`<button class="btn primary" id="check" disabled>ตรวจคำตอบ</button>`); $('#check').onclick = check; }
+}
+
+function check() {
+  const i = run.i, q = run.qs[i];
+  run.res[i] = q.type === 'mcq' ? run.ans[i] === q.a : Core.check(q.spec, run.ans[i], q.answer);
+  if (document.activeElement) document.activeElement.blur();
+  paintChecked(); setDock(''); showSheet();
+  $$('.qbar i', main)[i].className = run.res[i] ? 'g' : 'b';
+  $('.qpts', main).textContent = runPts() + ' คะแนน';
+}
+
+function paintChecked() {
+  const i = run.i, q = run.qs[i];
+  if (q.type === 'mcq') {
+    $('.tiles', main).classList.add('locked');
+    $$('.tile', main).forEach((t, j) => {
+      $('input', t).disabled = true;
+      if (j === q.a) { t.classList.add('right'); $('.mk', t).textContent = '✓'; }
+      else if (j === run.ans[i]) { t.classList.add('wrong'); $('.mk', t).textContent = '✗'; }
+    });
+  } else { const inp = $('#qin'); inp.value = run.ans[i] || ''; inp.disabled = true; inp.classList.add(run.res[i] ? 'right' : 'wrong'); }
+}
+
+function showSheet() {
+  const i = run.i, q = run.qs[i], ok = run.res[i], last = i === run.qs.length - 1;
+  sheetIn.innerHTML = `<div class="verdict"><span class="badge">${ok ? '✓' : '✗'}</span>${ok ? 'ถูกต้อง' : 'ยังไม่ถูก'}<small>${ok ? '+' + q.pts : '0'}/${q.pts}</small></div>` +
+    (q.type === 'mcq' ? (q.why ? `<p class="why">${esc(q.why)}</p>` : '') :
+      `${ok ? '' : `<div class="right-ans"><small>คำตอบที่ถูกต้อง</small>${esc(q.answer)}</div>`}${q.keyNote ? `<p class="why" style="font-size:14px">${esc(q.keyNote)}</p>` : ''}<div id="sol"></div>`) +
+    `<div class="acts">${run.review ? '<button class="btn" id="s-back">กลับหน้าสรุป</button>' : `<button class="btn primary" id="s-next">${last ? 'ดูคะแนน' : 'ข้อต่อไป'}</button>`}</div>`;
+  if (q.type === 'calc') mountWork($('#sol', sheetIn), { lines: q.lines }, { code: true });
+  sheet.classList.remove('good', 'bad'); sheet.classList.add(ok ? 'good' : 'bad');
+  requestAnimationFrame(() => sheet.classList.add('open'));
+  sheetIn.scrollTop = 0;
+  if (run.review) $('#s-back').onclick = showResult;
+  else $('#s-next').onclick = () => { if (last) showResult(); else { run.i++; renderQ(); window.scrollTo({ top: 0 }); } };
+}
+
+function showResult() {
+  closeSheet(); run.review = true;
+  const total = run.qs.reduce((s, q) => s + q.pts, 0), got = runPts();
+  const mT = run.qs.filter(q => q.type === 'mcq').length, mG = run.qs.filter((q, i) => q.type === 'mcq' && run.res[i]).length;
+  const cT = run.qs.filter(q => q.type === 'calc').length, cG = run.qs.filter((q, i) => q.type === 'calc' && run.res[i]).length;
+  if (run.kind === 'past' && Object.keys(run.res).length === run.qs.length) { const b = store.get('best-past', null); if (b == null || got > b) store.set('best-past', got); }
+  main.innerHTML = `<div class="qtop"><button class="iconbtn" id="qx" aria-label="ออกจากควิซ">✕</button><div class="qbar">${run.qs.map((_, j) => `<i class="${j in run.res ? (run.res[j] ? 'g' : 'b') : ''}"></i>`).join('')}</div><span class="qpts">${got} คะแนน</span></div>
+  <section class="result"><div class="ring">${ring(0, 168, 14, 'var(--accent)', 'var(--surface-2)')}<div><b>${got}</b><small>จาก ${total} คะแนน</small></div></div><h1>${run.kind === 'past' ? 'ควิซที่ผ่านมา' : 'ชุดสุ่ม'}</h1><div class="split">${mT ? `ปรนัยถูก ${mG}/${mT} ข้อ` : ''}${mT && cT ? '   ' : ''}${cT ? `คำนวณถูก ${cG}/${cT} ข้อ` : ''}</div>
+  <div class="lbl">แตะเลขข้อเพื่อดูเฉลยและวิธีทำ</div><div class="nums">${run.qs.map((_, j) => `<button class="num ${run.res[j] ? 'g' : 'b'}" data-j="${j}">${j + 1}</button>`).join('')}</div>
+  <div class="acts"><button class="btn" id="again">ทำชุดนี้ใหม่</button><button class="btn primary" id="new">สุ่มชุดใหม่</button></div></section>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => { const c = $$('.result .ring circle', main)[1]; const C = +c.getAttribute('stroke-dasharray'); c.setAttribute('stroke-dashoffset', C * (1 - got / total)); }));
+  $('#qx').onclick = renderQuizHome;
+  $$('.num', main).forEach(b => b.onclick = () => { run.i = +b.dataset.j; renderQ(); window.scrollTo({ top: 0 }); });
+  $('#again').onclick = () => { run = { ...run, i: 0, ans: {}, res: {}, review: false }; renderQ(); };
+  $('#new').onclick = () => startRun('rand');
+  setDock(''); window.scrollTo({ top: 0 });
+}
+
+/* ---------- mode + theme ---------- */
+function setMode(m) {
+  state.mode = m; store.set('mode', m); state.card = null;
+  $('#seg').dataset.on = m === 'quiz' ? 1 : 0;
+  $('#m-learn').setAttribute('aria-pressed', m === 'learn');
+  $('#m-quiz').setAttribute('aria-pressed', m === 'quiz');
+  renderTabs();
+  if (m === 'quiz') renderQuizHome(); else renderCover();
+  window.scrollTo({ top: 0 });
+}
+$('#m-learn').onclick = () => setMode('learn');
+$('#m-quiz').onclick = () => setMode('quiz');
+const root = document.documentElement, savedTheme = store.get('theme', null);
+if (savedTheme) root.dataset.theme = savedTheme;
+$('#theme').onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark'; store.set('theme', root.dataset.theme);
+};
+setMode(state.mode);
+})();
+</script>
+
+</body>
+</html>
